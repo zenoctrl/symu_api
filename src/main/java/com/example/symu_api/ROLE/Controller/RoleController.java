@@ -1,6 +1,7 @@
 package com.example.symu_api.ROLE.Controller;
 
 import com.example.symu_api.ROLE.Entity.RoleEntity;
+import com.example.symu_api.ROLE.Model.RoleModel;
 import com.example.symu_api.ROLE.Service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,9 @@ public class RoleController {
     }
     @GetMapping(path = "/getAllRoles",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<List<RoleEntity>> getAllRoles(
+    public ResponseEntity<List<RoleModel>> getAllRoles(
     ) {
-        final List<RoleEntity> roleEntityList =roleService.getAllRoles();
+        final List<RoleModel> roleEntityList =roleService.getAllRoles();
         return ResponseEntity.ok(roleEntityList);
     }
     @GetMapping(path = "/getRoleDetails",

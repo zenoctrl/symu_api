@@ -1,6 +1,8 @@
 package com.example.symu_api.ROLE_PERMISSION.Service;
 
 import com.example.symu_api.ROLE_PERMISSION.Entity.RolePermissionEntity;
+import com.example.symu_api.ROLE_PERMISSION.Model.RolePermissionModel;
+import com.example.symu_api.ROLE_PERMISSION.Repository.RoleModelPermissionRepo;
 import com.example.symu_api.ROLE_PERMISSION.Repository.RolePermissionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,8 @@ import java.util.List;
 public class RolePermissionServiceImpl implements RolePermissionService{
     @Autowired
     private RolePermissionRepo rolePermissionRepo;
+    @Autowired
+    private RoleModelPermissionRepo roleModelPermissionRepo;
     @Override
     public RolePermissionEntity createOrUpdateRolePermission(RolePermissionEntity rolePermissionDto) {
         RolePermissionEntity rolePermissionEntity=new RolePermissionEntity();
@@ -39,7 +43,7 @@ public class RolePermissionServiceImpl implements RolePermissionService{
     }
 
     @Override
-    public List<RolePermissionEntity> getAllRolePermission() {
-        return rolePermissionRepo.findAll();
+    public List<RolePermissionModel> getAllRolePermission() {
+        return roleModelPermissionRepo.findAll();
     }
 }

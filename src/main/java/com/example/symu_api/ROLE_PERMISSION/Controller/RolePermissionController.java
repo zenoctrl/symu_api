@@ -1,6 +1,7 @@
 package com.example.symu_api.ROLE_PERMISSION.Controller;
 
 import com.example.symu_api.ROLE_PERMISSION.Entity.RolePermissionEntity;
+import com.example.symu_api.ROLE_PERMISSION.Model.RolePermissionModel;
 import com.example.symu_api.ROLE_PERMISSION.Service.RolePermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,9 @@ private RolePermissionService rolePermissionService;
     }
     @GetMapping(path = "/getAllRolePermission",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<List<RolePermissionEntity>> getAllRolePermission(
+    public ResponseEntity<List<RolePermissionModel>> getAllRolePermission(
     ) {
-        final List<RolePermissionEntity> rolePermissionEntityList =rolePermissionService.getAllRolePermission();
+        final List<RolePermissionModel> rolePermissionEntityList =rolePermissionService.getAllRolePermission();
         return ResponseEntity.ok(rolePermissionEntityList);
     }
     @GetMapping(path = "/getRolePermissionByRoleCode",
