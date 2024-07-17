@@ -1,6 +1,7 @@
 package com.example.symu_api.USER.Service;
 
 import com.example.symu_api.USER.Entity.UserEntity;
+import com.example.symu_api.USER.Model.UserModel;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface UserService {
 
     List<UserEntity> getAllByUserBrnCode(int brnCode);
 
-    UserEntity getAllByUserIdAndUserPassword(int idNo,String password);
+    UserModel getAllByUserIdAndUserPassword(int idNo, String password);
 }

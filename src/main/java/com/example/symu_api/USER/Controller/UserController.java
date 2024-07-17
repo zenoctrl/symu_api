@@ -1,7 +1,7 @@
 package com.example.symu_api.USER.Controller;
 
-import com.example.symu_api.ROLE_PERMISSION.Entity.RolePermissionEntity;
 import com.example.symu_api.USER.Entity.UserEntity;
+import com.example.symu_api.USER.Model.UserModel;
 import com.example.symu_api.USER.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -53,11 +53,11 @@ public class UserController {
     }
     @GetMapping(path = "/login",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<UserEntity> getAllByUserBrnCode(
+    public ResponseEntity<UserModel> getAllByUserBrnCode(
             @RequestParam("userId")int userId,
             @RequestParam("password")String password
     ) {
-        final UserEntity user=userService.getAllByUserIdAndUserPassword(userId,password);
+        final UserModel user=userService.getAllByUserIdAndUserPassword(userId,password);
         return ResponseEntity.ok(user);
     }
 }

@@ -1,6 +1,8 @@
 package com.example.symu_api.USER.Service;
 
 import com.example.symu_api.USER.Entity.UserEntity;
+import com.example.symu_api.USER.Model.UserModel;
+import com.example.symu_api.USER.Repository.UserModelRepo;
 import com.example.symu_api.USER.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,10 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService{
+    @Autowired
+    private UserModelRepo userModelRepo;
+    @Autowired
+    private UserRepository userRepository;
     @Override
     public UserEntity createOrUpdateUser(UserEntity userDao) {
         UserEntity userEntity=new UserEntity();
@@ -31,9 +37,6 @@ public class UserServiceImpl implements UserService{
         UserEntity entitySaved=userRepository.save(userEntity);
         return entitySaved;
     }
-
-    @Autowired
-    private UserRepository userRepository;
     @Override
     public UserEntity getAllByCode(int code) {
         return userRepository.getAllByCode(code);
@@ -55,7 +58,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserEntity getAllByUserIdAndUserPassword(int idNo, String password) {
-        return userRepository.getAllByUserIdAndUserPassword(idNo,password);
+    public UserModel getAllByUserIdAndUserPassword(int idNo, String password) {
+        return userModelRepo.getAllByUserIdAndUserPassword(idNo,password);
     }
 }
