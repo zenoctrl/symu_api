@@ -37,8 +37,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleEntity getRoleByRoleCode(int roleCode) {
-        return roleRepository.getAllByCode(roleCode);
+    public RoleModel getRoleByRoleCode(int roleCode) {
+        return roleModelRepository.getAllByCode(roleCode);
     }
 
     @Override

@@ -28,10 +28,10 @@ public class RoleController {
     }
     @GetMapping(path = "/getRoleDetails",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<RoleEntity> getRoleDetails(
+    public ResponseEntity<RoleModel> getRoleDetails(
             @RequestParam("roleCode")int roleCode
     ) {
-        final RoleEntity roleEntity = roleService.getRoleByRoleCode(roleCode);
+        final RoleModel roleEntity = roleService.getRoleByRoleCode(roleCode);
         return ResponseEntity.ok(roleEntity);
     }
 }

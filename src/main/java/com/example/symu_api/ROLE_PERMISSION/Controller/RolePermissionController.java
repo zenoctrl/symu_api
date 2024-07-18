@@ -28,18 +28,18 @@ private RolePermissionService rolePermissionService;
     }
     @GetMapping(path = "/getRolePermissionByRoleCode",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<List<RolePermissionEntity>> getRolePermissionByRoleCode(
+    public ResponseEntity<List<RolePermissionModel>> getRolePermissionByRoleCode(
             @RequestParam("roleCode")int roleCode
     ) {
-        final List<RolePermissionEntity> rolePermissionEntityList = rolePermissionService.getRolePermissionByRoleCode(roleCode);
+        final List<RolePermissionModel> rolePermissionEntityList = rolePermissionService.getRolePermissionByRoleCode(roleCode);
         return ResponseEntity.ok(rolePermissionEntityList);
     }
     @GetMapping(path = "/getRolePermissionByCode",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<RolePermissionEntity> getRolePermissionByCode(
+    public ResponseEntity<RolePermissionModel> getRolePermissionByCode(
             @RequestParam("code")int code
     ) {
-        final RolePermissionEntity rolePermissionEntity = rolePermissionService.getRolePermissionByCode(code);
+        final RolePermissionModel rolePermissionEntity = rolePermissionService.getRolePermissionByCode(code);
         return ResponseEntity.ok(rolePermissionEntity);
     }
 }

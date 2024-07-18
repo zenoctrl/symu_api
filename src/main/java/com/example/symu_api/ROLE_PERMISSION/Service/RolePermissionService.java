@@ -9,8 +9,8 @@ public interface RolePermissionService {
 
     RolePermissionEntity createOrUpdateRolePermission(RolePermissionEntity rolePermissionDto);
 
-    RolePermissionEntity getRolePermissionByCode(int code);
-    List<RolePermissionEntity> getRolePermissionByRoleCode(int roleCode);
+    RolePermissionModel getRolePermissionByCode(int code);
+    List<RolePermissionModel> getRolePermissionByRoleCode(int roleCode);
 
     List<RolePermissionModel> getAllRolePermission();
 }

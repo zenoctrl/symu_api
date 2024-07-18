@@ -33,13 +33,13 @@ public class RolePermissionServiceImpl implements RolePermissionService{
     }
 
     @Override
-    public RolePermissionEntity getRolePermissionByCode(int code) {
-        return rolePermissionRepo.getAllByCode(code);
+    public RolePermissionModel getRolePermissionByCode(int code) {
+        return roleModelPermissionRepo.getAllByCode(code);
     }
 
     @Override
-    public  List<RolePermissionEntity> getRolePermissionByRoleCode(int roleCode) {
-        return rolePermissionRepo.getAllByRlpmRoleCode(roleCode);
+    public  List<RolePermissionModel> getRolePermissionByRoleCode(int roleCode) {
+        return roleModelPermissionRepo.getAllByRlpmRoleCode(roleCode);
     }
 
     @Override

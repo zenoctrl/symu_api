@@ -5,5 +5,5 @@ import com.example.symu_api.ROLE.Model.RoleModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoleModelRepository extends JpaRepository<RoleModel,Integer> {
-    RoleEntity getAllByCode(int code);
+    RoleModel getAllByCode(int code);
 }
