@@ -1,5 +1,7 @@
 package com.example.symu_api.USER.Model;
 
+import com.example.symu_api.BRANCHES.Entity.BranchEntity;
+import com.example.symu_api.COUNTRY.Entity.CountryEntity;
 import com.example.symu_api.ROLE.Model.RoleModel;
 import com.example.symu_api.ROLE_PERMISSION.Model.RolePermissionModel;
 import jakarta.persistence.*;
@@ -35,6 +37,16 @@ public class UserModel {
     private Integer userCompCode;
     @Column(name = "USER_BRN_CODE")
     private Integer userBrnCode;
+    @Column(name = "USER_COUNTRY_CODE")
+    private Integer userCountryCode;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_COUNTRY_CODE",insertable = false,updatable = false)
+    private CountryEntity countryEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_BRN_CODE",insertable = false,updatable = false)
+    private BranchEntity branchEntity;
 
     @ManyToOne
     @JoinColumn(name = "USER_ROLE_CODE",insertable = false,updatable = false)
