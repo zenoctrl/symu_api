@@ -1,4 +1,4 @@
-package com.example.symu_api.PROCESS_FLOW.Service;
+package com.example.symu_api.STOCK_STATUS.Service;
 
 
 public interface ProcessFlowService {

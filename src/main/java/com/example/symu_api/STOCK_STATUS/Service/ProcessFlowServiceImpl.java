@@ -1,7 +1,7 @@
-package com.example.symu_api.PROCESS_FLOW.Service;
+package com.example.symu_api.STOCK_STATUS.Service;
 
 
-import com.example.symu_api.PROCESS_FLOW.repository.ProcessFlowRepository;
+import com.example.symu_api.STOCK_STATUS.repository.ProcessFlowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

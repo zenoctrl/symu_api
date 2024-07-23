@@ -1,4 +1,4 @@
-package com.example.symu_api.PROCESS_FLOW.model;
+package com.example.symu_api.STOCK_STATUS.model;
 
 import lombok.Data;
 

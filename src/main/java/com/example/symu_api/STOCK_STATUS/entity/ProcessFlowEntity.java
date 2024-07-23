@@ -1,4 +1,4 @@
-package com.example.symu_api.PROCESS_FLOW.entity;
+package com.example.symu_api.STOCK_STATUS.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
