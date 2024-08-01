@@ -27,6 +27,6 @@ public class RoleModel {
     @Column(name = "ROLE_UPDATED_BY")
     private Integer roleUpdatedBy;
 
-    @OneToMany(mappedBy = "rlpmRoleCode")
+    @OneToMany(mappedBy = "rolePermissionRoleCode")
     private Set<RolePermissionModel> rolePermissionModelSet;
 }

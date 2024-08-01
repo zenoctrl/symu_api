@@ -13,7 +13,7 @@ public class BranchEntity {
     @Column(name = "BRN_CODE")
     private Integer code;
     @Column(name = "BRN_COMP_CODE")
-    private Integer compCode;
+    private Integer companyCode;
     @Column(name = "BRN_SHT_DESC")
     private String shortDesc;
     @Column(name = "BRN_NAME")

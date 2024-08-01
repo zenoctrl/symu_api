@@ -12,15 +12,15 @@ public class CompanyEntity {
     @Column(name = "COMP_CODE")
     private Integer code;
     @Column(name = "COMP_NAME")
-    private String compName;
+    private String companyName;
     @Column(name = "COMP_EMAIL")
-    private String compEmail;
+    private String companyEmail;
     @Column(name = "COMP_PHONE")
-    private String compPhone;
+    private String companyPhone;
     @Column(name = "COMP_SHORT_DESC")
-    private String compShortDesc;
+    private String companyShortDesc;
     @Column(name = "COMP_DESC")
-    private String compDesc;
+    private String companyDesc;
     @Column(name = "COMP_STATUS")
-    private String compStatus;
+    private String companyStatus;
 }

@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface RoleModelPermissionRepo extends JpaRepository<RolePermissionModel,Integer> {
     RolePermissionModel getAllByCode(int code);
-    List<RolePermissionModel> getAllByRlpmRoleCode(int roleCode);
+    List<RolePermissionModel> getAllByRolePermissionRoleCode(int roleCode);
 }

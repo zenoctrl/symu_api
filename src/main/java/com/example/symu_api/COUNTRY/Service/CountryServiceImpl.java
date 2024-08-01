@@ -1,5 +1,6 @@
 package com.example.symu_api.COUNTRY.Service;
 
+import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.COUNTRY.Entity.CountryEntity;
 import com.example.symu_api.COUNTRY.Repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,30 +14,61 @@ public class CountryServiceImpl implements CountryService{
     private CountryRepository countryRepository;
 
     @Override
-    public CountryEntity createOrUpdateCountry(CountryEntity country) {
+    public SymuResponse createOrUpdateCountry(CountryEntity country) {
+        SymuResponse symuResponse=new SymuResponse<>();
         CountryEntity countryEntity=new CountryEntity();
-        try {
-            CountryEntity countryEntityData=countryRepository.getCountryEntitiesByCode(countryEntity.getCode());
-            if(countryEntityData!=null) {
-                countryEntityData.setCode(countryEntity.getCode());
-            }
-        }catch(Exception e) {
-          //  e.printStackTrace();
+       try{
+           try {
+               CountryEntity countryEntityData=countryRepository.getCountryEntitiesByCode(countryEntity.getCode());
+               if(countryEntityData!=null) {
+                   countryEntityData.setCode(countryEntity.getCode());
+               }
+           }catch(Exception e) {
+               //  e.printStackTrace();
+           }
+           countryEntity.setCountryName(country.getCountryName());
+           countryEntity.setCountryShortDesc(country.getCountryShortDesc());
+           countryEntity.setStatus("A");
+           CountryEntity countryEntitySaved=countryRepository.save(countryEntity);
+
+           symuResponse.setStatusCode("0");
+           symuResponse.setMessage("Success");
+           symuResponse.setData(countryEntitySaved);
+       }catch (Exception e) {
+           symuResponse.setStatusCode("1");
+           symuResponse.setMessage("failed");
+           symuResponse.setData(e.getMessage());
+       }
+       return symuResponse;
+    }
+
+    @Override
+    public SymuResponse getCountryByCode(int countryCode) {
+        SymuResponse symuResponse=new SymuResponse<>();
+        try{
+            CountryEntity countryEntity=countryRepository.getCountryEntitiesByCode(countryCode);
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("Success");
+            symuResponse.setData(countryEntity);
+        }catch (Exception e) {
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("failed");
+            symuResponse.setData(e.getMessage());
         }
-        countryEntity.setCountryName(country.getCountryName());
-        countryEntity.setCountryShortDesc(country.getCountryShortDesc());
-        countryEntity.setStatus("A");
-        CountryEntity countryEntitySaved=countryRepository.save(countryEntity);
-        return countryEntitySaved;
+        return symuResponse;
     }
 
     @Override
-    public CountryEntity getCountryByCode(int countryCode) {
-        return countryRepository.getCountryEntitiesByCode(countryCode);
-    }
+    public SymuResponse getAllCountry() {
+        SymuResponse symuResponse=new SymuResponse<>();
+        try{
+            List<CountryEntity> countryEntity=countryRepository.findAll();
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("Success");
+            symuResponse.setData(countryEntity);
+        }catch (Exception e) {
 
-    @Override
-    public List<CountryEntity> getAllCountry() {
-        return countryRepository.findAll();
+        }
+        return symuResponse;
     }
 }

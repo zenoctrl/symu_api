@@ -1,5 +1,6 @@
 package com.example.symu_api.ROLE.Service;
 
+import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.ROLE.Entity.RoleEntity;
 import com.example.symu_api.ROLE.Model.RoleModel;
 import com.example.symu_api.ROLE.Repository.RoleModelRepository;
@@ -17,32 +18,64 @@ public class RoleServiceImpl implements RoleService {
     private RoleModelRepository roleModelRepository;
 
     @Override
-    public RoleEntity createOrUpdateRole(RoleEntity roleDto) {
-        RoleEntity roleEntity = new RoleEntity();
+    public SymuResponse createOrUpdateRole(RoleEntity roleDto) {
+        SymuResponse symuResponse = new SymuResponse<>();
         try {
-            RoleEntity roleEntityData =roleRepository.getAllByCode(roleEntity.getCode());
-            roleEntity.setCode(roleEntityData.getCode());
+            RoleEntity roleEntity = new RoleEntity();
+            try {
+                RoleEntity roleEntityData = roleRepository.getAllByCode(roleEntity.getCode());
+                roleEntity.setCode(roleEntityData.getCode());
+            } catch (Exception e) {
+                // new role
+            }
+            roleEntity.setRoleName(roleDto.getRoleName());
+            roleEntity.setRoleShortDesc(roleDto.getRoleShortDesc());
+            roleEntity.setRoleDescription(roleDto.getRoleDescription());
+            roleEntity.setRoleStatus(roleDto.getRoleStatus());
+            roleEntity.setRoleCreatedBy(roleDto.getRoleCreatedBy());
+            roleEntity.setRoleUpdatedBy(roleDto.getRoleUpdatedBy());
+
+            RoleEntity roleEntitySaved = roleRepository.save(roleEntity);
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("success");
+            symuResponse.setData(roleEntitySaved);
+
         } catch (Exception e) {
-            // new role
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("failed");
+            symuResponse.setData(e.getMessage());
         }
-        roleEntity.setRoleName(roleDto.getRoleName());
-        roleEntity.setRoleShortDesc(roleDto.getRoleShortDesc());
-        roleEntity.setRoleDescription(roleDto.getRoleDescription());
-        roleEntity.setRoleStatus(roleDto.getRoleStatus());
-        roleEntity.setRoleCreatedBy(roleDto.getRoleCreatedBy());
-        roleEntity.setRoleUpdatedBy(roleDto.getRoleUpdatedBy());
-
-        RoleEntity roleEntitySaved=roleRepository.save(roleEntity);
-        return roleEntitySaved;
+        return symuResponse;
     }
 
     @Override
-    public RoleModel getRoleByRoleCode(int roleCode) {
-        return roleModelRepository.getAllByCode(roleCode);
+    public SymuResponse getRoleByRoleCode(int roleCode) {
+        SymuResponse symuResponse = new SymuResponse<>();
+        try {
+            RoleModel roleEntitySaved = roleModelRepository.getAllByCode(roleCode);
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("success");
+            symuResponse.setData(roleEntitySaved);
+        } catch (Exception e) {
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("failed");
+            symuResponse.setData(e.getMessage());
+        }
+        return symuResponse;
     }
-
-    @Override
-    public List<RoleModel> getAllRoles() {
-        return roleModelRepository.findAll();
+        @Override
+        public SymuResponse getAllRoles () {
+            SymuResponse symuResponse = new SymuResponse<>();
+        try{
+            List<RoleModel> roleModelList= roleModelRepository.findAll();
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("success");
+            symuResponse.setData(roleModelList);
+        }catch (Exception e){
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("failed");
+            symuResponse.setData(e.getMessage());
+        }
+            return symuResponse;
+        }
     }
-}

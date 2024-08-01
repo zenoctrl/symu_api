@@ -1,5 +1,6 @@
 package com.example.symu_api.PERMISSION.Controller;
 
+import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.PERMISSION.Entity.PermissionEntity;
 import com.example.symu_api.PERMISSION.Service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,22 +16,22 @@ public class PermissionController {
     private PermissionService permissionService;
 
     @PostMapping("/createOrUpdatePermission")
-    public PermissionEntity createOrUpdatePermission(PermissionEntity permissionDto) {
+    public SymuResponse createOrUpdatePermission(@RequestBody PermissionEntity permissionDto) {
         return permissionService.createOrUpdatePermission(permissionDto);
     }
     @GetMapping(path = "/getAllPermission",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<List<PermissionEntity>> getAllPermission(
+    public ResponseEntity<SymuResponse> getAllPermission(
     ) {
-        final List<PermissionEntity> permissionEntityList =permissionService.getAllPermissions();
+        final SymuResponse permissionEntityList =permissionService.getAllPermissions();
         return ResponseEntity.ok(permissionEntityList);
     }
     @GetMapping(path = "/getPermissionByCode",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<PermissionEntity> getPermissionByCode(
+    public ResponseEntity<SymuResponse> getPermissionByCode(
             @RequestParam("code")int code
     ) {
-        final PermissionEntity permissionEntity = permissionService.getPermissionByCode(code);
+        final SymuResponse permissionEntity = permissionService.getPermissionByCode(code);
         return ResponseEntity.ok(permissionEntity);
     }
 }

@@ -1,12 +1,13 @@
 package com.example.symu_api.REGION.Service;
 
+import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.REGION.Entity.RegionEntity;
 
 import java.util.List;
 
 public interface RegionService {
-    RegionEntity createOrUpdateRegion(RegionEntity region);
-    RegionEntity getRegionEntitiesByCode(int code);
-    List<RegionEntity> getRegionEntitiesByRegionCompCode(int regionCompCode);
-    List<RegionEntity> getRegionByCountryCode(int regionCompCode,int countryCode);
+    SymuResponse createOrUpdateRegion(RegionEntity region);
+    SymuResponse getRegionEntitiesByCode(int code);
+    SymuResponse getRegionEntitiesByRegionCompCode(int regionCompCode);
+    SymuResponse getRegionByCountryCode(int regionCompCode,int countryCode);
 }

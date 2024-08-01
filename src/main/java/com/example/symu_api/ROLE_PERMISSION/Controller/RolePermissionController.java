@@ -1,5 +1,6 @@
 package com.example.symu_api.ROLE_PERMISSION.Controller;
 
+import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.ROLE_PERMISSION.Entity.RolePermissionEntity;
 import com.example.symu_api.ROLE_PERMISSION.Model.RolePermissionModel;
 import com.example.symu_api.ROLE_PERMISSION.Service.RolePermissionService;
@@ -16,30 +17,30 @@ public class RolePermissionController {
 private RolePermissionService rolePermissionService;
 
     @PostMapping("/createOrUpdateRolePermission")
-    public RolePermissionEntity createOrUpdateRolePermission(RolePermissionEntity rolePermissionDto) {
+    public SymuResponse createOrUpdateRolePermission(@RequestBody RolePermissionEntity rolePermissionDto) {
         return rolePermissionService.createOrUpdateRolePermission(rolePermissionDto);
     }
     @GetMapping(path = "/getAllRolePermission",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<List<RolePermissionModel>> getAllRolePermission(
+    public ResponseEntity<SymuResponse> getAllRolePermission(
     ) {
-        final List<RolePermissionModel> rolePermissionEntityList =rolePermissionService.getAllRolePermission();
+        final SymuResponse rolePermissionEntityList =rolePermissionService.getAllRolePermission();
         return ResponseEntity.ok(rolePermissionEntityList);
     }
     @GetMapping(path = "/getRolePermissionByRoleCode",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<List<RolePermissionModel>> getRolePermissionByRoleCode(
+    public ResponseEntity<SymuResponse> getRolePermissionByRoleCode(
             @RequestParam("roleCode")int roleCode
     ) {
-        final List<RolePermissionModel> rolePermissionEntityList = rolePermissionService.getRolePermissionByRoleCode(roleCode);
+        final SymuResponse rolePermissionEntityList = rolePermissionService.getRolePermissionByRoleCode(roleCode);
         return ResponseEntity.ok(rolePermissionEntityList);
     }
     @GetMapping(path = "/getRolePermissionByCode",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<RolePermissionModel> getRolePermissionByCode(
+    public ResponseEntity<SymuResponse> getRolePermissionByCode(
             @RequestParam("code")int code
     ) {
-        final RolePermissionModel rolePermissionEntity = rolePermissionService.getRolePermissionByCode(code);
+        final SymuResponse rolePermissionEntity = rolePermissionService.getRolePermissionByCode(code);
         return ResponseEntity.ok(rolePermissionEntity);
     }
 }

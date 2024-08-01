@@ -12,9 +12,9 @@ public interface BranchRepository extends CrudRepository<BranchEntity,Integer> {
     @Query(value = "SELECT  MAX (code) FROM BranchEntity")
     Integer findMaxCode();
 
-    List<BranchEntity> findAllByCompCodeAndStatus(int compCode, String status);
+    List<BranchEntity> findAllByCompanyCodeAndStatus(int compCode, String status);
 
-    BranchEntity findAllByCompCodeAndCode(int compCode, int brchCode);
+    BranchEntity findAllByCompanyCodeAndCode(int compCode, int brchCode);
 
     BranchEntity findAllByCode(int brchCode);
 }

@@ -1,14 +1,15 @@
 package com.example.symu_api.PERMISSION.Service;
 
+import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.PERMISSION.Entity.PermissionEntity;
 
 import java.util.List;
 
 public interface PermissionService {
 
-    PermissionEntity createOrUpdatePermission(PermissionEntity permissionDto);
+    SymuResponse createOrUpdatePermission(PermissionEntity permissionDto);
 
-    PermissionEntity getPermissionByCode(int code);
+    SymuResponse getPermissionByCode(int code);
 
-    List<PermissionEntity> getAllPermissions();
+    SymuResponse getAllPermissions();
 }

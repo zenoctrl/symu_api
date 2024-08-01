@@ -1,5 +1,6 @@
 package com.example.symu_api.ROLE.Controller;
 
+import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.ROLE.Entity.RoleEntity;
 import com.example.symu_api.ROLE.Model.RoleModel;
 import com.example.symu_api.ROLE.Service.RoleService;
@@ -16,22 +17,22 @@ public class RoleController {
     private RoleService roleService;
 
     @PostMapping("/createOrUpdateRole")
-    public RoleEntity createOrUpdateRole(RoleEntity roleDto) {
+    public SymuResponse createOrUpdateRole(@RequestBody RoleEntity roleDto) {
         return roleService.createOrUpdateRole(roleDto);
     }
     @GetMapping(path = "/getAllRoles",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<List<RoleModel>> getAllRoles(
+    public ResponseEntity<SymuResponse> getAllRoles(
     ) {
-        final List<RoleModel> roleEntityList =roleService.getAllRoles();
+        final SymuResponse roleEntityList =roleService.getAllRoles();
         return ResponseEntity.ok(roleEntityList);
     }
     @GetMapping(path = "/getRoleDetails",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<RoleModel> getRoleDetails(
+    public ResponseEntity<SymuResponse> getRoleDetails(
             @RequestParam("roleCode")int roleCode
     ) {
-        final RoleModel roleEntity = roleService.getRoleByRoleCode(roleCode);
+        final SymuResponse roleEntity = roleService.getRoleByRoleCode(roleCode);
         return ResponseEntity.ok(roleEntity);
     }
 }

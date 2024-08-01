@@ -15,11 +15,13 @@ public class StockEntity {
     @Column(name = "STOCK_CODE")
     private Integer code;
     @Column(name = "STOCK_COMP_CODE")
-    private Integer stockCompCode;
+    private Integer stockCompanyCode;
     @Column(name = "STOCK_REGION_CODE")
     private Integer stockRegionCode;
     @Column(name = "STOCK_BRN_CODE")
     private Integer stockBrnCode;
+    @Column(name = "STOCK_BATCH_CODE")
+    private Integer stockBatchCode;
     @Column(name = "STOCK_AGN_CODE")
     private Integer stockAgnCode;
     @Column(name = "STOCK_IMEI")

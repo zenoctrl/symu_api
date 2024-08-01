@@ -1,5 +1,6 @@
 package com.example.symu_api.COUNTRY.Controller;
 
+import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.COUNTRY.Entity.CountryEntity;
 import com.example.symu_api.COUNTRY.Service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,23 +16,23 @@ public class CountryController {
     private CountryService countryService;
 
     @PostMapping("/createOrUpdateCountry")
-    public CountryEntity createOrUpdateCountry(CountryEntity countryEntity) {
+    public SymuResponse createOrUpdateCountry(@RequestBody  CountryEntity countryEntity) {
         return countryService.createOrUpdateCountry(countryEntity);
     }
 
     @GetMapping(path = "/getCountry",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<CountryEntity> getCountry(
+    public ResponseEntity<SymuResponse> getCountry(
             @RequestParam("countryCode")int countryCode
     ) {
-        final CountryEntity countryEntity =countryService.getCountryByCode(countryCode);
+        final SymuResponse countryEntity =countryService.getCountryByCode(countryCode);
         return ResponseEntity.ok(countryEntity);
     }
     @GetMapping(path = "/getAllCountries",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<List<CountryEntity>> getAllCountries(
+    public ResponseEntity<SymuResponse> getAllCountries(
     ) {
-        final List<CountryEntity> countryEntity =countryService.getAllCountry();
+        final SymuResponse countryEntity =countryService.getAllCountry();
         return ResponseEntity.ok(countryEntity);
     }
 }

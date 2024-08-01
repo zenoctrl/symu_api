@@ -1,5 +1,6 @@
 package com.example.symu_api.STOCK.Service;
 
+import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.STOCK.Entity.StockEntity;
 import com.example.symu_api.STOCK.Repository.StockEntityRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,41 +16,75 @@ public class StockServiceImpl implements StockService {
     private StockEntityRepo stockEntityRepo;
 
     @Override
-    public StockEntity createOrUpdateStock(StockEntity stock) {
-        LocalDateTime timestamp =LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
+    public SymuResponse createOrUpdateStock(StockEntity stock) {
+        SymuResponse symuResponse = new SymuResponse<>();
+        LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
         StockEntity stockEntity = new StockEntity();
         try {
-            StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stock.getCode());
-            stockEntity.setCode(stockEntityData.getCode());
-            stockEntity.setStockUpdatedOn(timestamp);
-            stockEntity.setStockUpdatedBy(stock.getStockUpdatedBy());
+            try {
+                StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stock.getCode());
+                stockEntity.setCode(stockEntityData.getCode());
+                stockEntity.setStockUpdatedOn(timestamp);
+                stockEntity.setStockUpdatedBy(stock.getStockUpdatedBy());
+            } catch (Exception e) {
+                // new stock
+                stockEntity.setStockCreatedOn(timestamp);
+                stockEntity.setStockCreatedBy(stock.getStockCreatedBy());
+            }
+            stockEntity.setStockCompanyCode(stock.getStockCompanyCode());
+            stockEntity.setStockRegionCode(stock.getStockRegionCode());
+            stockEntity.setStockBrnCode(stock.getStockBrnCode());
+            stockEntity.setStockBatchCode(stock.getStockBatchCode());
+            stockEntity.setStockAgnCode(stock.getStockAgnCode());
+            stockEntity.setStockImei(stock.getStockImei());
+            stockEntity.setStockModelCode(stock.getStockModelCode());
+            stockEntity.setStockMemory(stock.getStockMemory());
+            stockEntity.setStockBuyingPrice(stock.getStockBuyingPrice());
+            stockEntity.setStockSellingPrice(stock.getStockSellingPrice());
+            stockEntity.setStockProfit(stock.getStockProfit());
+            stockEntity.setStockStatusCode(stock.getStockStatusCode());
+            stockEntity.setStockBaseCurrency(stock.getStockBaseCurrency());
+            StockEntity stockEntity1 = stockEntityRepo.save(stockEntity);
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("Success");
+            symuResponse.setData(stockEntity1);
         } catch (Exception e) {
-            // new stock
-            stockEntity.setStockCreatedOn(timestamp);
-            stockEntity.setStockCreatedBy(stock.getStockCreatedBy());
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("failed");
+            symuResponse.setData(e.getMessage());
         }
-        stockEntity.setStockCompCode(stock.getStockCompCode());
-        stockEntity.setStockRegionCode(stock.getStockRegionCode());
-        stockEntity.setStockBrnCode(stock.getStockBrnCode());
-        stockEntity.setStockAgnCode(stock.getStockAgnCode());
-        stockEntity.setStockImei(stock.getStockImei());
-        stockEntity.setStockModelCode(stock.getStockModelCode());
-        stockEntity.setStockMemory(stock.getStockMemory());
-        stockEntity.setStockBuyingPrice(stock.getStockBuyingPrice());
-        stockEntity.setStockSellingPrice(stock.getStockSellingPrice());
-        stockEntity.setStockProfit(stock.getStockProfit());
-        stockEntity.setStockStatusCode(stock.getStockStatusCode());
-        stockEntity.setStockBaseCurrency(stock.getStockBaseCurrency());
-        return  stockEntityRepo.save(stockEntity);
+        return symuResponse;
     }
 
     @Override
-    public StockEntity getStockEntityByStockCode(int stockCode) {
-        return stockEntityRepo.getStockEntitiesByCode(stockCode);
+    public SymuResponse getStockEntityByStockCode(int stockCode) {
+        SymuResponse symuResponse = new SymuResponse();
+        try {
+            StockEntity stockEntity = stockEntityRepo.getStockEntitiesByCode(stockCode);
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("success");
+            symuResponse.setData(stockEntity);
+        } catch (Exception e) {
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("Error occurred while fetching stock");
+            symuResponse.setData(e.getMessage());
+        }
+        return symuResponse;
     }
 
     @Override
-    public List<StockEntity> getStockByBranchAndStatus(int brnCode,int stockStatusCode) {
-        return stockEntityRepo.getStockEntitiesByStockBrnCodeAndStockStatusCode(brnCode,stockStatusCode);
+    public SymuResponse getStockByBranchAndStatus(int brnCode, int stockStatusCode) {
+        SymuResponse symuResponse = new SymuResponse();
+        try {
+            List<StockEntity> stockEntityList = stockEntityRepo.getStockEntitiesByStockBrnCodeAndStockStatusCode(brnCode, stockStatusCode);
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("success");
+            symuResponse.setData(stockEntityList);
+        } catch (Exception e) {
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("Error occurred while fetching stock");
+            symuResponse.setData(e.getMessage());
+        }
+        return symuResponse;
     }
 }

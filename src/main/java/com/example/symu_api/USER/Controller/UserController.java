@@ -16,7 +16,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/createOrUpdateUser")
-    public UserEntity createOrUpdateUser(UserEntity userDao) {
+    public UserEntity createOrUpdateUser(@RequestBody UserEntity userDao) {
         return userService.createOrUpdateUser(userDao);
     }
     @GetMapping(path = "/getUserByUserCode",
