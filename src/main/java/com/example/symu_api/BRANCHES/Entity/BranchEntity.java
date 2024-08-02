@@ -14,6 +14,10 @@ public class BranchEntity {
     private Integer code;
     @Column(name = "BRN_COMP_CODE")
     private Integer companyCode;
+    @Column(name = "BRN_COUNTRY_CODE")
+    private Integer countryCode;
+    @Column(name = "BRN_REGION_CODE")
+    private Integer regionCode;
     @Column(name = "BRN_SHT_DESC")
     private String shortDesc;
     @Column(name = "BRN_NAME")

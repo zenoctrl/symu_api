@@ -16,6 +16,10 @@ public class CountryEntity {
     private String countryShortDesc;
     @Column(name = "CTRY_NAME")
     private String countryName;
+    @Column(name = "CTRY_CURRENCY_CODE")
+    private String countryCurrencyCode;
+    @Column(name = "CTRY_COUNTRY_CODE")
+    private String countryCountryCode;
     @Column(name = "CTRY_STATUS")
     private String status;
 }

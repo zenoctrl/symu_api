@@ -16,6 +16,8 @@ public class StockEntity {
     private Integer code;
     @Column(name = "STOCK_COMP_CODE")
     private Integer stockCompanyCode;
+    @Column(name = "STOCK_COUNTRY_CODE")
+    private Integer stockCountryCode;
     @Column(name = "STOCK_REGION_CODE")
     private Integer stockRegionCode;
     @Column(name = "STOCK_BRN_CODE")

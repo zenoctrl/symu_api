@@ -31,6 +31,8 @@ public class BranchServiceImpl implements BranchService {
                 // branch.setCode(branchCodeGenerator());
             }
             branchEntity.setCompanyCode(branchEntityDAO.getCompanyCode());
+            branchEntity.setCountryCode(branchEntityDAO.getCountryCode());
+            branchEntity.setRegionCode(branchEntityDAO.getRegionCode());
             branchEntity.setShortDesc(branchEntityDAO.getShortDesc());
             branchEntity.setName(branchEntityDAO.getName());
             branchEntity.setDesc(branchEntityDAO.getDesc());

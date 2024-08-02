@@ -28,6 +28,8 @@ public class CountryServiceImpl implements CountryService{
            }
            countryEntity.setCountryName(country.getCountryName());
            countryEntity.setCountryShortDesc(country.getCountryShortDesc());
+           countryEntity.setCountryCountryCode(country.getCountryCountryCode());
+           countryEntity.setCountryCountryCode(country.getCountryCountryCode());
            countryEntity.setStatus("A");
            CountryEntity countryEntitySaved=countryRepository.save(countryEntity);
 
@@ -67,7 +69,9 @@ public class CountryServiceImpl implements CountryService{
             symuResponse.setMessage("Success");
             symuResponse.setData(countryEntity);
         }catch (Exception e) {
-
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("failed");
+            symuResponse.setData(e.getMessage());
         }
         return symuResponse;
     }

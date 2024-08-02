@@ -1,19 +1,20 @@
 package com.example.symu_api.USER.Service;
 
+import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.USER.Entity.UserEntity;
 import com.example.symu_api.USER.Model.UserModel;
 
 import java.util.List;
 
 public interface UserService {
-    UserEntity createOrUpdateUser(UserEntity userDao);
-    UserEntity getAllByCode(int code) ;
+    SymuResponse createOrUpdateUser(UserEntity userDao);
+    SymuResponse getAllByCode(int code) ;
 
-    UserEntity getAllById(int idNo);
+    SymuResponse getAllById(int idNo);
 
-    List<UserEntity> getAllByUserRoleCode(int roleCode);
+    SymuResponse getAllByUserRoleCode(int roleCode);
 
-    List<UserEntity> getAllByUserBrnCode(int brnCode);
+    SymuResponse getAllByUserBrnCode(int brnCode);
 
-    UserModel getAllByUserIdAndUserPassword(int idNo, String password);
+    SymuResponse getAllByUserIdAndUserPassword(int idNo, String password);
 }
