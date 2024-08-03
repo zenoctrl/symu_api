@@ -29,8 +29,8 @@ public class CountryServiceImpl implements CountryService{
            countryEntity.setCountryName(country.getCountryName());
            countryEntity.setCountryShortDesc(country.getCountryShortDesc());
            countryEntity.setCountryCountryCode(country.getCountryCountryCode());
-           countryEntity.setCountryCountryCode(country.getCountryCountryCode());
-           countryEntity.setStatus("A");
+           countryEntity.setCountryCurrencyCode(country.getCountryCurrencyCode());
+           countryEntity.setStatus(country.getStatus());
            CountryEntity countryEntitySaved=countryRepository.save(countryEntity);
 
            symuResponse.setStatusCode("0");
