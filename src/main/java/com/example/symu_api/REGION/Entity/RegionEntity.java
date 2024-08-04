@@ -12,7 +12,7 @@ public class RegionEntity {
     @Column(name = "REGION_CODE")
     private Integer code;
     @Column(name = "REGION_COMP_CODE")
-    private Integer regionCompCode;
+    private Integer regionCompanyCode;
     @Column(name = "REGION_COUNTRY_CODE")
     private Integer regionCountryCode;
     @Column(name = "REGION_SHT_DESC")

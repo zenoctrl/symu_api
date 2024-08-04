@@ -20,6 +20,7 @@ public class CountryServiceImpl implements CountryService{
        try{
            try {
                CountryEntity countryEntityData=countryRepository.getCountryEntitiesByCode(countryEntity.getCode());
+               countryEntity.setCode(countryEntityData.getCode());
                if(countryEntityData!=null) {
                    countryEntityData.setCode(countryEntity.getCode());
                }
@@ -28,6 +29,7 @@ public class CountryServiceImpl implements CountryService{
            }
            countryEntity.setCountryName(country.getCountryName());
            countryEntity.setCountryShortDesc(country.getCountryShortDesc());
+           countryEntity.setCompanyCode(country.getCompanyCode());
            countryEntity.setCountryCountryCode(country.getCountryCountryCode());
            countryEntity.setCountryCurrencyCode(country.getCountryCurrencyCode());
            countryEntity.setStatus(country.getStatus());
