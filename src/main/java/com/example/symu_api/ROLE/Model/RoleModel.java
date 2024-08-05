@@ -29,4 +29,5 @@ public class RoleModel {
 
     @OneToMany(mappedBy = "rolePermissionRoleCode")
     private Set<RolePermissionModel> rolePermissionModelSet;
+
 }

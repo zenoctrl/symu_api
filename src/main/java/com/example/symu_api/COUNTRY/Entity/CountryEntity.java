@@ -12,6 +12,8 @@ public class CountryEntity {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "CTRY_CODE")
     private Integer code;
+    @Column(name = "CTRY_COMPANY_CODE")
+    private Integer companyCode;
     @Column(name = "CTRY_SHORT_DESC")
     private String countryShortDesc;
     @Column(name = "CTRY_NAME")

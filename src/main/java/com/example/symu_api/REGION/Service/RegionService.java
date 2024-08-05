@@ -9,5 +9,5 @@ public interface RegionService {
     SymuResponse createOrUpdateRegion(RegionEntity region);
     SymuResponse getRegionEntitiesByCode(int code);
     SymuResponse getRegionEntitiesByRegionCompCode(int regionCompCode);
-    SymuResponse getRegionByCountryCode(int regionCompCode,int countryCode);
+    SymuResponse getRegionByCountryCode(int regionCompanyCode,int countryCode);
 }

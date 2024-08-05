@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService{
             userEntity.setUserHudumaNo(userDao.getUserHudumaNo());
             userEntity.setUserPassword(userDao.getUserPassword());
             userEntity.setUserRoleCode(userDao.getUserRoleCode());
-            userEntity.setUserCompCode(userDao.getUserCompCode());
+            userEntity.setUserCompanyCode(userDao.getUserCompanyCode());
             userEntity.setUserBrnCode(userDao.getUserBrnCode());
             userEntity.setUserCountryCode(userDao.getUserCountryCode());
             UserEntity entitySaved=userRepository.save(userEntity);

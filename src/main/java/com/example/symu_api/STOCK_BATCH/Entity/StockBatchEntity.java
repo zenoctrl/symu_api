@@ -13,6 +13,14 @@ public class StockBatchEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "BATCH_CODE")
     private Integer code;
+    @Column(name = "BATCH_COMP_CODE")
+    private Integer stockBatchCompanyCode;
+    @Column(name = "BATCH_COUNTRY_CODE")
+    private Integer stockBatchCountryCode;
+    @Column(name = "BATCH_REGION_CODE")
+    private Integer stockBatchRegionCode;
+    @Column(name = "STOCK_BRN_CODE")
+    private Integer stockBranchCode;
     @Column(name = "BATCH_NAME")
     private String batchName;
     @Column(name = "BATCH_SHORT_DESC")

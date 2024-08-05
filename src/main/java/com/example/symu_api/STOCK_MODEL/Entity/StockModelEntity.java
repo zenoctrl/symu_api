@@ -11,6 +11,14 @@ public class StockModelEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MODEL_CODE")
     private Integer code;
+    @Column(name = "MODEL_COMP_CODE")
+    private Integer modelCompanyCode;
+    @Column(name = "MODEL_COUNTRY_CODE")
+    private Integer modelCountryCode;
+    @Column(name = "MODEL_REGION_CODE")
+    private Integer modelRegionCode;
+    @Column(name = "MODEL_BRN_CODE")
+    private Integer modelBranchCode;
     @Column(name = "MODEL_NAME")
     private String modelName;
     @Column(name = "MODEL_SHORT_DESC")

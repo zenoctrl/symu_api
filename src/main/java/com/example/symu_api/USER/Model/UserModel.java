@@ -3,11 +3,8 @@ package com.example.symu_api.USER.Model;
 import com.example.symu_api.BRANCHES.Entity.BranchEntity;
 import com.example.symu_api.COUNTRY.Entity.CountryEntity;
 import com.example.symu_api.ROLE.Model.RoleModel;
-import com.example.symu_api.ROLE_PERMISSION.Model.RolePermissionModel;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -34,7 +31,7 @@ public class UserModel {
     @Column(name = "USER_ROLE_CODE")
     private Integer userRoleCode;
     @Column(name = "USER_COMP_CODE")
-    private Integer userCompCode;
+    private Integer userCompanyCode;
     @Column(name = "USER_BRN_CODE")
     private Integer userBrnCode;
     @Column(name = "USER_COUNTRY_CODE")

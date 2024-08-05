@@ -1,12 +1,14 @@
-package com.example.symu_api.REGION.Entity;
+package com.example.symu_api.REGION.Model;
 
+import com.example.symu_api.COUNTRY.Entity.CountryEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+
 
 @Entity
 @Table(name = "region")
 @Data
-public class RegionEntity {
+public class RegionModel {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "REGION_CODE")
@@ -23,4 +25,8 @@ public class RegionEntity {
     private String regionDesc;
     @Column(name = "REGION_STATUS")
     private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "REGION_COUNTRY_CODE",insertable = false,updatable = false)
+    private CountryEntity countryEntity;
 }
