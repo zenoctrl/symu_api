@@ -26,19 +26,19 @@ public class BranchController {
     @GetMapping(path = "/getBranches",
             produces = {"application/json; charset=UTF-8"})
     public ResponseEntity<SymuResponse> getBranches(
-            @RequestParam("compCode")int compCode
+            @RequestParam("companyCode")int companyCode
     ) {
-        final SymuResponse branchEntities = branchService.getAllBranches(compCode);
+        final SymuResponse branchEntities = branchService.getAllBranches(companyCode);
         return ResponseEntity.ok(branchEntities);
     }
 
     @DeleteMapping(path = "/deleteBranch",
             produces = {"application/json; charset=UTF-8"})
     public ResponseEntity<SymuResponse> deleteBranche(
-            @RequestParam("compCode")int compCode,
+            @RequestParam("companyCode")int companyCode,
             @RequestParam("brachCode")int branchCode
     ) throws Exception {
-        final SymuResponse branches = branchService.deleteABranch(compCode,branchCode);
+        final SymuResponse branches = branchService.deleteABranch(companyCode,branchCode);
         return ResponseEntity.ok(branches);
     }
 }

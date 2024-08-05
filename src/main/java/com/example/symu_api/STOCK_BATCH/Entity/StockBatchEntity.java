@@ -20,7 +20,7 @@ public class StockBatchEntity {
     @Column(name = "BATCH_REGION_CODE")
     private Integer stockBatchRegionCode;
     @Column(name = "STOCK_BRN_CODE")
-    private Integer stockBrnCode;
+    private Integer stockBranchCode;
     @Column(name = "BATCH_NAME")
     private String batchName;
     @Column(name = "BATCH_SHORT_DESC")

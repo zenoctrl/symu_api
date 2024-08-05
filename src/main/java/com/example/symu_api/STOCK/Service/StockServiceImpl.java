@@ -34,7 +34,7 @@ public class StockServiceImpl implements StockService {
             stockEntity.setStockCompanyCode(stock.getStockCompanyCode());
             stockEntity.setStockCountryCode(stock.getStockCountryCode());
             stockEntity.setStockRegionCode(stock.getStockRegionCode());
-            stockEntity.setStockBrnCode(stock.getStockBrnCode());
+            stockEntity.setStockBranchCode(stock.getStockBranchCode());
             stockEntity.setStockBatchCode(stock.getStockBatchCode());
             stockEntity.setStockAgnCode(stock.getStockAgnCode());
             stockEntity.setStockImei(stock.getStockImei());
@@ -79,7 +79,7 @@ public class StockServiceImpl implements StockService {
     public SymuResponse getStockByBranchAndStatus(int brnCode, int stockStatusCode) {
         SymuResponse symuResponse = new SymuResponse();
         try {
-            List<StockEntity> stockEntityList = stockEntityRepo.getStockEntitiesByStockBrnCodeAndStockStatusCode(brnCode, stockStatusCode);
+            List<StockEntity> stockEntityList = stockEntityRepo.getStockEntitiesByStockBranchCodeAndStockStatusCode(brnCode, stockStatusCode);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
             symuResponse.setData(stockEntityList);

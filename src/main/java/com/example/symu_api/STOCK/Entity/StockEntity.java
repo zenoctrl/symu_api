@@ -21,7 +21,7 @@ public class StockEntity {
     @Column(name = "STOCK_REGION_CODE")
     private Integer stockRegionCode;
     @Column(name = "STOCK_BRN_CODE")
-    private Integer stockBrnCode;
+    private Integer stockBranchCode;
     @Column(name = "STOCK_BATCH_CODE")
     private Integer stockBatchCode;
     @Column(name = "STOCK_AGN_CODE")

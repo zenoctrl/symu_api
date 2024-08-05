@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface RegionEntityRepo extends JpaRepository<RegionEntity,Long> {
     RegionEntity getRegionEntitiesByCode(int code);
-    List<RegionEntity> getRegionEntitiesByRegionCompCode(int regionCompCode);
-    List<RegionEntity> getRegionEntitiesByRegionCompCodeAndRegionCountryCode(int regionCompCode,int countryCode);
+    List<RegionEntity> getRegionEntitiesByRegionCompanyCode(int regionCompanyCode);
+    List<RegionEntity> getRegionEntitiesByRegionCompanyCodeAndRegionCountryCode(int regionCompanyCode,int countryCode);
 }

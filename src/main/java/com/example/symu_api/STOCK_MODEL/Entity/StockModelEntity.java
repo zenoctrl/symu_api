@@ -18,7 +18,7 @@ public class StockModelEntity {
     @Column(name = "MODEL_REGION_CODE")
     private Integer modelRegionCode;
     @Column(name = "MODEL_BRN_CODE")
-    private Integer modelBrnCode;
+    private Integer modelBranchCode;
     @Column(name = "MODEL_NAME")
     private String modelName;
     @Column(name = "MODEL_SHORT_DESC")

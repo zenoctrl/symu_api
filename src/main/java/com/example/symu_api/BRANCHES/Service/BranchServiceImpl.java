@@ -2,6 +2,8 @@ package com.example.symu_api.BRANCHES.Service;
 
 
 import com.example.symu_api.BRANCHES.Entity.BranchEntity;
+import com.example.symu_api.BRANCHES.Model.BranchModel;
+import com.example.symu_api.BRANCHES.Repository.BranchModelRepository;
 import com.example.symu_api.BRANCHES.Repository.BranchRepository;
 import com.example.symu_api.COMMON.Model.SymuResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import java.util.List;
 public class BranchServiceImpl implements BranchService {
     @Autowired
     BranchRepository branchRepository;
+    @Autowired
+    BranchModelRepository branchModelRepository;
 
     @Override
     public SymuResponse createOrUpdateBranch(BranchEntity branchEntityDAO) {
@@ -50,10 +54,10 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public SymuResponse getAllBranches(int compCode) {
+    public SymuResponse getAllBranches(int companyCode) {
         SymuResponse symuResponse = new SymuResponse<>();
         try {
-            List<BranchEntity> branchEntityList = branchRepository.findAllByCompanyCodeAndStatus(compCode, "A");
+            List<BranchModel> branchEntityList = branchModelRepository.findAllByCompanyCodeAndStatus(companyCode, "A");
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
             symuResponse.setData(branchEntityList);
@@ -66,17 +70,17 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public SymuResponse deleteABranch(int compCode, int brnCode) {
+    public SymuResponse deleteABranch(int companyCode, int brnCode) {
         SymuResponse symuResponse = new SymuResponse<>();
    try{
-       BranchEntity branchEntity = branchRepository.findAllByCode(brnCode);
+       BranchModel branchEntity = branchModelRepository.findAllByCode(brnCode);
        if (branchEntity.getShortDesc().equalsIgnoreCase("HQT")) {
            symuResponse.setStatusCode("1");
            symuResponse.setMessage("Failed");
            symuResponse.setData("You cannot delete main branch");
        }else {
            branchEntity.setStatus("I");
-           branchRepository.save(branchEntity);
+           branchModelRepository.save(branchEntity);
            symuResponse.setStatusCode("0");
            symuResponse.setMessage("success");
            symuResponse.setData("Branch deleted successfully");

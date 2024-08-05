@@ -2,7 +2,9 @@ package com.example.symu_api.REGION.Service;
 
 import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.REGION.Entity.RegionEntity;
+import com.example.symu_api.REGION.Model.RegionModel;
 import com.example.symu_api.REGION.Repository.RegionEntityRepo;
+import com.example.symu_api.REGION.Repository.RegionModelRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,8 @@ import java.util.List;
 public class RegionServiceImpl implements RegionService{
     @Autowired
     private RegionEntityRepo regionEntityRepo;
+    @Autowired
+    private RegionModelRepo regionModelRepo;
     @Override
     public SymuResponse createOrUpdateRegion(RegionEntity region) {
         SymuResponse symuResponse=new SymuResponse<>();
@@ -33,7 +37,7 @@ public class RegionServiceImpl implements RegionService{
     public SymuResponse getRegionEntitiesByCode(int code) {
         SymuResponse symuResponse=new SymuResponse<>();
         try{
-            RegionEntity regionEntity=regionEntityRepo.getRegionEntitiesByCode(code);
+            RegionModel regionEntity=regionModelRepo.getRegionEntitiesByCode(code);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
             symuResponse.setData(regionEntity);
@@ -49,7 +53,7 @@ public class RegionServiceImpl implements RegionService{
     public SymuResponse getRegionEntitiesByRegionCompCode(int regionCompCode) {
         SymuResponse symuResponse=new SymuResponse<>();
         try{
-            List<RegionEntity> regionEntityList=regionEntityRepo.getRegionEntitiesByRegionCompCode(regionCompCode);
+            List<RegionModel> regionEntityList=regionModelRepo.getRegionEntitiesByRegionCompanyCode(regionCompCode);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
             symuResponse.setData(regionEntityList);
@@ -66,7 +70,7 @@ public class RegionServiceImpl implements RegionService{
             int regionCompCode, int countryCode) {
         SymuResponse symuResponse=new SymuResponse<>();
         try{
-            List<RegionEntity> regionEntityList=regionEntityRepo.getRegionEntitiesByRegionCompCodeAndRegionCountryCode(
+            List<RegionModel> regionEntityList=regionModelRepo.getRegionEntitiesByRegionCompanyCodeAndRegionCountryCode(
                     regionCompCode, countryCode);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");

@@ -28,7 +28,7 @@ public class UserEntity {
     @Column(name = "USER_ROLE_CODE")
     private Integer userRoleCode;
     @Column(name = "USER_COMP_CODE")
-    private Integer userCompCode;
+    private Integer userCompanyCode;
     @Column(name = "USER_BRN_CODE")
     private Integer userBrnCode;
     @Column(name = "USER_COUNTRY_CODE")

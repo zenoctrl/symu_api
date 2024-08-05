@@ -45,9 +45,9 @@ public class UserController {
         final SymuResponse userEntityList =userService.getAllByUserRoleCode(roleCode);
         return ResponseEntity.ok(userEntityList);
     }
-    @GetMapping(path = "/getAllByUserBrnCode",
+    @GetMapping(path = "/getAllByUserBranchCode",
             produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<SymuResponse> getAllByUserBrnCode(
+    public ResponseEntity<SymuResponse> getAllByUserBranchCode(
             @RequestParam("brnCode")int brnCode
     ) {
         final SymuResponse userEntityList =userService.getAllByUserBrnCode(brnCode);
