@@ -104,7 +104,7 @@ public class StockServiceImpl implements StockService {
          stockEntity.setStockUpdatedBy(stockPriceDto.getUserCode());
          stockEntity.setStockProfit(stockPriceDto.getSellingPrice()-stockPriceDto.getBuyingPrice());
          stockEntity.setStockUpdatedOn(timestamp);
-         stockEntity.setStockStatusCode(1);
+         stockEntity.setStockStatusCode(stockPriceDto.getStatusCode());
          StockEntity saved=stockEntityRepo.save(stockEntity);
          if (saved.getStockBuyingPrice()>0){
              symuResponse.setStatusCode("0");
