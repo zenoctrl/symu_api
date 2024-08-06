@@ -1,6 +1,7 @@
 package com.example.symu_api.STOCK.Controller;
 
 import com.example.symu_api.COMMON.Model.SymuResponse;
+import com.example.symu_api.STOCK.Dto.StockPriceDto;
 import com.example.symu_api.STOCK.Entity.StockEntity;
 import com.example.symu_api.STOCK.Service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,9 @@ public class StockController {
     ) {
         final SymuResponse stockEntity =stockService.getStockByBranchAndStatus(branchCode, statusCode);
         return ResponseEntity.ok(stockEntity);
+    }
+    @PostMapping("/updateStockPrice")
+    public SymuResponse updateStockBuyingPrice(@RequestBody StockPriceDto stockPriceDto) {
+        return stockService.updateStockPrice(stockPriceDto);
     }
 }
