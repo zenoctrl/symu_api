@@ -1,6 +1,7 @@
 package com.example.symu_api.STOCK.Service;
 
 import com.example.symu_api.COMMON.Model.SymuResponse;
+import com.example.symu_api.STOCK.Dto.StockPostSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPriceDto;
 import com.example.symu_api.STOCK.Entity.StockEntity;
 
@@ -11,4 +12,6 @@ public interface StockService {
     SymuResponse getStockEntityByStockCode(int stockCode);
     SymuResponse getStockByBranchAndStatus(int brnCode,int stockStatusCode);
     SymuResponse updateStockPrice(StockPriceDto stockPriceDto);
+
+    SymuResponse stockPostSale(StockPostSaleDto stockPostSaleDto);
 }

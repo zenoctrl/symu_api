@@ -44,6 +44,8 @@ public class StockEntity {
     private String stockBaseCurrency;
     @Column(name = "STOCK_DEFAULTED")
     private String stockDefaulted;
+    @Column(name = "STOCK_CUSTOMER_CODE")
+    private Integer stockCustomerCode;
     @Column(name = "STOCK_CREATED_ON")
     private LocalDateTime stockCreatedOn;
     @Column(name = "STOCK_UPDATED_ON")

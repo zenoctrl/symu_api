@@ -1,6 +1,7 @@
 package com.example.symu_api.STOCK.Controller;
 
 import com.example.symu_api.COMMON.Model.SymuResponse;
+import com.example.symu_api.STOCK.Dto.StockPostSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPriceDto;
 import com.example.symu_api.STOCK.Entity.StockEntity;
 import com.example.symu_api.STOCK.Service.StockService;
@@ -41,5 +42,9 @@ public class StockController {
     @PostMapping("/updateStockPrice")
     public SymuResponse updateStockBuyingPrice(@RequestBody StockPriceDto stockPriceDto) {
         return stockService.updateStockPrice(stockPriceDto);
+    }
+    @PostMapping("/stockPostSale")
+    public SymuResponse stockPostSale(@RequestBody StockPostSaleDto stockPostSaleDto) {
+        return stockService.stockPostSale(stockPostSaleDto);
     }
 }
