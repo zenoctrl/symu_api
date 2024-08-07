@@ -1,6 +1,9 @@
 package com.example.symu_api.STOCK.Service;
 
 import com.example.symu_api.COMMON.Model.SymuResponse;
+import com.example.symu_api.CUSTOMER.Entity.CustomerEntity;
+import com.example.symu_api.CUSTOMER.Repository.CustomerRepository;
+import com.example.symu_api.STOCK.Dto.StockPostSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPriceDto;
 import com.example.symu_api.STOCK.Entity.StockEntity;
 import com.example.symu_api.STOCK.Repository.StockEntityRepo;
@@ -15,6 +18,8 @@ import java.util.List;
 public class StockServiceImpl implements StockService {
     @Autowired
     private StockEntityRepo stockEntityRepo;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Override
     public SymuResponse createOrUpdateStock(StockEntity stock) {
@@ -97,25 +102,67 @@ public class StockServiceImpl implements StockService {
     public SymuResponse updateStockPrice(StockPriceDto stockPriceDto) {
         LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
         SymuResponse symuResponse = new SymuResponse();
-     try {
-         StockEntity stockEntity=stockEntityRepo.getStockEntitiesByCode(stockPriceDto.getStockCode());
-         stockEntity.setStockBuyingPrice(stockPriceDto.getBuyingPrice());
-         stockEntity.setStockSellingPrice(stockPriceDto.getSellingPrice());
-         stockEntity.setStockUpdatedBy(stockPriceDto.getUserCode());
-         stockEntity.setStockProfit(stockPriceDto.getSellingPrice()-stockPriceDto.getBuyingPrice());
-         stockEntity.setStockUpdatedOn(timestamp);
-         stockEntity.setStockStatusCode(stockPriceDto.getStatusCode());
-         StockEntity saved=stockEntityRepo.save(stockEntity);
-         if (saved.getStockBuyingPrice()>0){
-             symuResponse.setStatusCode("0");
-             symuResponse.setMessage("success");
-             symuResponse.setData("Stock buying price updated successfully");
-         }
-     }catch (Exception e) {
-         symuResponse.setStatusCode("1");
-         symuResponse.setMessage("Failed");
-         symuResponse.setData("Stock failed to update");
-     }
+        try {
+            StockEntity stockEntity = stockEntityRepo.getStockEntitiesByCode(stockPriceDto.getStockCode());
+            stockEntity.setStockBuyingPrice(stockPriceDto.getBuyingPrice());
+            stockEntity.setStockSellingPrice(stockPriceDto.getSellingPrice());
+            stockEntity.setStockUpdatedBy(stockPriceDto.getUserCode());
+            stockEntity.setStockProfit(stockPriceDto.getSellingPrice() - stockPriceDto.getBuyingPrice());
+            stockEntity.setStockUpdatedOn(timestamp);
+            stockEntity.setStockStatusCode(stockPriceDto.getStatusCode());
+            //stockEntity.setStockCustomerCode(0);
+            StockEntity saved = stockEntityRepo.save(stockEntity);
+            if (saved.getStockBuyingPrice() > 0) {
+                symuResponse.setStatusCode("0");
+                symuResponse.setMessage("success");
+                symuResponse.setData("Stock buying price updated successfully");
+            }
+        } catch (Exception e) {
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("Failed");
+            symuResponse.setData(e.getMessage());
+        }
+        return symuResponse;
+    }
+
+    @Override
+    public SymuResponse stockPostSale(StockPostSaleDto stockPostSaleDto) {
+        SymuResponse symuResponse=new SymuResponse<>();
+      try{
+          CustomerEntity customerEntity = new CustomerEntity();
+          StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockPostSaleDto.getStockCode());
+          try {
+              CustomerEntity customerEntityData = customerRepository.getCustomerEntitiesByCustomerNationalId(
+                      stockPostSaleDto.getCustomerNationalId());
+              customerEntity.setCustomerCode(customerEntityData.getCustomerCode());
+          } catch (Exception e) {
+              // new cutomer
+          }
+          customerEntity.setCustomerCompanyCode(stockEntityData.getStockCompanyCode());
+          customerEntity.setCustomerCountryCode(stockEntityData.getStockCountryCode());
+          customerEntity.setCustomerRegionCode(stockEntityData.getStockRegionCode());
+          customerEntity.setCustomerBranchCode(stockEntityData.getStockBranchCode());
+          customerEntity.setCustomerName(stockPostSaleDto.getCustomerName());
+          customerEntity.setCustomerPhoneNumber(stockPostSaleDto.getCustomerPhoneNumber());
+          customerEntity.setCustomerNationalId(stockPostSaleDto.getCustomerNationalId());
+          CustomerEntity customerEntitysaved = customerRepository.save(customerEntity);
+          int customerCode = customerEntitysaved.getCustomerCode();
+
+          //post sale
+          stockEntityData.setStockStatusCode(stockPostSaleDto.getNextStatusCode());
+          stockEntityData.setStockUpdatedBy(stockPostSaleDto.getUserCode());
+          stockEntityData.setStockTradeName(stockPostSaleDto.getTradingName());
+          stockEntityData.setStockCustomerCode(customerCode);
+          StockEntity saved = stockEntityRepo.save(stockEntityData);
+
+          symuResponse.setStatusCode("0");
+          symuResponse.setMessage("success");
+          symuResponse.setData(saved);
+      }catch (Exception e){
+          symuResponse.setStatusCode("1");
+          symuResponse.setMessage("Failed");
+          symuResponse.setData(e.getMessage());
+      }
         return symuResponse;
     }
 }
