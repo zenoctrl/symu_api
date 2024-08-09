@@ -1,8 +1,11 @@
 package com.example.symu_api.STOCK.Service;
 
+import com.example.symu_api.AGENTS.Entity.AgentsEntity;
+import com.example.symu_api.AGENTS.Repository.AgentsEntityRepo;
 import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.CUSTOMER.Entity.CustomerEntity;
 import com.example.symu_api.CUSTOMER.Repository.CustomerRepository;
+import com.example.symu_api.STOCK.Dto.StockCloseSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPostSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPriceDto;
 import com.example.symu_api.STOCK.Entity.StockEntity;
@@ -20,6 +23,8 @@ public class StockServiceImpl implements StockService {
     private StockEntityRepo stockEntityRepo;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private AgentsEntityRepo agentsEntityRepo;
 
     @Override
     public SymuResponse createOrUpdateStock(StockEntity stock) {
@@ -99,6 +104,22 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public SymuResponse getStockEntitiesByStockCompanyCode(int companyCode) {
+        SymuResponse symuResponse = new SymuResponse();
+        try {
+            List<StockEntity> stockEntityList = stockEntityRepo.getStockEntitiesByStockCompanyCode(companyCode);
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("success");
+            symuResponse.setData(stockEntityList);
+        } catch (Exception e) {
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("Error occurred while fetching stock");
+            symuResponse.setData(e.getMessage());
+        }
+        return symuResponse;
+    }
+
+    @Override
     public SymuResponse updateStockPrice(StockPriceDto stockPriceDto) {
         LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
         SymuResponse symuResponse = new SymuResponse();
@@ -128,6 +149,7 @@ public class StockServiceImpl implements StockService {
     @Override
     public SymuResponse stockPostSale(StockPostSaleDto stockPostSaleDto) {
         SymuResponse symuResponse=new SymuResponse<>();
+        // create or update customer
       try{
           CustomerEntity customerEntity = new CustomerEntity();
           StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockPostSaleDto.getStockCode());
@@ -163,6 +185,47 @@ public class StockServiceImpl implements StockService {
           symuResponse.setMessage("Failed");
           symuResponse.setData(e.getMessage());
       }
+        return symuResponse;
+    }
+
+    @Override
+    public SymuResponse stockCloseSale(StockCloseSaleDto stockCloseSaleDto) {
+        SymuResponse symuResponse=new SymuResponse();
+        // create or update agent
+       try{
+           AgentsEntity agentsEntity = new AgentsEntity();
+           StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockCloseSaleDto.getStockCode());
+           try {
+               AgentsEntity agentsEntityData=agentsEntityRepo.getAgentsEntitiesByAgentNationalId(
+                       stockCloseSaleDto.getAgentNationalId());
+               agentsEntity.setAgentCode(agentsEntityData.getAgentCode());
+           }catch (Exception e){
+               //new agent
+           }
+           agentsEntity.setAgentCompanyCode(stockEntityData.getStockCompanyCode());
+           agentsEntity.setAgentCountryCode(stockEntityData.getStockCountryCode());
+           agentsEntity.setAgentRegionCode(stockEntityData.getStockRegionCode());
+           agentsEntity.setAgentBranchCode(stockEntityData.getStockBranchCode());
+           agentsEntity.setAgentName(stockCloseSaleDto.getAgentName());
+           agentsEntity.setAgentPhoneNumber(stockCloseSaleDto.getAgentPhoneNumber());
+           agentsEntity.setAgentNationalId(stockCloseSaleDto.getAgentNationalId());
+           AgentsEntity agentsEntitySaved=agentsEntityRepo.save(agentsEntity);
+           int agentCode=agentsEntitySaved.getAgentCode();
+
+           // close sale
+           stockEntityData.setStockStatusCode(stockCloseSaleDto.getNextStatusCode());
+           stockEntityData.setStockUpdatedBy(stockCloseSaleDto.getUserCode());
+           stockEntityData.setStockAgnCode(agentCode);
+           StockEntity saved = stockEntityRepo.save(stockEntityData);
+
+           symuResponse.setStatusCode("0");
+           symuResponse.setMessage("success");
+           symuResponse.setData(saved);
+       }catch (Exception e){
+           symuResponse.setStatusCode("1");
+           symuResponse.setMessage("Failed");
+           symuResponse.setData(e.getMessage());
+       }
         return symuResponse;
     }
 }
