@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface UserService {
     SymuResponse createOrUpdateUser(UserEntity userDao);
+
     SymuResponse getAllByCode(int code) ;
 
     SymuResponse getAllById(int idNo);
@@ -15,6 +16,8 @@ public interface UserService {
     SymuResponse getAllByUserRoleCode(int roleCode);
 
     SymuResponse getAllByUserBrnCode(int brnCode);
+
+    SymuResponse getUserModelByUserCompanyCode(int companyCode);
 
     SymuResponse getAllByUserIdAndUserPassword(int idNo, String password);
 }
