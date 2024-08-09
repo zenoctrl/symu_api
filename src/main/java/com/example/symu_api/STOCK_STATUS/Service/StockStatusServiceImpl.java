@@ -21,7 +21,7 @@ public class StockStatusServiceImpl implements StockStatusService {
       try{
           try{
               StockStatusEntity stockStatusEntityData=stockStatusRepository.getStockStatusEntitiesByStatusCode(
-                      stockStatusEntity.getStatusCode());
+                      stockStatus.getStatusCode());
               stockStatusEntity.setStatusCode(stockStatusEntityData.getStatusCode());
           }catch (Exception e){
               //new status

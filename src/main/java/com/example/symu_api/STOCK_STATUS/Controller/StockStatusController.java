@@ -16,10 +16,10 @@ public class StockStatusController {
     @Autowired
     private StockStatusService stockStatusService;
 
-    @PostMapping("/creatOrUpdateStockStatus")
+ /*   @PostMapping("/creatOrUpdateStockStatus")
     public SymuResponse creatOrUpdateStockStatus(@RequestBody StockStatusEntity stockStatusEntity) {
         return stockStatusService.creatOrUpdateStockStatus(stockStatusEntity);
-    }
+    }*/
     @GetMapping(path = "/getAllStockStatus",
             produces = {"application/json; charset=UTF-8"})
     public ResponseEntity<SymuResponse> getAllStockStatus(

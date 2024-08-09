@@ -1,6 +1,7 @@
 package com.example.symu_api.STOCK.Controller;
 
 import com.example.symu_api.COMMON.Model.SymuResponse;
+import com.example.symu_api.STOCK.Dto.StockCloseSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPostSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPriceDto;
 import com.example.symu_api.STOCK.Entity.StockEntity;
@@ -39,6 +40,14 @@ public class StockController {
         final SymuResponse stockEntity =stockService.getStockByBranchAndStatus(branchCode, statusCode);
         return ResponseEntity.ok(stockEntity);
     }
+    @GetMapping(path = "/getAllStock",
+            produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<SymuResponse> getAllStock(
+            @RequestParam("companyCode")int companyCode
+    ) {
+        final SymuResponse stockEntity =stockService.getStockEntitiesByStockCompanyCode(companyCode);
+        return ResponseEntity.ok(stockEntity);
+    }
     @PostMapping("/updateStockPrice")
     public SymuResponse updateStockBuyingPrice(@RequestBody StockPriceDto stockPriceDto) {
         return stockService.updateStockPrice(stockPriceDto);
@@ -46,5 +55,9 @@ public class StockController {
     @PostMapping("/stockPostSale")
     public SymuResponse stockPostSale(@RequestBody StockPostSaleDto stockPostSaleDto) {
         return stockService.stockPostSale(stockPostSaleDto);
+    }
+    @PostMapping("/stockCloseSale")
+    public SymuResponse stockCloseSale(@RequestBody StockCloseSaleDto stockPostSaleDto) {
+        return stockService.stockCloseSale(stockPostSaleDto);
     }
 }
