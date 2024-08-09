@@ -19,11 +19,8 @@ public class CountryServiceImpl implements CountryService{
         CountryEntity countryEntity=new CountryEntity();
        try{
            try {
-               CountryEntity countryEntityData=countryRepository.getCountryEntitiesByCode(countryEntity.getCode());
+               CountryEntity countryEntityData=countryRepository.getCountryEntitiesByCode(country.getCode());
                countryEntity.setCode(countryEntityData.getCode());
-               if(countryEntityData!=null) {
-                   countryEntityData.setCode(countryEntity.getCode());
-               }
            }catch(Exception e) {
                //  e.printStackTrace();
            }

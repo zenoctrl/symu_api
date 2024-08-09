@@ -14,5 +14,7 @@ public interface UserModelRepo extends JpaRepository<UserModel,Integer> {
 
     List<UserModel> getAllByUserBrnCode(int brnCode);
 
-    UserModel getAllByUserIdAndUserPassword(int idNo,String password);
+    List<UserModel> getUserModelByUserCompanyCode(int companyCode);
+
+    UserModel getAllByUserIdAndUserPasswordAndUserStatus(int idNo,String password,String status);
 }

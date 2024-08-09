@@ -40,7 +40,7 @@ public class BranchServiceImpl implements BranchService {
             branchEntity.setShortDesc(branchEntityDAO.getShortDesc());
             branchEntity.setName(branchEntityDAO.getName());
             branchEntity.setDesc(branchEntityDAO.getDesc());
-            branchEntity.setStatus("A");
+            branchEntity.setStatus(branchEntityDAO.getStatus());
             BranchEntity saved = branchRepository.save(branchEntity);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");

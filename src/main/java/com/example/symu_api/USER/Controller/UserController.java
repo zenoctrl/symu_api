@@ -32,9 +32,9 @@ public class UserController {
     @GetMapping(path = "/getAllById",
             produces = {"application/json; charset=UTF-8"})
     public ResponseEntity<SymuResponse> getAllById(
-            @RequestParam("userCode")int userCode
+            @RequestParam("nationalIdNumber")int nationalIdNumber
     ) {
-        final SymuResponse userEntity =userService.getAllById(userCode);
+        final SymuResponse userEntity =userService.getAllById(nationalIdNumber);
         return ResponseEntity.ok(userEntity);
     }
     @GetMapping(path = "/getAllByUserRoleCode",
@@ -61,5 +61,13 @@ public class UserController {
     ) {
         final SymuResponse user=userService.getAllByUserIdAndUserPassword(userId,password);
         return ResponseEntity.ok(user);
+    }
+    @GetMapping(path = "/getAllUsers",
+            produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<SymuResponse> getAllUsers(
+            @RequestParam("companyCode")int companyCode
+    ) {
+        final SymuResponse userEntityList =userService.getUserModelByUserCompanyCode(companyCode);
+        return ResponseEntity.ok(userEntityList);
     }
 }

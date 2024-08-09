@@ -36,6 +36,8 @@ public class UserModel {
     private Integer userBrnCode;
     @Column(name = "USER_COUNTRY_CODE")
     private Integer userCountryCode;
+    @Column(name = "USER_STATUS")
+    private String userStatus;
 
     @ManyToOne
     @JoinColumn(name = "USER_COUNTRY_CODE",insertable = false,updatable = false)
