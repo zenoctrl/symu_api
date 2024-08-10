@@ -59,6 +59,7 @@ public class StockServiceImpl implements StockService {
             stockEntity.setStockBaseCurrency(stock.getStockBaseCurrency());
             stockEntity.setStockSoldBy(stock.getStockSoldBy());
             stockEntity.setStockTradeName(stock.getStockTradeName());
+            stockEntity.setStockDealerCode(stock.getStockDealerCode());
             StockEntity stockEntity1 = stockEntityRepo.save(stockEntity);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
