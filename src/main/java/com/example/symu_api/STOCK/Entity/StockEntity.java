@@ -58,4 +58,6 @@ public class StockEntity {
     private String stockSoldBy;
     @Column(name = "STOCK_TRADE_NAME")
     private String stockTradeName;
+    @Column(name = "STOCK_DEALER_CODE")
+    private String stockDealerCode;
 }
