@@ -5,6 +5,8 @@ import com.example.symu_api.AGENTS.Repository.AgentsEntityRepo;
 import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.CUSTOMER.Entity.CustomerEntity;
 import com.example.symu_api.CUSTOMER.Repository.CustomerRepository;
+import com.example.symu_api.RECEIPT.Entity.ReceiptEntity;
+import com.example.symu_api.RECEIPT.Repository.ReceiptRepository;
 import com.example.symu_api.STOCK.Dto.StockCloseSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPostSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPriceDto;
@@ -12,6 +14,8 @@ import com.example.symu_api.STOCK.Entity.StockEntity;
 import com.example.symu_api.STOCK.Model.StockEntityModel;
 import com.example.symu_api.STOCK.Repository.StockEntityModelRepo;
 import com.example.symu_api.STOCK.Repository.StockEntityRepo;
+import com.example.symu_api.USER.Entity.UserEntity;
+import com.example.symu_api.USER.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +33,10 @@ public class StockServiceImpl implements StockService {
     private CustomerRepository customerRepository;
     @Autowired
     private AgentsEntityRepo agentsEntityRepo;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ReceiptRepository receiptRepository;
 
     @Override
     public SymuResponse createOrUpdateStock(StockEntity stock) {
@@ -156,11 +164,13 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public SymuResponse stockPostSale(StockPostSaleDto stockPostSaleDto) {
+        LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
         SymuResponse symuResponse=new SymuResponse<>();
         // create or update customer
       try{
           CustomerEntity customerEntity = new CustomerEntity();
           StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockPostSaleDto.getStockCode());
+          UserEntity userEntity=userRepository.getAllByCode(stockPostSaleDto.getUserCode());
           try {
               CustomerEntity customerEntityData = customerRepository.getCustomerEntitiesByCustomerNationalId(
                       stockPostSaleDto.getCustomerNationalId());
@@ -184,6 +194,31 @@ public class StockServiceImpl implements StockService {
           stockEntityData.setStockTradeName(stockPostSaleDto.getTradingName());
           stockEntityData.setStockCustomerCode(customerCode);
           StockEntity saved = stockEntityRepo.save(stockEntityData);
+
+          //post Receipt
+          ReceiptEntity receiptEntity = new ReceiptEntity();
+          receiptEntity.setReceiptCompanyCode(stockEntityData.getStockCompanyCode());
+          receiptEntity.setReceiptCountryCode(stockEntityData.getStockCountryCode());
+          receiptEntity.setReceiptRegionCode(stockEntityData.getStockRegionCode());
+          receiptEntity.setReceiptBranchCode(stockEntityData.getStockBranchCode());
+          receiptEntity.setReceiptNo("");
+          receiptEntity.setReceiptCreatedOn(timestamp);
+          receiptEntity.setReceiptCreatedBy(userEntity.getUserFirstName()+" "+userEntity.getUserLastName());
+          receiptEntity.setReceiptUpdatedOn(timestamp);
+          receiptEntity.setReceiptCustomerIdNo(customerEntitysaved.getCustomerNationalId());
+          receiptEntity.setReceiptCustomerPhoneNo(customerEntitysaved.getCustomerPhoneNumber());
+          receiptEntity.setReceiptCustomerName(customerEntitysaved.getCustomerName());
+          receiptEntity.setReceiptStockCode(stockPostSaleDto.getStockCode());
+          receiptEntity.setReceiStockImei(stockEntityData.getStockImei());
+          receiptEntity.setReceiStockQuantity(1);
+          receiptEntity.setReceiptAmount(stockEntityData.getStockSellingPrice());
+          receiptEntity.setReceiptModel(stockEntityData.getStockMemory());
+          receiptEntity.setReceiptStatus("POSTED");
+          receiptEntity.setReceiptDealership(stockPostSaleDto.getTradingName());
+          ReceiptEntity rctSaved=receiptRepository.save(receiptEntity);
+          if (rctSaved !=null){
+              //saved
+          }
 
           symuResponse.setStatusCode("0");
           symuResponse.setMessage("success");
