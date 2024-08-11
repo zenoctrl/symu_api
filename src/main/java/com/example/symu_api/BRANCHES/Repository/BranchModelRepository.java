@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface BranchModelRepository extends CrudRepository<BranchModel,Integer> {
 
-    List<BranchModel> findAllByCompanyCodeAndStatus(int compCode, String status);
+    List<BranchModel> findAllByCompanyCode(int compCode);
 
     BranchModel findAllByCompanyCodeAndCode(int compCode, int brchCode);
 

@@ -57,7 +57,7 @@ public class BranchServiceImpl implements BranchService {
     public SymuResponse getAllBranches(int companyCode) {
         SymuResponse symuResponse = new SymuResponse<>();
         try {
-            List<BranchModel> branchEntityList = branchModelRepository.findAllByCompanyCodeAndStatus(companyCode, "A");
+            List<BranchModel> branchEntityList = branchModelRepository.findAllByCompanyCode(companyCode);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
             symuResponse.setData(branchEntityList);
