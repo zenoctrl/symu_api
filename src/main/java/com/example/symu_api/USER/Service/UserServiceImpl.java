@@ -120,9 +120,17 @@ public class UserServiceImpl implements UserService{
         try{
             UserModel userEntity=userModelRepo.getAllByUserIdAndUserPasswordAndUserStatus(
                     idNo,password,"ACTIVE");
-            symuResponse.setStatusCode("0");
-            symuResponse.setMessage("Success");
-            symuResponse.setData(userEntity);
+            System.out.println("userEntity==="+userEntity);
+            if(userEntity==null){
+                symuResponse.setStatusCode("1");
+                symuResponse.setMessage("failed");
+                symuResponse.setData("Wrong username or password");
+            }else {
+                symuResponse.setStatusCode("0");
+                symuResponse.setMessage("Success");
+                symuResponse.setData(userEntity);
+            }
+
         }catch (Exception e){
             symuResponse.setStatusCode("1");
             symuResponse.setMessage("failed");

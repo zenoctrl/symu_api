@@ -9,4 +9,5 @@ public interface DealershipService {
     SymuResponse createOrUpdateDealership(DealershipEntity dealership);
     SymuResponse getDealershipEntitiesByDealerCode(int dealerCode);
     SymuResponse getDealershipEntitiesByCountryCode(int countryCode,int companyCode);
+    SymuResponse getAllByCompanyCode(int companyCode);
 }

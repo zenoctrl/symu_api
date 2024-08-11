@@ -8,4 +8,5 @@ import java.util.List;
 public interface DealershipRepo extends JpaRepository<DealershipEntity,Long> {
     DealershipEntity getDealershipEntitiesByDealerCode(int dealerCode);
     List<DealershipEntity> getDealershipEntitiesByDealerCountryCodeAndDealerCompanyCode(int dealerCountryCode, int dealerCompanyCode);
+    List<DealershipEntity> getAllByDealerCompanyCode(int companyCode);
 }

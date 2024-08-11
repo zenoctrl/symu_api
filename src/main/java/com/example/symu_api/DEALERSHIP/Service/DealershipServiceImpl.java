@@ -61,4 +61,20 @@ public class DealershipServiceImpl implements DealershipService {
         }
         return symuResponse;
     }
+
+    @Override
+    public SymuResponse getAllByCompanyCode(int companyCode) {
+        SymuResponse symuResponse=new SymuResponse<>();
+        try {
+            List<DealershipEntity> dealershipEntityList=dealershipRepo.getAllByDealerCompanyCode(companyCode);
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("Success");
+            symuResponse.setData(dealershipEntityList);
+        }catch (Exception e){
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("failed");
+            symuResponse.setData(e.getMessage());
+        }
+        return symuResponse;
+    }
 }
