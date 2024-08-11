@@ -9,6 +9,8 @@ import com.example.symu_api.STOCK.Dto.StockCloseSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPostSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPriceDto;
 import com.example.symu_api.STOCK.Entity.StockEntity;
+import com.example.symu_api.STOCK.Model.StockEntityModel;
+import com.example.symu_api.STOCK.Repository.StockEntityModelRepo;
 import com.example.symu_api.STOCK.Repository.StockEntityRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ import java.util.List;
 public class StockServiceImpl implements StockService {
     @Autowired
     private StockEntityRepo stockEntityRepo;
+    @Autowired
+    private StockEntityModelRepo stockEntityModelRepo;
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
@@ -76,7 +80,7 @@ public class StockServiceImpl implements StockService {
     public SymuResponse getStockEntityByStockCode(int stockCode) {
         SymuResponse symuResponse = new SymuResponse();
         try {
-            StockEntity stockEntity = stockEntityRepo.getStockEntitiesByCode(stockCode);
+            StockEntityModel stockEntity = stockEntityModelRepo.getStockEntitiesByCode(stockCode);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
             symuResponse.setData(stockEntity);
@@ -92,7 +96,7 @@ public class StockServiceImpl implements StockService {
     public SymuResponse getStockByBranchAndStatus(int brnCode, int stockStatusCode) {
         SymuResponse symuResponse = new SymuResponse();
         try {
-            List<StockEntity> stockEntityList = stockEntityRepo.getStockEntitiesByStockBranchCodeAndStockStatusCode(brnCode, stockStatusCode);
+            List<StockEntityModel> stockEntityList = stockEntityModelRepo.getStockEntitiesByStockBranchCodeAndStockStatusCode(brnCode, stockStatusCode);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
             symuResponse.setData(stockEntityList);
@@ -108,7 +112,7 @@ public class StockServiceImpl implements StockService {
     public SymuResponse getStockEntitiesByStockCompanyCode(int companyCode) {
         SymuResponse symuResponse = new SymuResponse();
         try {
-            List<StockEntity> stockEntityList = stockEntityRepo.getStockEntitiesByStockCompanyCode(companyCode);
+            List<StockEntityModel> stockEntityList = stockEntityModelRepo.getStockEntitiesByStockCompanyCode(companyCode);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
             symuResponse.setData(stockEntityList);

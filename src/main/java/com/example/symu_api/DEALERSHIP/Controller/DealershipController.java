@@ -36,4 +36,12 @@ private DealershipService dealershipService;
         final SymuResponse dealership=dealershipService.getDealershipEntitiesByCountryCode(countryCode,companyCode);
         return ResponseEntity.ok(dealership);
     }
+    @GetMapping(path = "/getAllByCompanyCode",
+            produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<SymuResponse> getAllByCompanyCode(
+            @RequestParam("companyCode")int companyCode
+    ) {
+        final SymuResponse dealership=dealershipService.getAllByCompanyCode(companyCode);
+        return ResponseEntity.ok(dealership);
+    }
 }

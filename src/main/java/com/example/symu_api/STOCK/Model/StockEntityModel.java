@@ -1,15 +1,16 @@
-package com.example.symu_api.STOCK.Entity;
+package com.example.symu_api.STOCK.Model;
 
+import com.example.symu_api.COUNTRY.Entity.CountryEntity;
+import com.example.symu_api.STOCK_STATUS.entity.StockStatusEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
-
 @Entity
 @Table(name = "stock")
 @Data
-public class StockEntity {
+public class StockEntityModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "STOCK_CODE")
@@ -59,5 +60,9 @@ public class StockEntity {
     @Column(name = "STOCK_TRADE_NAME")
     private String stockTradeName;
     @Column(name = "STOCK_DEALER_CODE")
-    private Integer stockDealerCode;
+    private String stockDealerCode;
+
+    @ManyToOne
+    @JoinColumn(name = "STOCK_STATUS_CODE",insertable = false,updatable = false)
+    private StockStatusEntity stockStatusEntity;
 }
