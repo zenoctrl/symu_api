@@ -41,6 +41,9 @@ public class StockServiceImpl implements StockService {
                 stockEntity.setCode(stockEntityData.getCode());
                 stockEntity.setStockUpdatedOn(timestamp);
                 stockEntity.setStockUpdatedBy(stock.getStockUpdatedBy());
+                stockEntity.setStockStatusCode(stock.getStockStatusCode());
+                stockEntity.setStockCreatedOn(stockEntityData.getStockCreatedOn());
+                stockEntity.setStockCreatedBy(stockEntityData.getStockCreatedBy());
             } catch (Exception e) {
                 // new stock
                 stockEntity.setStockCreatedOn(timestamp);
