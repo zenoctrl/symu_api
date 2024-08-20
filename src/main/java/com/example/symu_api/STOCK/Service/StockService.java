@@ -22,4 +22,6 @@ public interface StockService {
     SymuResponse stockPostSale(StockPostSaleDto stockPostSaleDto);
 
     SymuResponse stockCloseSale(StockCloseSaleDto stockCloseSaleDto);
+
+    SymuResponse getAllStockDetails(int companyCode);
 }

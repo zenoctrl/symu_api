@@ -3,6 +3,7 @@ package com.example.symu_api.STOCK.Service;
 import com.example.symu_api.AGENTS.Entity.AgentsEntity;
 import com.example.symu_api.AGENTS.Repository.AgentsEntityRepo;
 import com.example.symu_api.COMMON.Model.SymuResponse;
+import com.example.symu_api.COMMON.Service.DBUtils;
 import com.example.symu_api.CUSTOMER.Entity.CustomerEntity;
 import com.example.symu_api.CUSTOMER.Repository.CustomerRepository;
 import com.example.symu_api.RECEIPT.Entity.ReceiptEntity;
@@ -11,6 +12,7 @@ import com.example.symu_api.STOCK.Dto.StockCloseSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPostSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPriceDto;
 import com.example.symu_api.STOCK.Entity.StockEntity;
+import com.example.symu_api.STOCK.Model.StockDetailsRes;
 import com.example.symu_api.STOCK.Model.StockEntityModel;
 import com.example.symu_api.STOCK.Repository.StockEntityModelRepo;
 import com.example.symu_api.STOCK.Repository.StockEntityRepo;
@@ -19,8 +21,14 @@ import com.example.symu_api.USER.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,6 +45,8 @@ public class StockServiceImpl implements StockService {
     private UserRepository userRepository;
     @Autowired
     private ReceiptRepository receiptRepository;
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     public SymuResponse createOrUpdateStock(StockEntity stock) {
@@ -269,6 +279,57 @@ public class StockServiceImpl implements StockService {
            symuResponse.setMessage("Failed");
            symuResponse.setData(e.getMessage());
        }
+        return symuResponse;
+    }
+
+    public SymuResponse getAllStockDetails(int companyCode) {
+        SymuResponse symuResponse = new SymuResponse();
+        Connection conn = null;
+        CallableStatement cst = null;
+        String sql = "SELECT stock_imei,stock_selling_price,stock_defaulted,\n" +
+                "       model_name,\n" +
+                "       customer_name,\n" +
+                "       agent_name,\n" +
+                "       brn_name,\n" +
+                "       dealer_name\n" +
+                "FROM stock,stock_model,customer,agents,branches,dealership\n" +
+                "WHERE stock_model_code=model_code\n" +
+                "  and stock_customer_code=customer_code\n" +
+                "  and stock_agn_code=agent_code\n" +
+                "  and stock_brn_code=BRN_CODE\n" +
+                "  and stock_dealer_code=dealer_code\n" +
+                "  AND stock_comp_code=1";
+        try {
+            conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            List<StockDetailsRes> stockDetailsResList = new ArrayList<StockDetailsRes>();
+            while(rs.next()) {
+                StockDetailsRes stockDetailsRes = new StockDetailsRes();
+                stockDetailsRes.setStockImei(rs.getString("stock_imei"));
+                stockDetailsRes.setStockSellingPrice(rs.getDouble("stock_selling_price"));
+                stockDetailsRes.setStockDefaulted(rs.getString("stock_defaulted"));
+                stockDetailsRes.setStockModelName(rs.getString("model_name"));
+                stockDetailsRes.setStockCustomerName(rs.getString("customer_name"));
+                stockDetailsRes.setStockAgentName(rs.getString("agent_name"));
+                stockDetailsRes.setStockBranchName(rs.getString("brn_name"));
+                stockDetailsRes.setStockDealerShipName(rs.getString("dealer_name"));
+                stockDetailsResList.add(stockDetailsRes);
+            }
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("success");
+            symuResponse.setData(stockDetailsResList);
+            DBUtils.CloseConnections(null, cst, conn);
+        } catch (Exception ex) {
+            DBUtils.CloseConnections(null, cst, conn);
+            ex.printStackTrace();
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("Failed");
+            symuResponse.setData(ex.getMessage());
+
+        } finally {
+            DBUtils.CloseConnections(null, cst, conn);
+        }
         return symuResponse;
     }
 }
