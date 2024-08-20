@@ -33,6 +33,8 @@ public class UserEntity {
     private Integer userBrnCode;
     @Column(name = "USER_COUNTRY_CODE")
     private Integer userCountryCode;
+    @Column(name = "USER_REGION_CODE")
+    private Integer userRegionCode;
     @Column(name = "USER_STATUS")
     private String userStatus;
 }

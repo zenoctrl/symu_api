@@ -58,4 +58,12 @@ public class StockController {
     public SymuResponse stockCloseSale(@RequestBody StockCloseSaleDto stockPostSaleDto) {
         return stockService.stockCloseSale(stockPostSaleDto);
     }
+    @GetMapping(path = "/getAllStockDetails",
+            produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<SymuResponse> getAllStockDetails(
+            @RequestParam("companyCode")int companyCode
+    ) {
+        final SymuResponse stockEntity =stockService.getAllStockDetails(companyCode);
+        return ResponseEntity.ok(stockEntity);
+    }
 }
