@@ -10,4 +10,6 @@ public interface StockBatchRepo extends JpaRepository<StockBatchEntity,Long> {
     StockBatchEntity getStockBatchEntitiesByCode(int code);
 
     List<StockBatchEntity> getStockBatchEntitiesByBatchStatus(String status);
+
+
 }

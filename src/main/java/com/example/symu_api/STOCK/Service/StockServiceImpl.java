@@ -16,6 +16,10 @@ import com.example.symu_api.STOCK.Model.StockDetailsRes;
 import com.example.symu_api.STOCK.Model.StockEntityModel;
 import com.example.symu_api.STOCK.Repository.StockEntityModelRepo;
 import com.example.symu_api.STOCK.Repository.StockEntityRepo;
+import com.example.symu_api.STOCK_BATCH.Entity.StockBatchEntity;
+import com.example.symu_api.STOCK_BATCH.Repository.StockBatchRepo;
+import com.example.symu_api.STOCK_MODEL.Entity.StockModelEntity;
+import com.example.symu_api.STOCK_MODEL.Repository.StockModelRepo;
 import com.example.symu_api.USER.Entity.UserEntity;
 import com.example.symu_api.USER.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +51,10 @@ public class StockServiceImpl implements StockService {
     private ReceiptRepository receiptRepository;
     @Autowired
     private DataSource dataSource;
+    @Autowired
+    private StockModelRepo stockModelRepo;
+    @Autowired
+    private StockBatchRepo stockBatchRepo;
 
     @Override
     public SymuResponse createOrUpdateStock(StockEntity stock) {
@@ -68,6 +76,8 @@ public class StockServiceImpl implements StockService {
                 stockEntity.setStockCreatedBy(stock.getStockCreatedBy());
                 stockEntity.setStockStatusCode(stock.getStockStatusCode());
             }
+            StockModelEntity stockModelEntity=stockModelRepo.getStockModelEntitiesByCode(stock.getStockModelCode());
+            StockBatchEntity stockBatchEntity=stockBatchRepo.getStockBatchEntitiesByCode(stock.getStockBatchCode());
             stockEntity.setStockCompanyCode(stock.getStockCompanyCode());
             stockEntity.setStockCountryCode(stock.getStockCountryCode());
             stockEntity.setStockRegionCode(stock.getStockRegionCode());
@@ -77,18 +87,18 @@ public class StockServiceImpl implements StockService {
             stockEntity.setStockImei(stock.getStockImei());
             stockEntity.setStockModelCode(stock.getStockModelCode());
             stockEntity.setStockMemory(stock.getStockMemory());
-            stockEntity.setStockBuyingPrice(stock.getStockBuyingPrice());
-            stockEntity.setStockSellingPrice(stock.getStockSellingPrice());
-            stockEntity.setStockProfit(stock.getStockProfit());
+            stockEntity.setStockBuyingPrice(stockBatchEntity.getBatchBuyingPrice());
+            stockEntity.setStockSellingPrice(stockModelEntity.getModelSellingPrice());
+            stockEntity.setStockProfit(stockModelEntity.getModelSellingPrice()-stockBatchEntity.getBatchBuyingPrice());
             stockEntity.setStockDefaulted("N");
             stockEntity.setStockBaseCurrency(stock.getStockBaseCurrency());
             stockEntity.setStockSoldBy(stock.getStockSoldBy());
             stockEntity.setStockTradeName(stock.getStockTradeName());
             stockEntity.setStockDealerCode(stock.getStockDealerCode());
-            StockEntity stockEntity1 = stockEntityRepo.save(stockEntity);
+            StockEntity stockEntitySaved = stockEntityRepo.save(stockEntity);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
-            symuResponse.setData(stockEntity1);
+            symuResponse.setData(stockEntitySaved);
         } catch (Exception e) {
             symuResponse.setStatusCode("1");
             symuResponse.setMessage("failed");
@@ -270,7 +280,6 @@ public class StockServiceImpl implements StockService {
            stockEntityData.setStockUpdatedBy(stockCloseSaleDto.getUserCode());
            stockEntityData.setStockAgnCode(agentCode);
            StockEntity saved = stockEntityRepo.save(stockEntityData);
-
            symuResponse.setStatusCode("0");
            symuResponse.setMessage("success");
            symuResponse.setData(saved);
@@ -282,11 +291,31 @@ public class StockServiceImpl implements StockService {
         return symuResponse;
     }
 
+    @Override
+    public SymuResponse updateDefaultStatus(int stockCode,String defaultStatus) {
+        SymuResponse symuResponse=new SymuResponse();
+        try{
+            StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockCode);
+            stockEntityData.setStockDefaulted(defaultStatus);
+            StockEntity updated=stockEntityRepo.save(stockEntityData);
+            if (updated!=null){
+                symuResponse.setStatusCode("0");
+                symuResponse.setMessage("success");
+                symuResponse.setData("Default status updated");
+            }
+        }catch (Exception e){
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("Failed");
+            symuResponse.setData(e.getMessage());
+        }
+        return symuResponse;
+    }
+
     public SymuResponse getAllStockDetails(int companyCode) {
         SymuResponse symuResponse = new SymuResponse();
         Connection conn = null;
         CallableStatement cst = null;
-        String sql = "SELECT stock_imei,stock_selling_price,stock_defaulted,\n" +
+        String sql = "SELECT stock_code,stock_imei,stock_selling_price,stock_defaulted,\n" +
                 "       model_name,\n" +
                 "       customer_name,\n" +
                 "       agent_name,\n" +
@@ -298,6 +327,7 @@ public class StockServiceImpl implements StockService {
                 "  and stock_agn_code=agent_code\n" +
                 "  and stock_brn_code=BRN_CODE\n" +
                 "  and stock_dealer_code=dealer_code\n" +
+                "  and stock_status_code=4\n" +
                 "  AND stock_comp_code=1";
         try {
             conn = dataSource.getConnection();
@@ -306,6 +336,7 @@ public class StockServiceImpl implements StockService {
             List<StockDetailsRes> stockDetailsResList = new ArrayList<StockDetailsRes>();
             while(rs.next()) {
                 StockDetailsRes stockDetailsRes = new StockDetailsRes();
+                stockDetailsRes.setStockCode(rs.getInt("stock_code"));
                 stockDetailsRes.setStockImei(rs.getString("stock_imei"));
                 stockDetailsRes.setStockSellingPrice(rs.getDouble("stock_selling_price"));
                 stockDetailsRes.setStockDefaulted(rs.getString("stock_defaulted"));
