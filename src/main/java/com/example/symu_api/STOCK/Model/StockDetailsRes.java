@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class StockDetailsRes {
+    private int stockCode;
     private String stockImei;
     private double stockSellingPrice;
     private String stockDefaulted;

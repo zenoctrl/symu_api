@@ -66,4 +66,10 @@ public class StockController {
         final SymuResponse stockEntity =stockService.getAllStockDetails(companyCode);
         return ResponseEntity.ok(stockEntity);
     }
+    @GetMapping("/updateDefaultStatus")
+    public SymuResponse updateDefaultStatus(
+            @RequestParam("stockCode")int stockCode,
+            @RequestParam("defaultStatus")String defaultStatus) {
+        return stockService.updateDefaultStatus(stockCode,defaultStatus);
+    }
 }

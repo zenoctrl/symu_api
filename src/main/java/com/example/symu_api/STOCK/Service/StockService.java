@@ -24,4 +24,6 @@ public interface StockService {
     SymuResponse stockCloseSale(StockCloseSaleDto stockCloseSaleDto);
 
     SymuResponse getAllStockDetails(int companyCode);
+
+    SymuResponse updateDefaultStatus(int stockCode,String defaultStatus);
 }

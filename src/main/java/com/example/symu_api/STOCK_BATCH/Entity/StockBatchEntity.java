@@ -21,6 +21,10 @@ public class StockBatchEntity {
     private Integer stockBatchRegionCode;
     @Column(name = "STOCK_BRN_CODE")
     private Integer stockBranchCode;
+    @Column(name = "STOCK_MOEL_CODE")
+    private Integer stockModelCode;
+    @Column(name = "BATCH_NO")
+    private String batchNo;
     @Column(name = "BATCH_NAME")
     private String batchName;
     @Column(name = "BATCH_SHORT_DESC")
@@ -31,4 +35,6 @@ public class StockBatchEntity {
     private String batchStatus;
     @Column(name = "BATCH_DATE")
     private Date batchDate;
+    @Column(name = "BATCH_BUYING_PRICE")
+    private Double batchBuyingPrice;
 }

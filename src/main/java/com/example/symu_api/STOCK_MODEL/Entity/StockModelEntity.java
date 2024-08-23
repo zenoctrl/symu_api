@@ -27,4 +27,6 @@ public class StockModelEntity {
     private String modelDescription;
     @Column(name = "MODEL_STATUS")
     private String modelStatus;
+    @Column(name = "MODEL_SELLING_PRICE")
+    private Double modelSellingPrice;
 }
