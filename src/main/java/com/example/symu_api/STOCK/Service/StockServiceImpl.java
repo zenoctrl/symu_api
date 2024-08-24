@@ -348,18 +348,19 @@ public class StockServiceImpl implements StockService {
         SymuResponse symuResponse = new SymuResponse();
         Connection conn = null;
         CallableStatement cst = null;
-        String sql = "SELECT stock_code,stock_imei,stock_selling_price,stock_defaulted,\n" +
+        String sql = "SELECT stock_code,stock_imei,stock_selling_price,stock_defaulted,ctry_currency_code,\n" +
                 "       model_name,\n" +
                 "       customer_name,\n" +
                 "       agent_name,\n" +
                 "       brn_name,\n" +
                 "       dealer_name\n" +
-                "FROM stock,stock_model,customer,agents,branches,dealership\n" +
+                "FROM stock,stock_model,customer,agents,branches,dealership,countries\n" +
                 "WHERE stock_model_code=model_code\n" +
                 "  and stock_customer_code=customer_code\n" +
                 "  and stock_agn_code=agent_code\n" +
                 "  and stock_brn_code=BRN_CODE\n" +
                 "  and stock_dealer_code=dealer_code\n" +
+                "  and stock_country_code=ctry_code\n" +
                 "  and stock_status_code=4\n" +
                 "  AND stock_comp_code=1";
         try {
@@ -378,6 +379,7 @@ public class StockServiceImpl implements StockService {
                 stockDetailsRes.setStockAgentName(rs.getString("agent_name"));
                 stockDetailsRes.setStockBranchName(rs.getString("brn_name"));
                 stockDetailsRes.setStockDealerShipName(rs.getString("dealer_name"));
+                stockDetailsRes.setStockCurrencyCode(rs.getString("ctry_currency_code"));
                 stockDetailsResList.add(stockDetailsRes);
             }
             symuResponse.setStatusCode("0");

@@ -8,5 +8,5 @@ import java.util.List;
 public interface StockModelRepo extends JpaRepository<StockModelEntity,Long> {
     StockModelEntity getStockModelEntitiesByCode(int code);
 
-    List<StockModelEntity> getStockModelEntitiesByModelStatus(String status);
+
 }

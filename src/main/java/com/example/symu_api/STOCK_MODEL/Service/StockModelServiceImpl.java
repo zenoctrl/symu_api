@@ -4,6 +4,8 @@ import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.STOCK.Entity.StockEntity;
 import com.example.symu_api.STOCK.Repository.StockEntityRepo;
 import com.example.symu_api.STOCK_MODEL.Entity.StockModelEntity;
+import com.example.symu_api.STOCK_MODEL.Model.StockModelEntityModel;
+import com.example.symu_api.STOCK_MODEL.Repository.StockModelEntityModelRepo;
 import com.example.symu_api.STOCK_MODEL.Repository.StockModelRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ public class StockModelServiceImpl implements StockModelService{
     private StockModelRepo stockModelRepo;
     @Autowired
     private StockEntityRepo stockEntityRepo;
+    @Autowired
+    private StockModelEntityModelRepo stockModelEntityModelRepo;
 
     @Override
     public SymuResponse createOrUpdateStockModel(StockModelEntity stockModelEntity) {
@@ -49,7 +53,7 @@ public class StockModelServiceImpl implements StockModelService{
     public SymuResponse  getAllStockModels() {
         SymuResponse symuResponse=new SymuResponse<>();
         try{
-            List<StockModelEntity> stockModelEntity1=stockModelRepo.findAll();
+            List<StockModelEntityModel> stockModelEntity1=stockModelEntityModelRepo.findAll();
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
             symuResponse.setData(stockModelEntity1);
@@ -81,7 +85,7 @@ public class StockModelServiceImpl implements StockModelService{
     public SymuResponse getStockModelEntitiesByModelStatus(String modelStatus) {
         SymuResponse symuResponse=new SymuResponse<>();
         try{
-            List<StockModelEntity> stockModelEntity1=stockModelRepo.getStockModelEntitiesByModelStatus(modelStatus);
+            List<StockModelEntityModel> stockModelEntity1=stockModelEntityModelRepo.getStockModelEntitiesByModelStatus(modelStatus);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
             symuResponse.setData(stockModelEntity1);

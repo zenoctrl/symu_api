@@ -13,4 +13,5 @@ public class StockDetailsRes {
     private String stockAgentName;
     private String stockBranchName;
     private String stockDealerShipName;
+    private String stockCurrencyCode;
 }
