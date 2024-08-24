@@ -9,5 +9,7 @@ public interface ReceiptRepository extends JpaRepository<ReceiptEntity,Long> {
 
     ReceiptEntity getAllByReceiptCode(int receiptCode);
 
+    ReceiptEntity getAllByReceiptStockCodeAndReceiptStatus(int stockCode, String stockStatus);
+
     List<ReceiptEntity> getAllByReceiptStockCode(int stockCode);
 }
