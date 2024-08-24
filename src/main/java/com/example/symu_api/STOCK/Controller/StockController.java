@@ -54,6 +54,13 @@ public class StockController {
     public SymuResponse stockPostSale(@RequestBody StockPostSaleDto stockPostSaleDto) {
         return stockService.stockPostSale(stockPostSaleDto);
     }
+    @PostMapping("/stockRejectPostedSale")
+    public SymuResponse stockRejectPostedSale(
+            @RequestParam("stockCode")int stockCode,
+            @RequestParam("userCode")int userCode
+    ) {
+        return stockService.stockRejectPostedSale(stockCode,userCode);
+    }
     @PostMapping("/stockCloseSale")
     public SymuResponse stockCloseSale(@RequestBody StockCloseSaleDto stockPostSaleDto) {
         return stockService.stockCloseSale(stockPostSaleDto);

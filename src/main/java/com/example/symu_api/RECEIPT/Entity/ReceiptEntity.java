@@ -29,6 +29,8 @@ public class ReceiptEntity {
     private LocalDateTime receiptUpdatedOn;
     @Column(name = "RCT_CREATED_BY")
     private String receiptCreatedBy;
+    @Column(name = "RCT_UPDATED_BY")
+    private String receiptUpdatedBy;
     @Column(name = "RCT_CUSTOMER_NAME")
     private String receiptCustomerName;
     @Column(name = "RCT_CUSTOMER_PHONE")

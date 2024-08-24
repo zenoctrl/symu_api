@@ -76,8 +76,8 @@ public class StockServiceImpl implements StockService {
                 stockEntity.setStockCreatedBy(stock.getStockCreatedBy());
                 stockEntity.setStockStatusCode(stock.getStockStatusCode());
             }
-            StockModelEntity stockModelEntity=stockModelRepo.getStockModelEntitiesByCode(stock.getStockModelCode());
-            StockBatchEntity stockBatchEntity=stockBatchRepo.getStockBatchEntitiesByCode(stock.getStockBatchCode());
+            StockModelEntity stockModelEntity = stockModelRepo.getStockModelEntitiesByCode(stock.getStockModelCode());
+            StockBatchEntity stockBatchEntity = stockBatchRepo.getStockBatchEntitiesByCode(stock.getStockBatchCode());
             stockEntity.setStockCompanyCode(stock.getStockCompanyCode());
             stockEntity.setStockCountryCode(stock.getStockCountryCode());
             stockEntity.setStockRegionCode(stock.getStockRegionCode());
@@ -89,7 +89,7 @@ public class StockServiceImpl implements StockService {
             stockEntity.setStockMemory(stock.getStockMemory());
             stockEntity.setStockBuyingPrice(stockBatchEntity.getBatchBuyingPrice());
             stockEntity.setStockSellingPrice(stockModelEntity.getModelSellingPrice());
-            stockEntity.setStockProfit(stockModelEntity.getModelSellingPrice()-stockBatchEntity.getBatchBuyingPrice());
+            stockEntity.setStockProfit(stockModelEntity.getModelSellingPrice() - stockBatchEntity.getBatchBuyingPrice());
             stockEntity.setStockDefaulted("N");
             stockEntity.setStockBaseCurrency(stock.getStockBaseCurrency());
             stockEntity.setStockSoldBy(stock.getStockSoldBy());
@@ -185,125 +185,158 @@ public class StockServiceImpl implements StockService {
     @Override
     public SymuResponse stockPostSale(StockPostSaleDto stockPostSaleDto) {
         LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
-        SymuResponse symuResponse=new SymuResponse<>();
+        SymuResponse symuResponse = new SymuResponse<>();
         // create or update customer
-      try{
-          CustomerEntity customerEntity = new CustomerEntity();
-          StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockPostSaleDto.getStockCode());
-          UserEntity userEntity=userRepository.getAllByCode(stockPostSaleDto.getUserCode());
-          try {
-              CustomerEntity customerEntityData = customerRepository.getCustomerEntitiesByCustomerNationalId(
-                      stockPostSaleDto.getCustomerNationalId());
-              customerEntity.setCustomerCode(customerEntityData.getCustomerCode());
-          } catch (Exception e) {
-              // new cutomer
-          }
-          customerEntity.setCustomerCompanyCode(stockEntityData.getStockCompanyCode());
-          customerEntity.setCustomerCountryCode(stockEntityData.getStockCountryCode());
-          customerEntity.setCustomerRegionCode(stockEntityData.getStockRegionCode());
-          customerEntity.setCustomerBranchCode(stockEntityData.getStockBranchCode());
-          customerEntity.setCustomerName(stockPostSaleDto.getCustomerName());
-          customerEntity.setCustomerPhoneNumber(stockPostSaleDto.getCustomerPhoneNumber());
-          customerEntity.setCustomerNationalId(stockPostSaleDto.getCustomerNationalId());
-          CustomerEntity customerEntitysaved = customerRepository.save(customerEntity);
-          int customerCode = customerEntitysaved.getCustomerCode();
+        try {
+            CustomerEntity customerEntity = new CustomerEntity();
+            StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockPostSaleDto.getStockCode());
+            UserEntity userEntity = userRepository.getAllByCode(stockPostSaleDto.getUserCode());
+            try {
+                CustomerEntity customerEntityData = customerRepository.getCustomerEntitiesByCustomerNationalId(
+                        stockPostSaleDto.getCustomerNationalId());
+                customerEntity.setCustomerCode(customerEntityData.getCustomerCode());
+            } catch (Exception e) {
+                // new cutomer
+            }
+            customerEntity.setCustomerCompanyCode(stockEntityData.getStockCompanyCode());
+            customerEntity.setCustomerCountryCode(stockEntityData.getStockCountryCode());
+            customerEntity.setCustomerRegionCode(stockEntityData.getStockRegionCode());
+            customerEntity.setCustomerBranchCode(stockEntityData.getStockBranchCode());
+            customerEntity.setCustomerName(stockPostSaleDto.getCustomerName());
+            customerEntity.setCustomerPhoneNumber(stockPostSaleDto.getCustomerPhoneNumber());
+            customerEntity.setCustomerNationalId(stockPostSaleDto.getCustomerNationalId());
+            CustomerEntity customerEntitysaved = customerRepository.save(customerEntity);
+            int customerCode = customerEntitysaved.getCustomerCode();
 
-          //post sale
-          stockEntityData.setStockStatusCode(stockPostSaleDto.getNextStatusCode());
-          stockEntityData.setStockUpdatedBy(stockPostSaleDto.getUserCode());
-          stockEntityData.setStockTradeName(stockPostSaleDto.getTradingName());
-          stockEntityData.setStockCustomerCode(customerCode);
-          StockEntity saved = stockEntityRepo.save(stockEntityData);
+            //post sale
+            stockEntityData.setStockStatusCode(stockPostSaleDto.getNextStatusCode());
+            stockEntityData.setStockUpdatedBy(stockPostSaleDto.getUserCode());
+            stockEntityData.setStockTradeName(stockPostSaleDto.getTradingName());
+            stockEntityData.setStockCustomerCode(customerCode);
+            StockEntity saved = stockEntityRepo.save(stockEntityData);
+            if (saved != null) {
+                //saved
+            }
+            //post Receipt
+            ReceiptEntity receiptEntity = new ReceiptEntity();
+            receiptEntity.setReceiptCompanyCode(stockEntityData.getStockCompanyCode());
+            receiptEntity.setReceiptCountryCode(stockEntityData.getStockCountryCode());
+            receiptEntity.setReceiptRegionCode(stockEntityData.getStockRegionCode());
+            receiptEntity.setReceiptBranchCode(stockEntityData.getStockBranchCode());
+            receiptEntity.setReceiptNo(String.valueOf(timestamp));
+            receiptEntity.setReceiptCreatedOn(timestamp);
+            receiptEntity.setReceiptCreatedBy(userEntity.getUserFirstName() + " " + userEntity.getUserLastName());
+            receiptEntity.setReceiptUpdatedOn(timestamp);
+            receiptEntity.setReceiptCustomerIdNo(customerEntitysaved.getCustomerNationalId());
+            receiptEntity.setReceiptCustomerPhoneNo(customerEntitysaved.getCustomerPhoneNumber());
+            receiptEntity.setReceiptCustomerName(customerEntitysaved.getCustomerName());
+            receiptEntity.setReceiptStockCode(stockPostSaleDto.getStockCode());
+            receiptEntity.setReceiStockImei(stockEntityData.getStockImei());
+            receiptEntity.setReceiStockQuantity(1);
+            receiptEntity.setReceiptAmount(stockEntityData.getStockSellingPrice());
+            receiptEntity.setReceiptModel(stockEntityData.getStockMemory());
+            receiptEntity.setReceiptStatus("POSTED");
+            receiptEntity.setReceiptDealership(stockPostSaleDto.getTradingName());
+            ReceiptEntity rctSaved = receiptRepository.save(receiptEntity);
+            if (rctSaved != null) {
+                //saved
+            }
 
-          //post Receipt
-          ReceiptEntity receiptEntity = new ReceiptEntity();
-          receiptEntity.setReceiptCompanyCode(stockEntityData.getStockCompanyCode());
-          receiptEntity.setReceiptCountryCode(stockEntityData.getStockCountryCode());
-          receiptEntity.setReceiptRegionCode(stockEntityData.getStockRegionCode());
-          receiptEntity.setReceiptBranchCode(stockEntityData.getStockBranchCode());
-          receiptEntity.setReceiptNo("");
-          receiptEntity.setReceiptCreatedOn(timestamp);
-          receiptEntity.setReceiptCreatedBy(userEntity.getUserFirstName()+" "+userEntity.getUserLastName());
-          receiptEntity.setReceiptUpdatedOn(timestamp);
-          receiptEntity.setReceiptCustomerIdNo(customerEntitysaved.getCustomerNationalId());
-          receiptEntity.setReceiptCustomerPhoneNo(customerEntitysaved.getCustomerPhoneNumber());
-          receiptEntity.setReceiptCustomerName(customerEntitysaved.getCustomerName());
-          receiptEntity.setReceiptStockCode(stockPostSaleDto.getStockCode());
-          receiptEntity.setReceiStockImei(stockEntityData.getStockImei());
-          receiptEntity.setReceiStockQuantity(1);
-          receiptEntity.setReceiptAmount(stockEntityData.getStockSellingPrice());
-          receiptEntity.setReceiptModel(stockEntityData.getStockMemory());
-          receiptEntity.setReceiptStatus("POSTED");
-          receiptEntity.setReceiptDealership(stockPostSaleDto.getTradingName());
-          ReceiptEntity rctSaved=receiptRepository.save(receiptEntity);
-          if (rctSaved !=null){
-              //saved
-          }
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("success");
+            symuResponse.setData(rctSaved);
+        } catch (Exception e) {
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("Failed");
+            symuResponse.setData(e.getMessage());
+        }
+        return symuResponse;
+    }
 
-          symuResponse.setStatusCode("0");
-          symuResponse.setMessage("success");
-          symuResponse.setData(saved);
-      }catch (Exception e){
-          symuResponse.setStatusCode("1");
-          symuResponse.setMessage("Failed");
-          symuResponse.setData(e.getMessage());
-      }
+    @Override
+    public SymuResponse stockRejectPostedSale(int stockCode,int stockUserCode) {
+        SymuResponse symuResponse = new SymuResponse();
+        try {
+            StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockCode);
+            stockEntityData.setStockCustomerCode(null);
+            stockEntityData.setStockAgnCode(null);
+            stockEntityData.setStockStatusCode(2);
+            StockEntity updated = stockEntityRepo.save(stockEntityData);
+
+            //reject receipt
+            UserEntity userEntity = userRepository.getAllByCode(stockUserCode);
+            ReceiptEntity receiptEntityData = receiptRepository.getAllByReceiptStockCodeAndReceiptStatus(
+                    updated.getCode(), "POSTED"
+            );
+            receiptEntityData.setReceiptStatus("REJECTED");
+            receiptEntityData.setReceiptUpdatedBy(userEntity.getUserFirstName() + " " + userEntity.getUserLastName());
+            ReceiptEntity rejected=receiptRepository.save(receiptEntityData);
+            if (rejected.getReceiptStatus().equals("REJECTED")) {
+                symuResponse.setStatusCode("0");
+                symuResponse.setMessage("success");
+                symuResponse.setData("Posted sale has been rejected successfully");
+            }
+        }catch (Exception e){
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("Failed");
+            symuResponse.setData(e.getMessage());
+        }
         return symuResponse;
     }
 
     @Override
     public SymuResponse stockCloseSale(StockCloseSaleDto stockCloseSaleDto) {
-        SymuResponse symuResponse=new SymuResponse();
+        SymuResponse symuResponse = new SymuResponse();
         // create or update agent
-       try{
-           AgentsEntity agentsEntity = new AgentsEntity();
-           StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockCloseSaleDto.getStockCode());
-           try {
-               AgentsEntity agentsEntityData=agentsEntityRepo.getAgentsEntitiesByAgentNationalId(
-                       stockCloseSaleDto.getAgentNationalId());
-               agentsEntity.setAgentCode(agentsEntityData.getAgentCode());
-           }catch (Exception e){
-               //new agent
-           }
-           agentsEntity.setAgentCompanyCode(stockEntityData.getStockCompanyCode());
-           agentsEntity.setAgentCountryCode(stockEntityData.getStockCountryCode());
-           agentsEntity.setAgentRegionCode(stockEntityData.getStockRegionCode());
-           agentsEntity.setAgentBranchCode(stockEntityData.getStockBranchCode());
-           agentsEntity.setAgentName(stockCloseSaleDto.getAgentName());
-           agentsEntity.setAgentPhoneNumber(stockCloseSaleDto.getAgentPhoneNumber());
-           agentsEntity.setAgentNationalId(stockCloseSaleDto.getAgentNationalId());
-           AgentsEntity agentsEntitySaved=agentsEntityRepo.save(agentsEntity);
-           int agentCode=agentsEntitySaved.getAgentCode();
+        try {
+            AgentsEntity agentsEntity = new AgentsEntity();
+            StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockCloseSaleDto.getStockCode());
+            try {
+                AgentsEntity agentsEntityData = agentsEntityRepo.getAgentsEntitiesByAgentNationalId(
+                        stockCloseSaleDto.getAgentNationalId());
+                agentsEntity.setAgentCode(agentsEntityData.getAgentCode());
+            } catch (Exception e) {
+                //new agent
+            }
+            agentsEntity.setAgentCompanyCode(stockEntityData.getStockCompanyCode());
+            agentsEntity.setAgentCountryCode(stockEntityData.getStockCountryCode());
+            agentsEntity.setAgentRegionCode(stockEntityData.getStockRegionCode());
+            agentsEntity.setAgentBranchCode(stockEntityData.getStockBranchCode());
+            agentsEntity.setAgentName(stockCloseSaleDto.getAgentName());
+            agentsEntity.setAgentPhoneNumber(stockCloseSaleDto.getAgentPhoneNumber());
+            agentsEntity.setAgentNationalId(stockCloseSaleDto.getAgentNationalId());
+            AgentsEntity agentsEntitySaved = agentsEntityRepo.save(agentsEntity);
+            int agentCode = agentsEntitySaved.getAgentCode();
 
-           // close sale
-           stockEntityData.setStockStatusCode(stockCloseSaleDto.getNextStatusCode());
-           stockEntityData.setStockUpdatedBy(stockCloseSaleDto.getUserCode());
-           stockEntityData.setStockAgnCode(agentCode);
-           StockEntity saved = stockEntityRepo.save(stockEntityData);
-           symuResponse.setStatusCode("0");
-           symuResponse.setMessage("success");
-           symuResponse.setData(saved);
-       }catch (Exception e){
-           symuResponse.setStatusCode("1");
-           symuResponse.setMessage("Failed");
-           symuResponse.setData(e.getMessage());
-       }
+            // close sale
+            stockEntityData.setStockStatusCode(stockCloseSaleDto.getNextStatusCode());
+            stockEntityData.setStockUpdatedBy(stockCloseSaleDto.getUserCode());
+            stockEntityData.setStockAgnCode(agentCode);
+            StockEntity saved = stockEntityRepo.save(stockEntityData);
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("success");
+            symuResponse.setData(saved);
+        } catch (Exception e) {
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("Failed");
+            symuResponse.setData(e.getMessage());
+        }
         return symuResponse;
     }
 
     @Override
-    public SymuResponse updateDefaultStatus(int stockCode,String defaultStatus) {
-        SymuResponse symuResponse=new SymuResponse();
-        try{
+    public SymuResponse updateDefaultStatus(int stockCode, String defaultStatus) {
+        SymuResponse symuResponse = new SymuResponse();
+        try {
             StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockCode);
             stockEntityData.setStockDefaulted(defaultStatus);
-            StockEntity updated=stockEntityRepo.save(stockEntityData);
-            if (updated!=null){
+            StockEntity updated = stockEntityRepo.save(stockEntityData);
+            if (updated != null) {
                 symuResponse.setStatusCode("0");
                 symuResponse.setMessage("success");
                 symuResponse.setData("Default status updated");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             symuResponse.setStatusCode("1");
             symuResponse.setMessage("Failed");
             symuResponse.setData(e.getMessage());
@@ -334,7 +367,7 @@ public class StockServiceImpl implements StockService {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             List<StockDetailsRes> stockDetailsResList = new ArrayList<StockDetailsRes>();
-            while(rs.next()) {
+            while (rs.next()) {
                 StockDetailsRes stockDetailsRes = new StockDetailsRes();
                 stockDetailsRes.setStockCode(rs.getInt("stock_code"));
                 stockDetailsRes.setStockImei(rs.getString("stock_imei"));
@@ -363,4 +396,5 @@ public class StockServiceImpl implements StockService {
         }
         return symuResponse;
     }
+
 }
