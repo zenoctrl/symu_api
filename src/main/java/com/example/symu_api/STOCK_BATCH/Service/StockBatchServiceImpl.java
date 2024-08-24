@@ -2,6 +2,8 @@ package com.example.symu_api.STOCK_BATCH.Service;
 
 import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.STOCK_BATCH.Entity.StockBatchEntity;
+import com.example.symu_api.STOCK_BATCH.Model.StockBatchModel;
+import com.example.symu_api.STOCK_BATCH.Repository.StockBatchModelRepo;
 import com.example.symu_api.STOCK_BATCH.Repository.StockBatchRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,8 @@ import java.util.List;
 public class StockBatchServiceImpl implements StockBatchService {
     @Autowired
     private StockBatchRepo stockBatchRepo;
+    @Autowired
+    private StockBatchModelRepo stockBatchModelRepo;
 
     @Override
     public SymuResponse createOrUpdateStockBatch(StockBatchEntity stockBatchEntity) {
@@ -33,7 +37,7 @@ public class StockBatchServiceImpl implements StockBatchService {
     public SymuResponse getAllStockBatch() {
         SymuResponse symuResponse=new SymuResponse<>();
         try{
-            List<StockBatchEntity> stockBatchEntityList=stockBatchRepo.findAll();
+            List<StockBatchModel> stockBatchEntityList=stockBatchModelRepo.findAll();
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
             symuResponse.setData(stockBatchEntityList);
