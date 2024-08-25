@@ -6,6 +6,7 @@ import lombok.Data;
 public class StockPostSaleDto {
     private int stockCode;
     private int userCode;
+    private int stockDealerCode;
     private int nextStatusCode;
     private String tradingName;
     private String customerNationalId;
