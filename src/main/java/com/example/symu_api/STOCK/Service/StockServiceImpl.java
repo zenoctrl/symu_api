@@ -196,7 +196,7 @@ public class StockServiceImpl implements StockService {
                         stockPostSaleDto.getCustomerNationalId());
                 customerEntity.setCustomerCode(customerEntityData.getCustomerCode());
             } catch (Exception e) {
-                // new cutomer
+                // new customer
             }
             customerEntity.setCustomerCompanyCode(stockEntityData.getStockCompanyCode());
             customerEntity.setCustomerCountryCode(stockEntityData.getStockCountryCode());
@@ -212,6 +212,7 @@ public class StockServiceImpl implements StockService {
             stockEntityData.setStockStatusCode(stockPostSaleDto.getNextStatusCode());
             stockEntityData.setStockUpdatedBy(stockPostSaleDto.getUserCode());
             stockEntityData.setStockTradeName(stockPostSaleDto.getTradingName());
+            stockEntityData.setStockDealerCode(stockPostSaleDto.getStockDealerCode());
             stockEntityData.setStockCustomerCode(customerCode);
             StockEntity saved = stockEntityRepo.save(stockEntityData);
             if (saved != null) {
