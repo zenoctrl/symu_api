@@ -6,12 +6,14 @@ import lombok.Data;
 public class StockDetailsRes {
     private int stockCode;
     private String stockImei;
-    private double stockSellingPrice;
-    private String stockDefaulted;
     private String stockModelName;
-    private String stockCustomerName;
-    private String stockAgentName;
-    private String stockBranchName;
-    private String stockDealerShipName;
     private String stockCurrencyCode;
+    private double stockSellingPrice;
+    private String stockCustomerName;
+    private String stockCustomerPhone;
+    private String stockCustomerNationalId;
+    private String stockAgentName;
+    private String stockDealerShipName;
+    private String stockBranchName;
+    private String stockDefaulted;
 }

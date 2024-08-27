@@ -7,4 +7,6 @@ public interface AgentsEntityRepo extends JpaRepository<AgentsEntity, Long> {
     AgentsEntity getAgentsEntitiesByAgentCode(int agentCode);
 
     AgentsEntity getAgentsEntitiesByAgentNationalId(String agentNationalId);
+
+    AgentsEntity getAgentsEntitiesByAgentPhoneNumber(String agentPhoneNumber);
 }
