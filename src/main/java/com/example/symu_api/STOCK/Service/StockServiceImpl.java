@@ -34,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class StockServiceImpl implements StockService {
@@ -192,8 +193,8 @@ public class StockServiceImpl implements StockService {
             StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockPostSaleDto.getStockCode());
             UserEntity userEntity = userRepository.getAllByCode(stockPostSaleDto.getUserCode());
             try {
-                CustomerEntity customerEntityData = customerRepository.getCustomerEntitiesByCustomerNationalId(
-                        stockPostSaleDto.getCustomerNationalId());
+                CustomerEntity customerEntityData = customerRepository.getCustomerEntitiesByCustomerPhoneNumber(
+                        stockPostSaleDto.getCustomerPhoneNumber());
                 customerEntity.setCustomerCode(customerEntityData.getCustomerCode());
             } catch (Exception e) {
                 // new customer
@@ -219,12 +220,13 @@ public class StockServiceImpl implements StockService {
                 //saved
             }
             //post Receipt
+            Integer receiptNo =receiptRepository.findMaxCode()+1;
             ReceiptEntity receiptEntity = new ReceiptEntity();
             receiptEntity.setReceiptCompanyCode(stockEntityData.getStockCompanyCode());
             receiptEntity.setReceiptCountryCode(stockEntityData.getStockCountryCode());
             receiptEntity.setReceiptRegionCode(stockEntityData.getStockRegionCode());
             receiptEntity.setReceiptBranchCode(stockEntityData.getStockBranchCode());
-            receiptEntity.setReceiptNo(String.valueOf(timestamp));
+            receiptEntity.setReceiptNo(String.valueOf(receiptNo));
             receiptEntity.setReceiptCreatedOn(timestamp);
             receiptEntity.setReceiptCreatedBy(userEntity.getUserFirstName() + " " + userEntity.getUserLastName());
             receiptEntity.setReceiptUpdatedOn(timestamp);
@@ -255,7 +257,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public SymuResponse stockRejectPostedSale(int stockCode,int stockUserCode) {
+    public SymuResponse stockRejectPostedSale(int stockCode, int stockUserCode) {
         SymuResponse symuResponse = new SymuResponse();
         try {
             StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockCode);
@@ -271,13 +273,13 @@ public class StockServiceImpl implements StockService {
             );
             receiptEntityData.setReceiptStatus("REJECTED");
             receiptEntityData.setReceiptUpdatedBy(userEntity.getUserFirstName() + " " + userEntity.getUserLastName());
-            ReceiptEntity rejected=receiptRepository.save(receiptEntityData);
+            ReceiptEntity rejected = receiptRepository.save(receiptEntityData);
             if (rejected.getReceiptStatus().equals("REJECTED")) {
                 symuResponse.setStatusCode("0");
                 symuResponse.setMessage("success");
                 symuResponse.setData("Posted sale has been rejected successfully");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             symuResponse.setStatusCode("1");
             symuResponse.setMessage("Failed");
             symuResponse.setData(e.getMessage());
@@ -293,8 +295,8 @@ public class StockServiceImpl implements StockService {
             AgentsEntity agentsEntity = new AgentsEntity();
             StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockCloseSaleDto.getStockCode());
             try {
-                AgentsEntity agentsEntityData = agentsEntityRepo.getAgentsEntitiesByAgentNationalId(
-                        stockCloseSaleDto.getAgentNationalId());
+                AgentsEntity agentsEntityData = agentsEntityRepo.getAgentsEntitiesByAgentPhoneNumber(
+                        stockCloseSaleDto.getAgentPhoneNumber());
                 agentsEntity.setAgentCode(agentsEntityData.getAgentCode());
             } catch (Exception e) {
                 //new agent
@@ -349,9 +351,10 @@ public class StockServiceImpl implements StockService {
         SymuResponse symuResponse = new SymuResponse();
         Connection conn = null;
         CallableStatement cst = null;
-        String sql = "SELECT stock_code,stock_imei,stock_selling_price,stock_defaulted,ctry_currency_code,\n" +
+        String sql = "SELECT stock_code,stock_imei,stock_selling_price,stock_defaulted," +
+                "ctry_currency_code,\n" +
                 "       model_name,\n" +
-                "       customer_name,\n" +
+                "       customer_name,customer_phone,customer_national_id,\n" +
                 "       agent_name,\n" +
                 "       brn_name,\n" +
                 "       dealer_name\n" +
@@ -381,6 +384,8 @@ public class StockServiceImpl implements StockService {
                 stockDetailsRes.setStockBranchName(rs.getString("brn_name"));
                 stockDetailsRes.setStockDealerShipName(rs.getString("dealer_name"));
                 stockDetailsRes.setStockCurrencyCode(rs.getString("ctry_currency_code"));
+                stockDetailsRes.setStockCustomerPhone(rs.getString("customer_phone"));
+                stockDetailsRes.setStockCustomerNationalId(rs.getString("customer_national_id"));
                 stockDetailsResList.add(stockDetailsRes);
             }
             symuResponse.setStatusCode("0");
