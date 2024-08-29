@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class SymuApiApplication {
 
     public static void main(String[] args) {
+        //deploy
         SpringApplication.run(SymuApiApplication.class, args);
     }
 }
