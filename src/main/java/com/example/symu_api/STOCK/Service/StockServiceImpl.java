@@ -352,8 +352,8 @@ public class StockServiceImpl implements StockService {
         Connection conn = null;
         CallableStatement cst = null;
         String sql = "SELECT stock_code,stock_imei,stock_selling_price,stock_defaulted," +
-                "ctry_currency_code,\n" +
-                "       model_name,\n" +
+                "ctry_currency_code,stock_brn_code,stock_region_code,stock_country_code,\n" +
+                "       model_name,stock_created_on,stock_updated_on,stock_updated_on,\n" +
                 "       customer_name,customer_phone,customer_national_id,\n" +
                 "       agent_name,\n" +
                 "       brn_name,\n" +
@@ -386,6 +386,11 @@ public class StockServiceImpl implements StockService {
                 stockDetailsRes.setStockCurrencyCode(rs.getString("ctry_currency_code"));
                 stockDetailsRes.setStockCustomerPhone(rs.getString("customer_phone"));
                 stockDetailsRes.setStockCustomerNationalId(rs.getString("customer_national_id"));
+                stockDetailsRes.setStockBranchCode(rs.getString("stock_brn_code"));
+                stockDetailsRes.setStockRegionCode(rs.getString("stock_region_code"));
+                stockDetailsRes.setStockCountryCode(rs.getString("stock_country_code"));
+                stockDetailsRes.setStockCreatedOn(rs.getString("stock_updated_on"));
+                stockDetailsRes.setStockUpdatedOn(rs.getString("stock_updated_on"));
                 stockDetailsResList.add(stockDetailsRes);
             }
             symuResponse.setStatusCode("0");

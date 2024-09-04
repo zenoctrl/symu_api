@@ -16,4 +16,9 @@ public class StockDetailsRes {
     private String stockDealerShipName;
     private String stockBranchName;
     private String stockDefaulted;
+    private String stockBranchCode;
+    private String stockRegionCode;
+    private String stockCountryCode;
+    private String stockCreatedOn;
+    private String stockUpdatedOn;
 }
