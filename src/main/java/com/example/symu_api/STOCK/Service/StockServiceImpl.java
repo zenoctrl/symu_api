@@ -220,7 +220,13 @@ public class StockServiceImpl implements StockService {
                 //saved
             }
             //post Receipt
-            Integer receiptNo =receiptRepository.findMaxCode()+1;
+            Integer receiptNo;
+            try{
+                receiptNo =receiptRepository.findMaxCode()+1;
+            }catch (Exception e){
+                receiptNo=1;
+            }
+            receiptNo =receiptRepository.findMaxCode()+1;
             ReceiptEntity receiptEntity = new ReceiptEntity();
             receiptEntity.setReceiptCompanyCode(stockEntityData.getStockCompanyCode());
             receiptEntity.setReceiptCountryCode(stockEntityData.getStockCountryCode());
