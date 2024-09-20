@@ -27,10 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -228,6 +225,8 @@ public class StockServiceImpl implements StockService {
             symuResponse.setStatusCode("1");
             symuResponse.setMessage("Error occurred while fetching stock");
             symuResponse.setData(e.getMessage());
+        } finally {
+            DBUtils.CloseConnections(null, cst, conn);
         }
         return symuResponse;
     }
