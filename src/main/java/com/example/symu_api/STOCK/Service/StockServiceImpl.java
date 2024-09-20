@@ -14,6 +14,7 @@ import com.example.symu_api.STOCK.Dto.StockPriceDto;
 import com.example.symu_api.STOCK.Entity.StockEntity;
 import com.example.symu_api.STOCK.Model.StockDetailsRes;
 import com.example.symu_api.STOCK.Model.StockEntityModel;
+import com.example.symu_api.STOCK.Model.StockRes;
 import com.example.symu_api.STOCK.Repository.StockEntityModelRepo;
 import com.example.symu_api.STOCK.Repository.StockEntityRepo;
 import com.example.symu_api.STOCK_BATCH.Entity.StockBatchEntity;
@@ -143,11 +144,86 @@ public class StockServiceImpl implements StockService {
     @Override
     public SymuResponse getStockEntitiesByStockCompanyCode(int companyCode) {
         SymuResponse symuResponse = new SymuResponse();
+        Connection conn = null;
+        CallableStatement cst = null;
+        String sql = "SELECT \n" +
+                "      stock_code,\n" +
+                "      stock_comp_code,\n" +
+                "      stock_country_code,\n" +
+                "      stock_region_code,\n" +
+                "      stock_brn_code,\n" +
+                "      stock_batch_code,\n" +
+                "      stock_agn_code,\n" +
+                "      stock_imei,\n" +
+                "      stock_model_code,\n" +
+                "      stock_memory,\n" +
+                "      stock_buying_price,\n" +
+                "      stock_selling_price,\n" +
+                "      stock_profit,\n" +
+                "      stock_status_code,\n" +
+                "      stock_base_currency,\n" +
+                "      stock_defaulted,\n" +
+                "      stock_customer_code,\n" +
+                "      stock_created_on,\n" +
+                "      stock_updated_on,\n" +
+                "      stock_created_by,\n" +
+                "      stock_updated_by,\n" +
+                "      stock_sold_by,\n" +
+                "      stock_trade_name,\n" +
+                "      stock_dealer_code,\n" +
+                "      status_description,\n" +
+                "      status_name,\n" +
+                "      status_short_desc,\n" +
+                "      brn_name,\n" +
+                "      countries.ctry_name\n" +
+                "FROM stock,stock_status,branches,countries\n" +
+                "where stock_status.status_code=stock_status_code\n" +
+                "and BRN_CODE=stock_brn_code\n" +
+                "and ctry_code=stock_country_code\n" +
+                "and stock_comp_code=1";
         try {
-            List<StockEntityModel> stockEntityList = stockEntityModelRepo.getStockEntitiesByStockCompanyCode(companyCode);
+            conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            List<StockRes> stockResList = new ArrayList<StockRes>();
+            //    List<StockEntityModel> stockEntityList = stockEntityModelRepo.getStockEntitiesByStockCompanyCode(companyCode);
+
+            while (rs.next()) {
+                StockRes stockRes = new StockRes();
+                stockRes.setCode(rs.getInt("stock_code"));
+                stockRes.setStockCompanyCode(rs.getInt("stock_comp_code"));
+                stockRes.setStockCountryCode(rs.getInt("stock_country_code"));
+                stockRes.setStockRegionCode(rs.getInt("stock_region_code"));
+                stockRes.setStockBranchCode(rs.getInt("stock_brn_code"));
+                stockRes.setStockBatchCode(rs.getInt("stock_batch_code"));
+                stockRes.setStockAgnCode(rs.getInt("stock_agn_code"));
+                stockRes.setStockImei(rs.getString("stock_imei"));
+                stockRes.setStockModelCode(rs.getInt("stock_model_code"));
+                stockRes.setStockMemory(rs.getString("stock_memory"));
+                stockRes.setStockBuyingPrice(rs.getDouble("stock_buying_price"));
+                stockRes.setStockSellingPrice(rs.getDouble("stock_selling_price"));
+                stockRes.setStockProfit(rs.getDouble("stock_profit"));
+                stockRes.setStockStatusCode(rs.getInt("stock_status_code"));
+                stockRes.setStockBaseCurrency(rs.getString("stock_base_currency"));
+                stockRes.setStockDefaulted(rs.getString("stock_defaulted"));
+                stockRes.setStockCustomerCode(rs.getInt("stock_customer_code"));
+                stockRes.setStockCreatedOn(rs.getString("stock_created_on"));
+                stockRes.setStockUpdatedOn(rs.getString("stock_updated_on"));
+                stockRes.setStockCreatedBy(rs.getString("stock_created_by"));
+                stockRes.setStockUpdatedBy(rs.getString("stock_updated_by"));
+                stockRes.setStockSoldBy(rs.getString("stock_sold_by"));
+                stockRes.setStockTradeName(rs.getString("stock_trade_name"));
+                stockRes.setStockDealerCode(rs.getInt("stock_dealer_code"));
+                stockRes.setStockStatusDescription(rs.getString("status_description"));
+                stockRes.setStockStatusName(rs.getString("status_name"));
+                stockRes.setStatusShortDesc(rs.getString("status_short_desc"));
+                stockRes.setStockBranchName(rs.getString("brn_name"));
+                stockRes.setStockCountryName(rs.getString("ctry_name"));
+                stockResList.add(stockRes);
+            }
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
-            symuResponse.setData(stockEntityList);
+            symuResponse.setData(stockResList);
         } catch (Exception e) {
             symuResponse.setStatusCode("1");
             symuResponse.setMessage("Error occurred while fetching stock");
@@ -221,12 +297,12 @@ public class StockServiceImpl implements StockService {
             }
             //post Receipt
             Integer receiptNo;
-            try{
-                receiptNo =receiptRepository.findMaxCode()+1;
-            }catch (Exception e){
-                receiptNo=1;
+            try {
+                receiptNo = receiptRepository.findMaxCode() + 1;
+            } catch (Exception e) {
+                receiptNo = 1;
             }
-            receiptNo =receiptRepository.findMaxCode()+1;
+            receiptNo = receiptRepository.findMaxCode() + 1;
             ReceiptEntity receiptEntity = new ReceiptEntity();
             receiptEntity.setReceiptCompanyCode(stockEntityData.getStockCompanyCode());
             receiptEntity.setReceiptCountryCode(stockEntityData.getStockCountryCode());
