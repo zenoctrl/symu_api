@@ -172,11 +172,13 @@ public class StockServiceImpl implements StockService {
                 "      status_name,\n" +
                 "      status_short_desc,\n" +
                 "      brn_name,\n" +
-                "      countries.ctry_name\n" +
-                "FROM stock,stock_status,branches,countries\n" +
+                "      countries.ctry_name,\n" +
+                "      batch_no\n" +
+                "FROM stock,stock_status,branches,countries,stock_batch\n" +
                 "where stock_status.status_code=stock_status_code\n" +
                 "and BRN_CODE=stock_brn_code\n" +
                 "and ctry_code=stock_country_code\n" +
+                "and batch_code=stock_batch_code\n" +
                 "and stock_comp_code=1";
         try {
             conn = dataSource.getConnection();
@@ -216,6 +218,7 @@ public class StockServiceImpl implements StockService {
                 stockRes.setStatusShortDesc(rs.getString("status_short_desc"));
                 stockRes.setStockBranchName(rs.getString("brn_name"));
                 stockRes.setStockCountryName(rs.getString("ctry_name"));
+                stockRes.setStockBatchNumber(rs.getString("batch_no"));
                 stockResList.add(stockRes);
             }
             symuResponse.setStatusCode("0");
