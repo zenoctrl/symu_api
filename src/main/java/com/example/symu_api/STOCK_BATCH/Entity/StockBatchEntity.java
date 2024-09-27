@@ -19,9 +19,9 @@ public class StockBatchEntity {
     private Integer stockBatchCountryCode;
     @Column(name = "BATCH_REGION_CODE")
     private Integer stockBatchRegionCode;
-    @Column(name = "STOCK_BRN_CODE")
+    @Column(name = "BATCH_BRANCH_CODE")
     private Integer stockBranchCode;
-    @Column(name = "STOCK_MOEL_CODE")
+    @Column(name = "BATCH_MODEL_CODE")
     private Integer stockModelCode;
     @Column(name = "BATCH_NO")
     private String batchNo;

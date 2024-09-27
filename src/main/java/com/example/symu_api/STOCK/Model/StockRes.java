@@ -33,4 +33,5 @@ public class StockRes {
     private String statusShortDesc;
     private String stockBranchName ;
     private String stockCountryName;
+    private String stockBatchNumber;
 }
