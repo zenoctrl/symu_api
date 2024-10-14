@@ -437,13 +437,14 @@ public class StockServiceImpl implements StockService {
         CallableStatement cst = null;
         String sql = "SELECT stock_code,stock_imei,stock_selling_price,stock_defaulted," +
                 "ctry_currency_code,stock_brn_code,stock_region_code,stock_country_code,\n" +
-                "       model_name,stock_created_on,stock_updated_on,stock_updated_on,\n" +
+                "       model_name,stock_created_on,rct_updated_on,\n" +
                 "       customer_name,customer_phone,customer_national_id,\n" +
                 "       agent_name,\n" +
                 "       brn_name,\n" +
                 "       dealer_name\n" +
-                "FROM stock,stock_model,customer,agents,branches,dealership,countries\n" +
+                "FROM stock,stock_model,customer,agents,branches,dealership,countries,receipts\n" +
                 "WHERE stock_model_code=model_code\n" +
+                "  and rct_stock_imei=stock_imei\n" +
                 "  and stock_customer_code=customer_code\n" +
                 "  and stock_agn_code=agent_code\n" +
                 "  and stock_brn_code=BRN_CODE\n" +
@@ -473,8 +474,9 @@ public class StockServiceImpl implements StockService {
                 stockDetailsRes.setStockBranchCode(rs.getString("stock_brn_code"));
                 stockDetailsRes.setStockRegionCode(rs.getString("stock_region_code"));
                 stockDetailsRes.setStockCountryCode(rs.getString("stock_country_code"));
-                stockDetailsRes.setStockCreatedOn(rs.getString("stock_updated_on"));
-                stockDetailsRes.setStockUpdatedOn(rs.getString("stock_updated_on"));
+                stockDetailsRes.setStockCreatedOn(rs.getString("stock_created_on"));
+                stockDetailsRes.setStockUpdatedOn(rs.getString("rct_updated_on"));
+
                 stockDetailsResList.add(stockDetailsRes);
             }
             symuResponse.setStatusCode("0");
