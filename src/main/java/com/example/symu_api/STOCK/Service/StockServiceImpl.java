@@ -445,6 +445,7 @@ public class StockServiceImpl implements StockService {
                 "FROM stock,stock_model,customer,agents,branches,dealership,countries,receipts\n" +
                 "WHERE stock_model_code=model_code\n" +
                 "  and rct_stock_imei=stock_imei\n" +
+                "  and rct_status !='REJECTED'\n" +
                 "  and stock_customer_code=customer_code\n" +
                 "  and stock_agn_code=agent_code\n" +
                 "  and stock_brn_code=BRN_CODE\n" +
