@@ -354,7 +354,7 @@ public class StockServiceImpl implements StockService {
             UserEntity userEntity = userRepository.getAllByCode(stockUserCode);
             ReceiptEntity receiptEntityData = receiptRepository.getAllByReceiptStockCodeAndReceiptStatus(
                     updated.getCode(), "POSTED"
-            );
+            ).get(0);
             receiptEntityData.setReceiptStatus("REJECTED");
             receiptEntityData.setReceiptUpdatedBy(userEntity.getUserFirstName() + " " + userEntity.getUserLastName());
             ReceiptEntity rejected = receiptRepository.save(receiptEntityData);

@@ -33,7 +33,7 @@ public class ReceiptServiceImpl implements ReceiptService{
     public SymuResponse getAllByReceiptStockCode(int stockCode) {
         SymuResponse symuResponse=new SymuResponse<>();
         try {
-            List<ReceiptEntity> receiptEntityList=receiptRepository.getAllByReceiptStockCode(stockCode);
+            List<ReceiptEntity> receiptEntityList=receiptRepository.getAllByReceiptStockCodeAndReceiptStatus(stockCode,"POSTED");
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
             symuResponse.setData(receiptEntityList);
