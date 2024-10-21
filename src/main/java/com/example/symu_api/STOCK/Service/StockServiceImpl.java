@@ -139,7 +139,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public SymuResponse getStockEntitiesByStockCompanyCode(int companyCode) {
+    public SymuResponse getStockEntitiesByStockCompanyCode(int companyCode,String statusShortDesc) {
         SymuResponse symuResponse = new SymuResponse();
         Connection conn = null;
         CallableStatement cst = null;
@@ -179,8 +179,11 @@ public class StockServiceImpl implements StockService {
                 "and BRN_CODE=stock_brn_code\n" +
                 "and ctry_code=stock_country_code\n" +
                 "and batch_code=stock_batch_code\n" +
-                "and stock_comp_code=1";
+                "and status_short_desc='v_status_short_desc'\n" +
+                "and stock_comp_code=v_stock_comp_code";
         try {
+            sql=sql.replace("v_status_short_desc",String.valueOf(statusShortDesc));
+            sql=sql.replace("v_stock_comp_code",String.valueOf(companyCode));
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -452,8 +455,9 @@ public class StockServiceImpl implements StockService {
                 "  and stock_dealer_code=dealer_code\n" +
                 "  and stock_country_code=ctry_code\n" +
                 "  and stock_status_code=4\n" +
-                "  AND stock_comp_code=1";
+                "  AND stock_comp_code=v_stock_comp_code";
         try {
+            sql=sql.replace("v_stock_comp_code",String.valueOf(companyCode));
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
