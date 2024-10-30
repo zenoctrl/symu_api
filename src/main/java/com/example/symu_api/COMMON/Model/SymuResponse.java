@@ -1,6 +1,7 @@
 package com.example.symu_api.COMMON.Model;
 
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
 @Data
 public class SymuResponse<T>{
