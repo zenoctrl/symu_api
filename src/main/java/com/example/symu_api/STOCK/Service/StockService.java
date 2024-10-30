@@ -5,6 +5,7 @@ import com.example.symu_api.STOCK.Dto.StockCloseSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPostSaleDto;
 import com.example.symu_api.STOCK.Dto.StockPriceDto;
 import com.example.symu_api.STOCK.Entity.StockEntity;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -15,7 +16,8 @@ public interface StockService {
 
     SymuResponse getStockByBranchAndStatus(int brnCode,int stockStatusCode);
 
-    SymuResponse getStockEntitiesByStockCompanyCode(int companyCode,String statusShortDesc);
+    SymuResponse getStockEntitiesByStockCompanyCode(int companyCode,String statusShortDesc,
+                                                    Pageable pageable);
 
     SymuResponse updateStockPrice(StockPriceDto stockPriceDto);
 
@@ -25,7 +27,7 @@ public interface StockService {
 
     SymuResponse stockCloseSale(StockCloseSaleDto stockCloseSaleDto);
 
-    SymuResponse getAllStockDetails(int companyCode);
+    SymuResponse getAllStockDetails(int companyCode,Pageable pageable);
 
     SymuResponse updateDefaultStatus(int stockCode,String defaultStatus);
 }

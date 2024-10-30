@@ -3,6 +3,7 @@ package com.example.symu_api.STOCK.Service;
 import com.example.symu_api.AGENTS.Entity.AgentsEntity;
 import com.example.symu_api.AGENTS.Repository.AgentsEntityRepo;
 import com.example.symu_api.COMMON.Model.SymuResponse;
+import com.example.symu_api.COMMON.Service.CommonUtils;
 import com.example.symu_api.COMMON.Service.DBUtils;
 import com.example.symu_api.CUSTOMER.Entity.CustomerEntity;
 import com.example.symu_api.CUSTOMER.Repository.CustomerRepository;
@@ -24,6 +25,8 @@ import com.example.symu_api.STOCK_MODEL.Repository.StockModelRepo;
 import com.example.symu_api.USER.Entity.UserEntity;
 import com.example.symu_api.USER.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
@@ -139,7 +142,8 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public SymuResponse getStockEntitiesByStockCompanyCode(int companyCode,String statusShortDesc) {
+    public SymuResponse getStockEntitiesByStockCompanyCode(int companyCode,String statusShortDesc,
+                                                           Pageable pageable) {
         SymuResponse symuResponse = new SymuResponse();
         Connection conn = null;
         CallableStatement cst = null;
@@ -180,14 +184,15 @@ public class StockServiceImpl implements StockService {
                 "and ctry_code=stock_country_code\n" +
                 "and batch_code=stock_batch_code\n" +
                 "and status_short_desc='v_status_short_desc'\n" +
-                "and stock_comp_code=v_stock_comp_code";
+                "and stock_comp_code=v_stock_comp_code\n"+
+                "order by stock_updated_on desc";
         try {
             sql=sql.replace("v_status_short_desc",String.valueOf(statusShortDesc));
             sql=sql.replace("v_stock_comp_code",String.valueOf(companyCode));
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-            List<StockRes> stockResList = new ArrayList<StockRes>();
+            List<StockRes> stockResList = new ArrayList<>();
             //    List<StockEntityModel> stockEntityList = stockEntityModelRepo.getStockEntitiesByStockCompanyCode(companyCode);
 
             while (rs.next()) {
@@ -226,7 +231,8 @@ public class StockServiceImpl implements StockService {
             }
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
-            symuResponse.setData(stockResList);
+            Page<StockRes> stockResPage= CommonUtils.pageData(stockResList,pageable);
+            symuResponse.setData(stockResPage);
         } catch (Exception e) {
             symuResponse.setStatusCode("1");
             symuResponse.setMessage("Error occurred while fetching stock");
@@ -434,7 +440,7 @@ public class StockServiceImpl implements StockService {
         return symuResponse;
     }
 
-    public SymuResponse getAllStockDetails(int companyCode) {
+    public SymuResponse getAllStockDetails(int companyCode,Pageable pageable) {
         SymuResponse symuResponse = new SymuResponse();
         Connection conn = null;
         CallableStatement cst = null;
@@ -455,7 +461,8 @@ public class StockServiceImpl implements StockService {
                 "  and stock_dealer_code=dealer_code\n" +
                 "  and stock_country_code=ctry_code\n" +
                 "  and stock_status_code=4\n" +
-                "  AND stock_comp_code=v_stock_comp_code";
+                "  AND stock_comp_code=v_stock_comp_code\n"+
+                " order by rct_updated_on desc";
         try {
             sql=sql.replace("v_stock_comp_code",String.valueOf(companyCode));
             conn = dataSource.getConnection();
@@ -486,7 +493,8 @@ public class StockServiceImpl implements StockService {
             }
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
-            symuResponse.setData(stockDetailsResList);
+            Page<StockDetailsRes> stockDetailsResPage=CommonUtils.pageData(stockDetailsResList,pageable);
+            symuResponse.setData(stockDetailsResPage);
             DBUtils.CloseConnections(null, cst, conn);
         } catch (Exception ex) {
             DBUtils.CloseConnections(null, cst, conn);

@@ -7,6 +7,7 @@ import com.example.symu_api.STOCK.Dto.StockPriceDto;
 import com.example.symu_api.STOCK.Entity.StockEntity;
 import com.example.symu_api.STOCK.Service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,9 +43,10 @@ public class StockController {
             produces = {"application/json; charset=UTF-8"})
     public ResponseEntity<SymuResponse> getAllStock(
             @RequestParam("companyCode")int companyCode,
-            @RequestParam("statusShortDesc")String statusShortDesc
+            @RequestParam("statusShortDesc")String statusShortDesc,
+            Pageable pageable
     ) {
-        final SymuResponse stockEntity =stockService.getStockEntitiesByStockCompanyCode(companyCode,statusShortDesc);
+        final SymuResponse stockEntity =stockService.getStockEntitiesByStockCompanyCode(companyCode,statusShortDesc,pageable);
         return ResponseEntity.ok(stockEntity);
     }
     @PostMapping("/updateStockPrice")
@@ -69,9 +71,10 @@ public class StockController {
     @GetMapping(path = "/getAllStockDetails",
             produces = {"application/json; charset=UTF-8"})
     public ResponseEntity<SymuResponse> getAllStockDetails(
-            @RequestParam("companyCode")int companyCode
+            @RequestParam("companyCode")int companyCode,
+            Pageable pageable
     ) {
-        final SymuResponse stockEntity =stockService.getAllStockDetails(companyCode);
+        final SymuResponse stockEntity =stockService.getAllStockDetails(companyCode,pageable);
         return ResponseEntity.ok(stockEntity);
     }
     @PostMapping("/updateDefaultStatus")
