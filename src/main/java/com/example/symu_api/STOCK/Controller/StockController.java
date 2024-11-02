@@ -1,15 +1,15 @@
 package com.example.symu_api.STOCK.Controller;
 
 import com.example.symu_api.COMMON.Model.SymuResponse;
-import com.example.symu_api.STOCK.Dto.StockCloseSaleDto;
-import com.example.symu_api.STOCK.Dto.StockPostSaleDto;
-import com.example.symu_api.STOCK.Dto.StockPriceDto;
+import com.example.symu_api.STOCK.Dto.*;
 import com.example.symu_api.STOCK.Entity.StockEntity;
 import com.example.symu_api.STOCK.Service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -21,6 +21,10 @@ public class StockController {
     @PostMapping("/createOrUpdateStock")
     public SymuResponse createOrUpdateStock(@RequestBody StockEntity stockEntity) {
         return stockService.createOrUpdateStock(stockEntity);
+    }
+    @PostMapping("/createStockBulk")
+    public SymuResponse createStockBulk(@RequestBody CreateStockBulkDto createStockBulkDto) {
+        return stockService.createStockBulk(createStockBulkDto);
     }
     @GetMapping(path = "/getStockEntityByStockCode",
             produces = {"application/json; charset=UTF-8"})
@@ -52,6 +56,10 @@ public class StockController {
     @PostMapping("/updateStockPrice")
     public SymuResponse updateStockBuyingPrice(@RequestBody StockPriceDto stockPriceDto) {
         return stockService.updateStockPrice(stockPriceDto);
+    }
+    @PostMapping("/stockApproval")
+    public SymuResponse stockApproval(@RequestBody List<StockApprovalDto> stockApprovalDtoList) {
+        return stockService.stockApproval(stockApprovalDtoList);
     }
     @PostMapping("/stockPostSale")
     public SymuResponse stockPostSale(@RequestBody StockPostSaleDto stockPostSaleDto) {
