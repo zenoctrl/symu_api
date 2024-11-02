@@ -2,16 +2,19 @@ package com.example.symu_api.STOCK.Service;
 
 import com.example.symu_api.AGENTS.Entity.AgentsEntity;
 import com.example.symu_api.AGENTS.Repository.AgentsEntityRepo;
+import com.example.symu_api.BRANCHES.Entity.BranchEntity;
+import com.example.symu_api.BRANCHES.Repository.BranchRepository;
+import com.example.symu_api.COMMON.Model.SymuErrorInfo;
 import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.COMMON.Service.CommonUtils;
 import com.example.symu_api.COMMON.Service.DBUtils;
+import com.example.symu_api.COUNTRY.Entity.CountryEntity;
+import com.example.symu_api.COUNTRY.Repository.CountryRepository;
 import com.example.symu_api.CUSTOMER.Entity.CustomerEntity;
 import com.example.symu_api.CUSTOMER.Repository.CustomerRepository;
 import com.example.symu_api.RECEIPT.Entity.ReceiptEntity;
 import com.example.symu_api.RECEIPT.Repository.ReceiptRepository;
-import com.example.symu_api.STOCK.Dto.StockCloseSaleDto;
-import com.example.symu_api.STOCK.Dto.StockPostSaleDto;
-import com.example.symu_api.STOCK.Dto.StockPriceDto;
+import com.example.symu_api.STOCK.Dto.*;
 import com.example.symu_api.STOCK.Entity.StockEntity;
 import com.example.symu_api.STOCK.Model.StockDetailsRes;
 import com.example.symu_api.STOCK.Model.StockEntityModel;
@@ -57,6 +60,10 @@ public class StockServiceImpl implements StockService {
     private StockModelRepo stockModelRepo;
     @Autowired
     private StockBatchRepo stockBatchRepo;
+    @Autowired
+    private BranchRepository branchRepository;
+    @Autowired
+    private CountryRepository countryRepository;
 
     @Override
     public SymuResponse createOrUpdateStock(StockEntity stock) {
@@ -110,6 +117,55 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public SymuResponse createStockBulk(CreateStockBulkDto createStockBulkDto) {
+        SymuResponse symuResponse = new SymuResponse<>();
+        List<SymuErrorInfo> symuErrorInfoList = new ArrayList<>();
+        LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
+        BranchEntity branchEntity = branchRepository.findAllByCode(createStockBulkDto.getStockBranchCode());
+        StockModelEntity stockModelEntity = stockModelRepo.getStockModelEntitiesByCode(createStockBulkDto.getStockModelCode());
+        StockBatchEntity stockBatchEntity = stockBatchRepo.getStockBatchEntitiesByCode(createStockBulkDto.getStockBatchCode());
+        CountryEntity countryEntity = countryRepository.getCountryEntitiesByCode(branchEntity.getCountryCode());
+        for (String stockImei : createStockBulkDto.getStockImei()) {
+            SymuErrorInfo symuErrorInfo = new SymuErrorInfo();
+            StockEntity stockEntity = new StockEntity();
+            try {
+                stockEntity.setStockCompanyCode(branchEntity.getCompanyCode());
+                stockEntity.setStockCountryCode(branchEntity.getCountryCode());
+                stockEntity.setStockRegionCode(branchEntity.getRegionCode());
+                stockEntity.setStockBranchCode(createStockBulkDto.getStockBranchCode());
+                stockEntity.setStockBatchCode(createStockBulkDto.getStockBatchCode());
+                stockEntity.setStockImei(stockImei);
+                stockEntity.setStockModelCode(createStockBulkDto.getStockModelCode());
+                stockEntity.setStockMemory(stockModelEntity.getModelName());
+                stockEntity.setStockBuyingPrice(stockBatchEntity.getBatchBuyingPrice());
+                stockEntity.setStockSellingPrice(stockModelEntity.getModelSellingPrice());
+                stockEntity.setStockProfit(stockModelEntity.getModelSellingPrice() - stockBatchEntity.getBatchBuyingPrice());
+                stockEntity.setStockDefaulted("N");
+                stockEntity.setStockBaseCurrency(countryEntity.getCountryCurrencyCode());
+                stockEntity.setStockCreatedOn(timestamp);
+                stockEntity.setStockCreatedBy(createStockBulkDto.getStockCreatedBy());
+                stockEntity.setStockStatusCode(1);
+                stockEntity.setStockUpdatedOn(timestamp);
+                stockEntity.setStockUpdatedBy(1);
+                StockEntity stockEntitySaved = stockEntityRepo.save(stockEntity);
+                if (stockEntitySaved != null) {
+                    // saved
+                }
+                symuResponse.setStatusCode("0");
+                symuResponse.setMessage("Success");
+            } catch (Exception e) {
+                symuErrorInfo.setStatusCode("1");
+                symuErrorInfo.setStatusDesc("IMEI : " + createStockBulkDto.getStockImei());
+                symuErrorInfo.setStatusMessage(e.getMessage());
+                symuErrorInfoList.add(symuErrorInfo);
+                symuResponse.setData(symuErrorInfoList);
+                System.out.println("symuErrorInfoList : " + symuErrorInfoList);
+            }
+        }
+        return symuResponse;
+    }
+
+    @Override
     public SymuResponse getStockEntityByStockCode(int stockCode) {
         SymuResponse symuResponse = new SymuResponse();
         try {
@@ -142,7 +198,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public SymuResponse getStockEntitiesByStockCompanyCode(int companyCode,String statusShortDesc,
+    public SymuResponse getStockEntitiesByStockCompanyCode(int companyCode, String statusShortDesc,
                                                            Pageable pageable) {
         SymuResponse symuResponse = new SymuResponse();
         Connection conn = null;
@@ -184,11 +240,11 @@ public class StockServiceImpl implements StockService {
                 "and ctry_code=stock_country_code\n" +
                 "and batch_code=stock_batch_code\n" +
                 "and status_short_desc='v_status_short_desc'\n" +
-                "and stock_comp_code=v_stock_comp_code\n"+
+                "and stock_comp_code=v_stock_comp_code\n" +
                 "order by stock_updated_on desc";
         try {
-            sql=sql.replace("v_status_short_desc",String.valueOf(statusShortDesc));
-            sql=sql.replace("v_stock_comp_code",String.valueOf(companyCode));
+            sql = sql.replace("v_status_short_desc", String.valueOf(statusShortDesc));
+            sql = sql.replace("v_stock_comp_code", String.valueOf(companyCode));
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -231,7 +287,7 @@ public class StockServiceImpl implements StockService {
             }
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
-            Page<StockRes> stockResPage= CommonUtils.pageData(stockResList,pageable);
+            Page<StockRes> stockResPage = CommonUtils.pageData(stockResList, pageable);
             symuResponse.setData(stockResPage);
         } catch (Exception e) {
             symuResponse.setStatusCode("1");
@@ -350,6 +406,36 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public SymuResponse stockApproval(List<StockApprovalDto> stockApprovalDtoList) {
+        LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
+        SymuResponse symuResponse = new SymuResponse<>();
+        List<SymuErrorInfo> symuErrorInfoList = new ArrayList<>();
+        for (StockApprovalDto stockApprovalDto : stockApprovalDtoList) {
+            SymuErrorInfo symuErrorInfo = new SymuErrorInfo();
+            try {
+                StockEntity stockEntity = stockEntityRepo.getStockEntitiesByCode(stockApprovalDto.getStockCode());
+                stockEntity.setStockStatusCode(stockApprovalDto.getNextStatusCode());
+                stockEntity.setStockUpdatedBy(stockApprovalDto.getUserCode());
+                stockEntity.setStockUpdatedOn(timestamp);
+                StockEntity saved = stockEntityRepo.save(stockEntity);
+                if (saved != null) {
+                    // saved
+                }
+                symuResponse.setStatusCode("0");
+                symuResponse.setMessage("success");
+            } catch (Exception e) {
+                symuErrorInfo.setStatusCode("1");
+                symuErrorInfo.setStatusDesc("StockCode : " + stockApprovalDto.getStockCode());
+                symuErrorInfo.setStatusMessage(e.getMessage());
+                symuErrorInfoList.add(symuErrorInfo);
+                symuResponse.setData(symuErrorInfoList);
+                System.out.println("symuErrorInfoList : " + symuErrorInfoList);
+            }
+        }
+        return symuResponse;
+    }
+
+    @Override
     public SymuResponse stockRejectPostedSale(int stockCode, int stockUserCode) {
         SymuResponse symuResponse = new SymuResponse();
         try {
@@ -440,7 +526,7 @@ public class StockServiceImpl implements StockService {
         return symuResponse;
     }
 
-    public SymuResponse getAllStockDetails(int companyCode,Pageable pageable) {
+    public SymuResponse getAllStockDetails(int companyCode, Pageable pageable) {
         SymuResponse symuResponse = new SymuResponse();
         Connection conn = null;
         CallableStatement cst = null;
@@ -461,10 +547,10 @@ public class StockServiceImpl implements StockService {
                 "  and stock_dealer_code=dealer_code\n" +
                 "  and stock_country_code=ctry_code\n" +
                 "  and stock_status_code=4\n" +
-                "  AND stock_comp_code=v_stock_comp_code\n"+
+                "  AND stock_comp_code=v_stock_comp_code\n" +
                 " order by rct_updated_on desc";
         try {
-            sql=sql.replace("v_stock_comp_code",String.valueOf(companyCode));
+            sql = sql.replace("v_stock_comp_code", String.valueOf(companyCode));
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -493,7 +579,7 @@ public class StockServiceImpl implements StockService {
             }
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
-            Page<StockDetailsRes> stockDetailsResPage=CommonUtils.pageData(stockDetailsResList,pageable);
+            Page<StockDetailsRes> stockDetailsResPage = CommonUtils.pageData(stockDetailsResList, pageable);
             symuResponse.setData(stockDetailsResPage);
             DBUtils.CloseConnections(null, cst, conn);
         } catch (Exception ex) {
