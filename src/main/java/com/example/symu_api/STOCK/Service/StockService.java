@@ -1,5 +1,6 @@
 package com.example.symu_api.STOCK.Service;
 
+import com.example.symu_api.COMMON.Model.SymuBulkResponse;
 import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.STOCK.Dto.*;
 import com.example.symu_api.STOCK.Entity.StockEntity;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface StockService {
     SymuResponse createOrUpdateStock(StockEntity stock);
 
-    SymuResponse createStockBulk(CreateStockBulkDto createStockBulkDto);
+    SymuBulkResponse createStockBulk(CreateStockBulkDto createStockBulkDto);
 
     SymuResponse getStockEntityByStockCode(int stockCode);
 
@@ -23,7 +24,7 @@ public interface StockService {
 
     SymuResponse stockPostSale(StockPostSaleDto stockPostSaleDto);
 
-    SymuResponse stockApproval(List<StockApprovalDto> stockApprovalDtoList);
+    SymuResponse stockApproval(StockApprovalDto stockApprovalDto);
 
     SymuResponse stockRejectPostedSale(int stockCode,int stockUserCode);
 
@@ -32,4 +33,6 @@ public interface StockService {
     SymuResponse getAllStockDetails(int companyCode,Pageable pageable);
 
     SymuResponse updateDefaultStatus(int stockCode,String defaultStatus);
+
+    SymuResponse deleteStock(int stockCode,int userCode);
 }
