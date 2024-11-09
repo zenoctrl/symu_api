@@ -1,5 +1,6 @@
 package com.example.symu_api.STOCK.Controller;
 
+import com.example.symu_api.COMMON.Model.SymuBulkResponse;
 import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.STOCK.Dto.*;
 import com.example.symu_api.STOCK.Entity.StockEntity;
@@ -23,7 +24,7 @@ public class StockController {
         return stockService.createOrUpdateStock(stockEntity);
     }
     @PostMapping("/createStockBulk")
-    public SymuResponse createStockBulk(@RequestBody CreateStockBulkDto createStockBulkDto) {
+    public SymuBulkResponse createStockBulk(@RequestBody CreateStockBulkDto createStockBulkDto) {
         return stockService.createStockBulk(createStockBulkDto);
     }
     @GetMapping(path = "/getStockEntityByStockCode",
@@ -43,6 +44,7 @@ public class StockController {
         final SymuResponse stockEntity =stockService.getStockByBranchAndStatus(branchCode, statusCode);
         return ResponseEntity.ok(stockEntity);
     }
+    // pending approval, available stock, posted sale use /getAllStock
     @GetMapping(path = "/getAllStock",
             produces = {"application/json; charset=UTF-8"})
     public ResponseEntity<SymuResponse> getAllStock(
@@ -58,8 +60,8 @@ public class StockController {
         return stockService.updateStockPrice(stockPriceDto);
     }
     @PostMapping("/stockApproval")
-    public SymuResponse stockApproval(@RequestBody List<StockApprovalDto> stockApprovalDtoList) {
-        return stockService.stockApproval(stockApprovalDtoList);
+    public SymuResponse stockApproval(@RequestBody StockApprovalDto stockApprovalDto) {
+        return stockService.stockApproval(stockApprovalDto);
     }
     @PostMapping("/stockPostSale")
     public SymuResponse stockPostSale(@RequestBody StockPostSaleDto stockPostSaleDto) {
@@ -76,6 +78,7 @@ public class StockController {
     public SymuResponse stockCloseSale(@RequestBody StockCloseSaleDto stockPostSaleDto) {
         return stockService.stockCloseSale(stockPostSaleDto);
     }
+    // this is strictly for after sale
     @GetMapping(path = "/getAllStockDetails",
             produces = {"application/json; charset=UTF-8"})
     public ResponseEntity<SymuResponse> getAllStockDetails(
@@ -90,5 +93,11 @@ public class StockController {
             @RequestParam("stockCode")int stockCode,
             @RequestParam("defaultStatus")String defaultStatus) {
         return stockService.updateDefaultStatus(stockCode,defaultStatus);
+    }
+    @DeleteMapping("/deleteStock")
+    public SymuResponse deleteStock(
+            @RequestParam("stockCode")int stockCode,
+            @RequestParam("userCode")int userCode) {
+        return stockService.deleteStock(stockCode,userCode);
     }
 }

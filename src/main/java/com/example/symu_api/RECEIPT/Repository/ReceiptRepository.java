@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface ReceiptRepository extends JpaRepository<ReceiptEntity,Long> {
     @Query(value = "SELECT  MAX (receiptCode) FROM ReceiptEntity")
-    Integer findMaxCode();
+    int findMaxCode();
 
     ReceiptEntity getAllByReceiptCode(int receiptCode);
 
     List<ReceiptEntity> getAllByReceiptStockCodeAndReceiptStatus(int stockCode, String stockStatus);
 
-    //List<ReceiptEntity> getAllByReceiptStockCode(int stockCode);
+    List<ReceiptEntity> getAllByReceiptStockCode(int stockCode);
 
 }

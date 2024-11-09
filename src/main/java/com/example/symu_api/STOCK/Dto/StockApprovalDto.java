@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class StockApprovalDto {
-    private int stockCode;
+    private List<Integer> stockCode;
     private int userCode;
     private int nextStatusCode;
 }

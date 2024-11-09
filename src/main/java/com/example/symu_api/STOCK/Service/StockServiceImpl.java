@@ -4,6 +4,7 @@ import com.example.symu_api.AGENTS.Entity.AgentsEntity;
 import com.example.symu_api.AGENTS.Repository.AgentsEntityRepo;
 import com.example.symu_api.BRANCHES.Entity.BranchEntity;
 import com.example.symu_api.BRANCHES.Repository.BranchRepository;
+import com.example.symu_api.COMMON.Model.SymuBulkResponse;
 import com.example.symu_api.COMMON.Model.SymuErrorInfo;
 import com.example.symu_api.COMMON.Model.SymuResponse;
 import com.example.symu_api.COMMON.Service.CommonUtils;
@@ -14,6 +15,8 @@ import com.example.symu_api.CUSTOMER.Entity.CustomerEntity;
 import com.example.symu_api.CUSTOMER.Repository.CustomerRepository;
 import com.example.symu_api.RECEIPT.Entity.ReceiptEntity;
 import com.example.symu_api.RECEIPT.Repository.ReceiptRepository;
+import com.example.symu_api.ROLE.Entity.RoleEntity;
+import com.example.symu_api.ROLE.Repository.RoleRepository;
 import com.example.symu_api.STOCK.Dto.*;
 import com.example.symu_api.STOCK.Entity.StockEntity;
 import com.example.symu_api.STOCK.Model.StockDetailsRes;
@@ -25,6 +28,8 @@ import com.example.symu_api.STOCK_BATCH.Entity.StockBatchEntity;
 import com.example.symu_api.STOCK_BATCH.Repository.StockBatchRepo;
 import com.example.symu_api.STOCK_MODEL.Entity.StockModelEntity;
 import com.example.symu_api.STOCK_MODEL.Repository.StockModelRepo;
+import com.example.symu_api.STOCK_STATUS.entity.StockStatusEntity;
+import com.example.symu_api.STOCK_STATUS.repository.StockStatusRepository;
 import com.example.symu_api.USER.Entity.UserEntity;
 import com.example.symu_api.USER.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +69,10 @@ public class StockServiceImpl implements StockService {
     private BranchRepository branchRepository;
     @Autowired
     private CountryRepository countryRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private StockStatusRepository stockStatusRepository;
 
     @Override
     public SymuResponse createOrUpdateStock(StockEntity stock) {
@@ -117,16 +126,17 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public SymuResponse createStockBulk(CreateStockBulkDto createStockBulkDto) {
-        SymuResponse symuResponse = new SymuResponse<>();
+    public SymuBulkResponse createStockBulk(CreateStockBulkDto createStockBulkDto) {
+        SymuBulkResponse symuBulkResponse = new SymuBulkResponse<>();
         List<SymuErrorInfo> symuErrorInfoList = new ArrayList<>();
         LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
+        int success=0;
+        int failed=0;
         BranchEntity branchEntity = branchRepository.findAllByCode(createStockBulkDto.getStockBranchCode());
         StockModelEntity stockModelEntity = stockModelRepo.getStockModelEntitiesByCode(createStockBulkDto.getStockModelCode());
         StockBatchEntity stockBatchEntity = stockBatchRepo.getStockBatchEntitiesByCode(createStockBulkDto.getStockBatchCode());
         CountryEntity countryEntity = countryRepository.getCountryEntitiesByCode(branchEntity.getCountryCode());
         for (String stockImei : createStockBulkDto.getStockImei()) {
-            SymuErrorInfo symuErrorInfo = new SymuErrorInfo();
             StockEntity stockEntity = new StockEntity();
             try {
                 stockEntity.setStockCompanyCode(branchEntity.getCompanyCode());
@@ -148,21 +158,28 @@ public class StockServiceImpl implements StockService {
                 stockEntity.setStockUpdatedOn(timestamp);
                 stockEntity.setStockUpdatedBy(1);
                 StockEntity stockEntitySaved = stockEntityRepo.save(stockEntity);
-                if (stockEntitySaved != null) {
+                if (stockEntitySaved.getStockImei() !=null) {
                     // saved
+                    success=success+1;
                 }
-                symuResponse.setStatusCode("0");
-                symuResponse.setMessage("Success");
             } catch (Exception e) {
+                failed=failed+1;
+                SymuErrorInfo symuErrorInfo = new SymuErrorInfo();
                 symuErrorInfo.setStatusCode("1");
-                symuErrorInfo.setStatusDesc("IMEI : " + createStockBulkDto.getStockImei());
+                symuErrorInfo.setStatusDesc(stockImei);
                 symuErrorInfo.setStatusMessage(e.getMessage());
                 symuErrorInfoList.add(symuErrorInfo);
-                symuResponse.setData(symuErrorInfoList);
-                System.out.println("symuErrorInfoList : " + symuErrorInfoList);
             }
         }
-        return symuResponse;
+        // prepare response
+        symuBulkResponse.setStatusCode("0");
+        symuBulkResponse.setMessage("Success");
+        symuBulkResponse.setSuccess(String.valueOf(success));
+        symuBulkResponse.setFailed(String.valueOf(failed));
+        symuBulkResponse.setData(null);
+        symuBulkResponse.setSymuErrorInfoList(symuErrorInfoList);
+
+        return symuBulkResponse;
     }
 
     @Override
@@ -249,7 +266,6 @@ public class StockServiceImpl implements StockService {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             List<StockRes> stockResList = new ArrayList<>();
-            //    List<StockEntityModel> stockEntityList = stockEntityModelRepo.getStockEntitiesByStockCompanyCode(companyCode);
 
             while (rs.next()) {
                 StockRes stockRes = new StockRes();
@@ -363,13 +379,13 @@ public class StockServiceImpl implements StockService {
                 //saved
             }
             //post Receipt
-            Integer receiptNo;
+            int receiptNo;
             try {
                 receiptNo = receiptRepository.findMaxCode() + 1;
             } catch (Exception e) {
                 receiptNo = 1;
             }
-            receiptNo = receiptRepository.findMaxCode() + 1;
+          //  receiptNo = receiptRepository.findMaxCode() + 1;
             ReceiptEntity receiptEntity = new ReceiptEntity();
             receiptEntity.setReceiptCompanyCode(stockEntityData.getStockCompanyCode());
             receiptEntity.setReceiptCountryCode(stockEntityData.getStockCountryCode());
@@ -406,14 +422,14 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public SymuResponse stockApproval(List<StockApprovalDto> stockApprovalDtoList) {
+    public SymuResponse stockApproval(StockApprovalDto stockApprovalDto) {
         LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
         SymuResponse symuResponse = new SymuResponse<>();
         List<SymuErrorInfo> symuErrorInfoList = new ArrayList<>();
-        for (StockApprovalDto stockApprovalDto : stockApprovalDtoList) {
+        for (int stockCode : stockApprovalDto.getStockCode()) {
             SymuErrorInfo symuErrorInfo = new SymuErrorInfo();
             try {
-                StockEntity stockEntity = stockEntityRepo.getStockEntitiesByCode(stockApprovalDto.getStockCode());
+                StockEntity stockEntity = stockEntityRepo.getStockEntitiesByCode(stockCode);
                 stockEntity.setStockStatusCode(stockApprovalDto.getNextStatusCode());
                 stockEntity.setStockUpdatedBy(stockApprovalDto.getUserCode());
                 stockEntity.setStockUpdatedOn(timestamp);
@@ -444,19 +460,23 @@ public class StockServiceImpl implements StockService {
             stockEntityData.setStockAgnCode(null);
             stockEntityData.setStockStatusCode(2);
             StockEntity updated = stockEntityRepo.save(stockEntityData);
-
+//save update
+            if (updated !=null){
+                // stock status updated
+            }
             //reject receipt
             UserEntity userEntity = userRepository.getAllByCode(stockUserCode);
-            ReceiptEntity receiptEntityData = receiptRepository.getAllByReceiptStockCodeAndReceiptStatus(
-                    updated.getCode(), "POSTED"
-            ).get(0);
-            receiptEntityData.setReceiptStatus("REJECTED");
-            receiptEntityData.setReceiptUpdatedBy(userEntity.getUserFirstName() + " " + userEntity.getUserLastName());
-            ReceiptEntity rejected = receiptRepository.save(receiptEntityData);
-            if (rejected.getReceiptStatus().equals("REJECTED")) {
-                symuResponse.setStatusCode("0");
-                symuResponse.setMessage("success");
-                symuResponse.setData("Posted sale has been rejected successfully");
+            List<ReceiptEntity> receiptEntityData = receiptRepository.getAllByReceiptStockCode(
+                    updated.getCode());
+            for (ReceiptEntity receiptEntity: receiptEntityData) {
+                receiptEntity.setReceiptStatus("REJECTED");
+                receiptEntity.setReceiptUpdatedBy(userEntity.getUserFirstName() + " " + userEntity.getUserLastName());
+                ReceiptEntity rejected = receiptRepository.save(receiptEntity);
+                if (rejected.getReceiptStatus().equals("REJECTED")) {
+                    symuResponse.setStatusCode("0");
+                    symuResponse.setMessage("success");
+                    symuResponse.setData("Posted sale has been rejected successfully");
+                }
             }
         } catch (Exception e) {
             symuResponse.setStatusCode("1");
@@ -539,8 +559,8 @@ public class StockServiceImpl implements StockService {
                 "       dealer_name\n" +
                 "FROM stock,stock_model,customer,agents,branches,dealership,countries,receipts\n" +
                 "WHERE stock_model_code=model_code\n" +
-                "  and rct_stock_imei=stock_imei\n" +
-                "  and rct_status !='REJECTED'\n" +
+                "  and rct_stock_code=stock_code\n" +
+                "  and rct_status ='POSTED'\n" +
                 "  and stock_customer_code=customer_code\n" +
                 "  and stock_agn_code=agent_code\n" +
                 "  and stock_brn_code=BRN_CODE\n" +
@@ -595,4 +615,38 @@ public class StockServiceImpl implements StockService {
         return symuResponse;
     }
 
+    @Override
+    public SymuResponse deleteStock(int stockCode, int userCode) {
+        LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
+        SymuResponse symuResponse = new SymuResponse();
+        try {
+            UserEntity userEntity = userRepository.getAllByCode(userCode);
+            RoleEntity roleEntity=roleRepository.getAllByCode(userEntity.getUserRoleCode());
+            StockStatusEntity stockStatusEntity=stockStatusRepository.getStockStatusEntitiesByStatusShortDesc(
+                    "DELETED");
+            if (roleEntity.getRoleShortDesc().equals("Director")){
+                StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockCode);
+                stockEntityData.setStockStatusCode(stockStatusEntity.getStatusCode());
+                stockEntityData.setStockImei(timestamp+"_"+stockEntityData.getStockImei());
+                stockEntityData.setStockUpdatedOn(timestamp);
+                stockEntityData.setStockUpdatedBy(userCode);
+                StockEntity deleted = stockEntityRepo.save(stockEntityData);
+                if (deleted !=null){
+                    //deleted
+                    symuResponse.setStatusCode("0");
+                    symuResponse.setMessage("Success");
+                    symuResponse.setData("Stock was deleted successfully");
+                }
+            }else {
+                symuResponse.setStatusCode("1");
+                symuResponse.setMessage("Failed");
+                symuResponse.setData("You do not have rights to delete a stock");
+            }
+        }catch (Exception e){
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("Failed");
+            symuResponse.setData(e.getMessage());
+        }
+        return symuResponse;
+    }
 }
