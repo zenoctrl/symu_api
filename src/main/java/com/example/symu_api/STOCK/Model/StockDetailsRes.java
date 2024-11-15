@@ -21,4 +21,5 @@ public class StockDetailsRes {
     private String stockCountryCode;
     private String stockCreatedOn;
     private String stockUpdatedOn;
+    private String stockBatchNo;
 }
