@@ -136,6 +136,7 @@ public class StockServiceImpl implements StockService {
         StockModelEntity stockModelEntity = stockModelRepo.getStockModelEntitiesByCode(createStockBulkDto.getStockModelCode());
         StockBatchEntity stockBatchEntity = stockBatchRepo.getStockBatchEntitiesByCode(createStockBulkDto.getStockBatchCode());
         CountryEntity countryEntity = countryRepository.getCountryEntitiesByCode(branchEntity.getCountryCode());
+        List<StockEntity> stockEntityList=new ArrayList<>();
         for (String stockImei : createStockBulkDto.getStockImei()) {
             StockEntity stockEntity = new StockEntity();
             try {
@@ -160,14 +161,21 @@ public class StockServiceImpl implements StockService {
                 StockEntity stockEntitySaved = stockEntityRepo.save(stockEntity);
                 if (stockEntitySaved.getStockImei() !=null) {
                     // saved
+                    stockEntityList.add(stockEntitySaved);
                     success=success+1;
                 }
             } catch (Exception e) {
+                String errorMsg=e.getMessage();
+                if(errorMsg.contains("Duplicate")){
+                    errorMsg="Duplicate entry for the imei";
+                }else {
+                    errorMsg=e.getMessage();
+                }
                 failed=failed+1;
                 SymuErrorInfo symuErrorInfo = new SymuErrorInfo();
                 symuErrorInfo.setStatusCode("1");
                 symuErrorInfo.setStatusDesc(stockImei);
-                symuErrorInfo.setStatusMessage(e.getMessage());
+                symuErrorInfo.setStatusMessage(errorMsg);
                 symuErrorInfoList.add(symuErrorInfo);
             }
         }
@@ -176,7 +184,7 @@ public class StockServiceImpl implements StockService {
         symuBulkResponse.setMessage("Success");
         symuBulkResponse.setSuccess(String.valueOf(success));
         symuBulkResponse.setFailed(String.valueOf(failed));
-        symuBulkResponse.setData(null);
+        symuBulkResponse.setData(stockEntityList);
         symuBulkResponse.setSymuErrorInfoList(symuErrorInfoList);
 
         return symuBulkResponse;
@@ -556,8 +564,8 @@ public class StockServiceImpl implements StockService {
                 "       customer_name,customer_phone,customer_national_id,\n" +
                 "       agent_name,\n" +
                 "       brn_name,\n" +
-                "       dealer_name\n" +
-                "FROM stock,stock_model,customer,agents,branches,dealership,countries,receipts\n" +
+                "       dealer_name,batch_no\n" +
+                "FROM stock,stock_model,customer,agents,branches,dealership,countries,receipts,stock_batch\n" +
                 "WHERE stock_model_code=model_code\n" +
                 "  and rct_stock_code=stock_code\n" +
                 "  and rct_status ='POSTED'\n" +
@@ -566,6 +574,7 @@ public class StockServiceImpl implements StockService {
                 "  and stock_brn_code=BRN_CODE\n" +
                 "  and stock_dealer_code=dealer_code\n" +
                 "  and stock_country_code=ctry_code\n" +
+                "  and stock_batch_code=batch_code\n" +
                 "  and stock_status_code=4\n" +
                 "  AND stock_comp_code=v_stock_comp_code\n" +
                 " order by rct_updated_on desc";
@@ -594,7 +603,7 @@ public class StockServiceImpl implements StockService {
                 stockDetailsRes.setStockCountryCode(rs.getString("stock_country_code"));
                 stockDetailsRes.setStockCreatedOn(rs.getString("stock_created_on"));
                 stockDetailsRes.setStockUpdatedOn(rs.getString("rct_updated_on"));
-
+                stockDetailsRes.setStockBatchNo(rs.getString("batch_no"));
                 stockDetailsResList.add(stockDetailsRes);
             }
             symuResponse.setStatusCode("0");
