@@ -359,6 +359,7 @@ public class StockServiceImpl implements StockService {
             CustomerEntity customerEntity = new CustomerEntity();
             StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockPostSaleDto.getStockCode());
             UserEntity userEntity = userRepository.getAllByCode(stockPostSaleDto.getUserCode());
+
             try {
                 CustomerEntity customerEntityData = customerRepository.getCustomerEntitiesByCustomerPhoneNumber(
                         stockPostSaleDto.getCustomerPhoneNumber());
@@ -393,7 +394,6 @@ public class StockServiceImpl implements StockService {
             } catch (Exception e) {
                 receiptNo = 1;
             }
-          //  receiptNo = receiptRepository.findMaxCode() + 1;
             ReceiptEntity receiptEntity = new ReceiptEntity();
             receiptEntity.setReceiptCompanyCode(stockEntityData.getStockCompanyCode());
             receiptEntity.setReceiptCountryCode(stockEntityData.getStockCountryCode());
@@ -417,7 +417,6 @@ public class StockServiceImpl implements StockService {
             if (rctSaved != null) {
                 //saved
             }
-
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
             symuResponse.setData(rctSaved);
@@ -473,19 +472,14 @@ public class StockServiceImpl implements StockService {
                 // stock status updated
             }
             //reject receipt
-            UserEntity userEntity = userRepository.getAllByCode(stockUserCode);
             List<ReceiptEntity> receiptEntityData = receiptRepository.getAllByReceiptStockCode(
                     updated.getCode());
             for (ReceiptEntity receiptEntity: receiptEntityData) {
-                receiptEntity.setReceiptStatus("REJECTED");
-                receiptEntity.setReceiptUpdatedBy(userEntity.getUserFirstName() + " " + userEntity.getUserLastName());
-                ReceiptEntity rejected = receiptRepository.save(receiptEntity);
-                if (rejected.getReceiptStatus().equals("REJECTED")) {
-                    symuResponse.setStatusCode("0");
-                    symuResponse.setMessage("success");
-                    symuResponse.setData("Posted sale has been rejected successfully");
-                }
+                 receiptRepository.delete(receiptEntity);
             }
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("success");
+            symuResponse.setData("Posted sale has been rejected successfully");
         } catch (Exception e) {
             symuResponse.setStatusCode("1");
             symuResponse.setMessage("Failed");
@@ -496,6 +490,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public SymuResponse stockCloseSale(StockCloseSaleDto stockCloseSaleDto) {
+        LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
         SymuResponse symuResponse = new SymuResponse();
         // create or update agent
         try {
@@ -518,6 +513,16 @@ public class StockServiceImpl implements StockService {
             AgentsEntity agentsEntitySaved = agentsEntityRepo.save(agentsEntity);
             int agentCode = agentsEntitySaved.getAgentCode();
 
+            //update receipt date
+            List<ReceiptEntity> receiptEntityData=receiptRepository.getAllByReceiptStockCode(stockEntityData.getCode());
+            for(ReceiptEntity receiptEntity: receiptEntityData) {
+                receiptEntity.setReceiptUpdatedBy(String.valueOf(stockCloseSaleDto.getUserCode()));
+                receiptEntity.setReceiptUpdatedOn(timestamp);
+                ReceiptEntity receipt=receiptRepository.save(receiptEntity);
+                if (receipt != null) {
+                    //saved
+                }
+            }
             // close sale
             stockEntityData.setStockStatusCode(stockCloseSaleDto.getNextStatusCode());
             stockEntityData.setStockUpdatedBy(stockCloseSaleDto.getUserCode());
