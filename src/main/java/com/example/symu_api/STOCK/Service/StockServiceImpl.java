@@ -73,7 +73,6 @@ public class StockServiceImpl implements StockService {
     private RoleRepository roleRepository;
     @Autowired
     private StockStatusRepository stockStatusRepository;
-
     @Override
     public SymuResponse createOrUpdateStock(StockEntity stock) {
         SymuResponse symuResponse = new SymuResponse<>();
@@ -359,6 +358,7 @@ public class StockServiceImpl implements StockService {
             CustomerEntity customerEntity = new CustomerEntity();
             StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockPostSaleDto.getStockCode());
             UserEntity userEntity = userRepository.getAllByCode(stockPostSaleDto.getUserCode());
+            StockModelEntity stockModelEntity=stockModelRepo.getStockModelEntitiesByCode(stockEntityData.getStockModelCode());
 
             try {
                 CustomerEntity customerEntityData = customerRepository.getCustomerEntitiesByCustomerPhoneNumber(
@@ -383,6 +383,8 @@ public class StockServiceImpl implements StockService {
             stockEntityData.setStockTradeName(stockPostSaleDto.getTradingName());
             stockEntityData.setStockDealerCode(stockPostSaleDto.getStockDealerCode());
             stockEntityData.setStockCustomerCode(customerCode);
+            stockEntityData.setStockSellingPrice(stockModelEntity.getModelSellingPrice());
+            stockEntityData.setStockProfit(stockModelEntity.getModelSellingPrice()-stockEntityData.getStockBuyingPrice());
             StockEntity saved = stockEntityRepo.save(stockEntityData);
             if (saved != null) {
                 //saved
