@@ -411,7 +411,7 @@ public class StockServiceImpl implements StockService {
             receiptEntity.setReceiptStockCode(stockPostSaleDto.getStockCode());
             receiptEntity.setReceiStockImei(stockEntityData.getStockImei());
             receiptEntity.setReceiStockQuantity(1);
-            receiptEntity.setReceiptAmount(stockEntityData.getStockSellingPrice());
+            receiptEntity.setReceiptAmount(saved.getStockSellingPrice());
             receiptEntity.setReceiptModel(stockEntityData.getStockMemory());
             receiptEntity.setReceiptStatus("POSTED");
             receiptEntity.setReceiptDealership(stockPostSaleDto.getTradingName());
