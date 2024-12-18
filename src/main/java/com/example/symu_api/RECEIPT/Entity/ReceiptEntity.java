@@ -63,4 +63,6 @@ public class ReceiptEntity {
     private String receiptStatus;
     @Column(name = "RCT_DEALERSHIP")
     private String receiptDealership;
+    @Column(name = "RCT_CLUSTER_CODE")
+    private Integer receiptClusterCode;
 }
