@@ -4,6 +4,8 @@ import com.example.symu_api.AGENTS.Entity.AgentsEntity;
 import com.example.symu_api.AGENTS.Repository.AgentsEntityRepo;
 import com.example.symu_api.BRANCHES.Entity.BranchEntity;
 import com.example.symu_api.BRANCHES.Repository.BranchRepository;
+import com.example.symu_api.CLUSTER.Entiry.ClusterEntity;
+import com.example.symu_api.CLUSTER.Repository.ClusterEntityRepository;
 import com.example.symu_api.COMMON.Model.SymuBulkResponse;
 import com.example.symu_api.COMMON.Model.SymuErrorInfo;
 import com.example.symu_api.COMMON.Model.SymuResponse;
@@ -73,7 +75,8 @@ public class StockServiceImpl implements StockService {
     private RoleRepository roleRepository;
     @Autowired
     private StockStatusRepository stockStatusRepository;
-
+    @Autowired
+    private ClusterEntityRepository clusterEntityRepository;
     @Override
     public SymuResponse createOrUpdateStock(StockEntity stock) {
         SymuResponse symuResponse = new SymuResponse<>();
@@ -113,6 +116,7 @@ public class StockServiceImpl implements StockService {
             stockEntity.setStockSoldBy(stock.getStockSoldBy());
             stockEntity.setStockTradeName(stock.getStockTradeName());
             stockEntity.setStockDealerCode(stock.getStockDealerCode());
+            stockEntity.setStockClusterCode(stock.getStockClusterCode());
             StockEntity stockEntitySaved = stockEntityRepo.save(stockEntity);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
@@ -132,18 +136,19 @@ public class StockServiceImpl implements StockService {
         LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
         int success=0;
         int failed=0;
-        BranchEntity branchEntity = branchRepository.findAllByCode(createStockBulkDto.getStockBranchCode());
+        ClusterEntity clusterEntity=clusterEntityRepository.getClusterEntitiesByCode(createStockBulkDto.getStockClusterCode());
         StockModelEntity stockModelEntity = stockModelRepo.getStockModelEntitiesByCode(createStockBulkDto.getStockModelCode());
         StockBatchEntity stockBatchEntity = stockBatchRepo.getStockBatchEntitiesByCode(createStockBulkDto.getStockBatchCode());
-        CountryEntity countryEntity = countryRepository.getCountryEntitiesByCode(branchEntity.getCountryCode());
+        CountryEntity countryEntity = countryRepository.getCountryEntitiesByCode(clusterEntity.getClusterCountryCode());
         List<StockEntity> stockEntityList=new ArrayList<>();
         for (String stockImei : createStockBulkDto.getStockImei()) {
             StockEntity stockEntity = new StockEntity();
             try {
-                stockEntity.setStockCompanyCode(branchEntity.getCompanyCode());
-                stockEntity.setStockCountryCode(branchEntity.getCountryCode());
-                stockEntity.setStockRegionCode(branchEntity.getRegionCode());
-                stockEntity.setStockBranchCode(createStockBulkDto.getStockBranchCode());
+                stockEntity.setStockCompanyCode(clusterEntity.getCompanyCode());
+                stockEntity.setStockCountryCode(clusterEntity.getClusterCountryCode());
+                stockEntity.setStockRegionCode(clusterEntity.getClusterRegionCode());
+                stockEntity.setStockBranchCode(clusterEntity.getClusterBranchCode());
+                stockEntity.setStockClusterCode(createStockBulkDto.getStockClusterCode());
                 stockEntity.setStockBatchCode(createStockBulkDto.getStockBatchCode());
                 stockEntity.setStockImei(stockImei);
                 stockEntity.setStockModelCode(createStockBulkDto.getStockModelCode());
@@ -258,8 +263,10 @@ public class StockServiceImpl implements StockService {
                 "      status_short_desc,\n" +
                 "      brn_name,\n" +
                 "      countries.ctry_name,\n" +
-                "      batch_no\n" +
-                "FROM stock,stock_status,branches,countries,stock_batch\n" +
+                "      batch_no,\n" +
+                "      cluster_code,\n" +
+                "      cluster_name\n" +
+                "FROM stock,stock_status,branches,countries,stock_batch,cluster\n" +
                 "where stock_status.status_code=stock_status_code\n" +
                 "and BRN_CODE=stock_brn_code\n" +
                 "and ctry_code=stock_country_code\n" +
@@ -307,6 +314,8 @@ public class StockServiceImpl implements StockService {
                 stockRes.setStockBranchName(rs.getString("brn_name"));
                 stockRes.setStockCountryName(rs.getString("ctry_name"));
                 stockRes.setStockBatchNumber(rs.getString("batch_no"));
+                stockRes.setStockClusterCode(rs.getInt("cluster_code"));
+                stockRes.setStockClusterName(rs.getString("cluster_name"));
                 stockResList.add(stockRes);
             }
             symuResponse.setStatusCode("0");
@@ -359,6 +368,7 @@ public class StockServiceImpl implements StockService {
             CustomerEntity customerEntity = new CustomerEntity();
             StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockPostSaleDto.getStockCode());
             UserEntity userEntity = userRepository.getAllByCode(stockPostSaleDto.getUserCode());
+            StockModelEntity stockModelEntity=stockModelRepo.getStockModelEntitiesByCode(stockEntityData.getStockModelCode());
 
             try {
                 CustomerEntity customerEntityData = customerRepository.getCustomerEntitiesByCustomerPhoneNumber(
@@ -383,6 +393,8 @@ public class StockServiceImpl implements StockService {
             stockEntityData.setStockTradeName(stockPostSaleDto.getTradingName());
             stockEntityData.setStockDealerCode(stockPostSaleDto.getStockDealerCode());
             stockEntityData.setStockCustomerCode(customerCode);
+            stockEntityData.setStockSellingPrice(stockModelEntity.getModelSellingPrice());
+            stockEntityData.setStockProfit(stockModelEntity.getModelSellingPrice()-stockEntityData.getStockBuyingPrice());
             StockEntity saved = stockEntityRepo.save(stockEntityData);
             if (saved != null) {
                 //saved
@@ -409,10 +421,11 @@ public class StockServiceImpl implements StockService {
             receiptEntity.setReceiptStockCode(stockPostSaleDto.getStockCode());
             receiptEntity.setReceiStockImei(stockEntityData.getStockImei());
             receiptEntity.setReceiStockQuantity(1);
-            receiptEntity.setReceiptAmount(stockEntityData.getStockSellingPrice());
+            receiptEntity.setReceiptAmount(saved.getStockSellingPrice());
             receiptEntity.setReceiptModel(stockEntityData.getStockMemory());
             receiptEntity.setReceiptStatus("POSTED");
             receiptEntity.setReceiptDealership(stockPostSaleDto.getTradingName());
+            receiptEntity.setReceiptClusterCode(stockEntityData.getStockClusterCode());
             ReceiptEntity rctSaved = receiptRepository.save(receiptEntity);
             if (rctSaved != null) {
                 //saved
@@ -569,8 +582,9 @@ public class StockServiceImpl implements StockService {
                 "       customer_name,customer_phone,customer_national_id,\n" +
                 "       agent_name,\n" +
                 "       brn_name,\n" +
-                "       dealer_name,batch_no\n" +
-                "FROM stock,stock_model,customer,agents,branches,dealership,countries,receipts,stock_batch\n" +
+                "       dealer_name,batch_no,cluster_code,cluster_name\n" +
+                "FROM stock,stock_model,customer,agents,branches,\n" +
+                "dealership,countries,receipts,stock_batch,cluster\n" +
                 "WHERE stock_model_code=model_code\n" +
                 "  and rct_stock_code=stock_code\n" +
                 "  and rct_status ='POSTED'\n" +
@@ -580,6 +594,8 @@ public class StockServiceImpl implements StockService {
                 "  and stock_dealer_code=dealer_code\n" +
                 "  and stock_country_code=ctry_code\n" +
                 "  and stock_batch_code=batch_code\n" +
+                "  and stock_cluster_code=cluster_code\n" +
+                "  and cluster_code=rct_cluster_code\n" +
                 "  and stock_status_code=4\n" +
                 "  AND stock_comp_code=v_stock_comp_code\n" +
                 " order by rct_updated_on desc";
@@ -609,6 +625,8 @@ public class StockServiceImpl implements StockService {
                 stockDetailsRes.setStockCreatedOn(rs.getString("stock_created_on"));
                 stockDetailsRes.setStockUpdatedOn(rs.getString("rct_updated_on"));
                 stockDetailsRes.setStockBatchNo(rs.getString("batch_no"));
+                stockDetailsRes.setStockClusterCode(rs.getInt("cluster_code"));
+                stockDetailsRes.setStockClusterName(rs.getString("cluster_name"));
                 stockDetailsResList.add(stockDetailsRes);
             }
             symuResponse.setStatusCode("0");

@@ -22,4 +22,6 @@ public class StockDetailsRes {
     private String stockCreatedOn;
     private String stockUpdatedOn;
     private String stockBatchNo;
+    private int stockClusterCode;
+    private String stockClusterName;
 }

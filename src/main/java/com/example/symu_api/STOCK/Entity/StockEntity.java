@@ -60,4 +60,6 @@ public class StockEntity {
     private String stockTradeName;
     @Column(name = "STOCK_DEALER_CODE")
     private Integer stockDealerCode;
+    @Column(name = "STOCK_CLUSTER_CODE")
+    private Integer stockClusterCode;
 }

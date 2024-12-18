@@ -34,4 +34,6 @@ public class StockRes {
     private String stockBranchName ;
     private String stockCountryName;
     private String stockBatchNumber;
+    private int stockClusterCode;
+    private String stockClusterName;
 }
