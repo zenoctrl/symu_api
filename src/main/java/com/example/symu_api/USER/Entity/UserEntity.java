@@ -37,4 +37,6 @@ public class UserEntity {
     private Integer userRegionCode;
     @Column(name = "USER_STATUS")
     private String userStatus;
+    @Column(name = "USER_CLUSTER_CODE")
+    private Integer userClusterCode;
 }
