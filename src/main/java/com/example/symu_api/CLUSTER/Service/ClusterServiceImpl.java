@@ -33,8 +33,7 @@ public class ClusterServiceImpl implements ClusterService {
         SymuResponse symuResponse = new SymuResponse();
         try {
             List<ClusterEntity> clusterEntityList=clusterEntityRepository.
-                    getClusterEntitiesByClusterCountryCodeAndClusterStatus(
-                    countryCode,"ACTIVE");
+                    getClusterEntitiesByClusterCountryCode(countryCode);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
             symuResponse.setData(clusterEntityList);
@@ -67,7 +66,7 @@ public class ClusterServiceImpl implements ClusterService {
         SymuResponse symuResponse = new SymuResponse();
         try {
             List<ClusterEntity> clusterEntityList=clusterEntityRepository.
-                    getClusterEntitiesByClusterBranchCodeAndClusterStatus(branchCode,"ACTIVE");
+                    getClusterEntitiesByClusterBranchCode(branchCode);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
             symuResponse.setData(clusterEntityList);

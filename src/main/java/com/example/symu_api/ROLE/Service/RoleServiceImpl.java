@@ -21,21 +21,7 @@ public class RoleServiceImpl implements RoleService {
     public SymuResponse createOrUpdateRole(RoleEntity roleDto) {
         SymuResponse symuResponse = new SymuResponse<>();
         try {
-            RoleEntity roleEntity = new RoleEntity();
-            try {
-                RoleEntity roleEntityData = roleRepository.getAllByCode(roleEntity.getCode());
-                roleEntity.setCode(roleEntityData.getCode());
-            } catch (Exception e) {
-                // new role
-            }
-            roleEntity.setRoleName(roleDto.getRoleName());
-            roleEntity.setRoleShortDesc(roleDto.getRoleShortDesc());
-            roleEntity.setRoleDescription(roleDto.getRoleDescription());
-            roleEntity.setRoleStatus(roleDto.getRoleStatus());
-            roleEntity.setRoleCreatedBy(roleDto.getRoleCreatedBy());
-            roleEntity.setRoleUpdatedBy(roleDto.getRoleUpdatedBy());
-
-            RoleEntity roleEntitySaved = roleRepository.save(roleEntity);
+                RoleEntity roleEntitySaved = roleRepository.save(roleDto);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
             symuResponse.setData(roleEntitySaved);
