@@ -271,6 +271,7 @@ public class StockServiceImpl implements StockService {
                 "and BRN_CODE=stock_brn_code\n" +
                 "and ctry_code=stock_country_code\n" +
                 "and batch_code=stock_batch_code\n" +
+                "and stock_cluster_code=cluster_code\n" +
                 "and status_short_desc='v_status_short_desc'\n" +
                 "and stock_comp_code=v_stock_comp_code\n" +
                 "order by stock_updated_on desc";

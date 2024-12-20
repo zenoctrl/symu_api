@@ -9,8 +9,8 @@ public interface ClusterEntityRepository extends JpaRepository<ClusterEntity, Lo
 
     ClusterEntity getClusterEntitiesByCode(int code);
 
-    List<ClusterEntity> getClusterEntitiesByClusterBranchCodeAndClusterStatus(int branchCode,String status);
+    List<ClusterEntity> getClusterEntitiesByClusterBranchCode(int branchCode);
 
-    List<ClusterEntity> getClusterEntitiesByClusterCountryCodeAndClusterStatus(int countryCode,String status);
+    List<ClusterEntity> getClusterEntitiesByClusterCountryCode(int countryCode);
 
 }
