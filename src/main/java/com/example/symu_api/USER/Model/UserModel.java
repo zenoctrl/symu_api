@@ -1,6 +1,7 @@
 package com.example.symu_api.USER.Model;
 
 import com.example.symu_api.BRANCHES.Entity.BranchEntity;
+import com.example.symu_api.CLUSTER.Entiry.ClusterEntity;
 import com.example.symu_api.COUNTRY.Entity.CountryEntity;
 import com.example.symu_api.REGION.Entity.RegionEntity;
 import com.example.symu_api.ROLE.Model.RoleModel;
@@ -41,6 +42,8 @@ public class UserModel {
     private Integer userRegionCode;
     @Column(name = "USER_STATUS")
     private String userStatus;
+    @Column(name = "USER_CLUSTER_CODE")
+    private String userClusterCode;
 
     @ManyToOne
     @JoinColumn(name = "USER_COUNTRY_CODE",insertable = false,updatable = false)
@@ -53,6 +56,10 @@ public class UserModel {
     @ManyToOne
     @JoinColumn(name = "USER_BRN_CODE",insertable = false,updatable = false)
     private BranchEntity branchEntity;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_CLUSTER_CODE",insertable = false,updatable = false)
+    private ClusterEntity clusterEntity;
 
     @ManyToOne
     @JoinColumn(name = "USER_ROLE_CODE",insertable = false,updatable = false)

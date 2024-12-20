@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService{
             userEntity.setUserCountryCode(userDao.getUserCountryCode());
             userEntity.setUserRegionCode(userDao.getUserRegionCode());
             userEntity.setUserStatus(userDao.getUserStatus());
+            userEntity.setUserClusterCode(userDao.getUserClusterCode());
             UserEntity entitySaved=userRepository.save(userEntity);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("Success");
