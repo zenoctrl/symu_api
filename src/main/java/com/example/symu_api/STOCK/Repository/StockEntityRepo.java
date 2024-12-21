@@ -12,4 +12,6 @@ public interface StockEntityRepo extends JpaRepository<StockEntity, Long> {
     List<StockEntity> getAllByStockCompanyCodeAndStockModelCodeAndStockStatusCode
             (int companyCode, int modelCode,int stockStatusCode);
 
+    List<StockEntity> getAllByStockBranchCode(int stockBranchCode);
+
 }
