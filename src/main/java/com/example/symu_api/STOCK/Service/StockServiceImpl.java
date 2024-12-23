@@ -657,7 +657,7 @@ public class StockServiceImpl implements StockService {
             RoleEntity roleEntity=roleRepository.getAllByCode(userEntity.getUserRoleCode());
             StockStatusEntity stockStatusEntity=stockStatusRepository.getStockStatusEntitiesByStatusShortDesc(
                     "DELETED");
-            if (roleEntity.getRoleShortDesc().equals("Director")){
+
                 StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockCode);
                 stockEntityData.setStockStatusCode(stockStatusEntity.getStatusCode());
                 stockEntityData.setStockImei(timestamp+"_"+stockEntityData.getStockImei());
@@ -670,11 +670,6 @@ public class StockServiceImpl implements StockService {
                     symuResponse.setMessage("Success");
                     symuResponse.setData("Stock was deleted successfully");
                 }
-            }else {
-                symuResponse.setStatusCode("1");
-                symuResponse.setMessage("Failed");
-                symuResponse.setData("You do not have rights to delete a stock");
-            }
         }catch (Exception e){
             symuResponse.setStatusCode("1");
             symuResponse.setMessage("Failed");
