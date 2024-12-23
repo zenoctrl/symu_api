@@ -657,7 +657,6 @@ public class StockServiceImpl implements StockService {
             RoleEntity roleEntity=roleRepository.getAllByCode(userEntity.getUserRoleCode());
             StockStatusEntity stockStatusEntity=stockStatusRepository.getStockStatusEntitiesByStatusShortDesc(
                     "DELETED");
-
                 StockEntity stockEntityData = stockEntityRepo.getStockEntitiesByCode(stockCode);
                 stockEntityData.setStockStatusCode(stockStatusEntity.getStatusCode());
                 stockEntityData.setStockImei(timestamp+"_"+stockEntityData.getStockImei());
