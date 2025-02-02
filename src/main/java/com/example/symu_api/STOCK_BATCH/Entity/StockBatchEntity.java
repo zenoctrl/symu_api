@@ -2,6 +2,7 @@ package com.example.symu_api.STOCK_BATCH.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.sql.Date;
 

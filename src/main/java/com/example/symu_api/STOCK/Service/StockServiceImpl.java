@@ -475,7 +475,11 @@ public class StockServiceImpl implements StockService {
                 if (saved != null) {
                     // add total approved
                     StockBatchEntity stockBatchEntity = stockBatchRepo.getStockBatchEntitiesByCode(saved.getStockBatchCode());
-                    stockBatchEntity.setBatchTotalApproved(stockBatchEntity.getBatchTotalApproved() + 1);
+                    if(stockStatusEntity.getStatusShortDesc().equalsIgnoreCase("DELETED")){
+                        stockBatchEntity.setBatchTotalApproved(stockBatchEntity.getBatchTotalApproved() - 1);
+                    }else {
+                        stockBatchEntity.setBatchTotalApproved(stockBatchEntity.getBatchTotalApproved() + 1);
+                    }
                     stockBatchRepo.save(stockBatchEntity);
                 }
                 symuResponse.setStatusCode("0");
