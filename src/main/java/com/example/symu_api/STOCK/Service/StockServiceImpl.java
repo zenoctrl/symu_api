@@ -463,6 +463,11 @@ public class StockServiceImpl implements StockService {
             SymuErrorInfo symuErrorInfo = new SymuErrorInfo();
             try {
                 StockEntity stockEntity = stockEntityRepo.getStockEntitiesByCode(stockCode);
+                StockStatusEntity stockStatusEntity = stockStatusRepository.getStockStatusEntitiesByStatusCode(
+                        stockApprovalDto.getNextStatusCode());
+                if(stockStatusEntity.getStatusShortDesc().equalsIgnoreCase("DELETED")){
+                    stockEntity.setStockImei(timestamp+"_"+stockEntity.getStockImei());
+                }
                 stockEntity.setStockStatusCode(stockApprovalDto.getNextStatusCode());
                 stockEntity.setStockUpdatedBy(stockApprovalDto.getUserCode());
                 stockEntity.setStockUpdatedOn(timestamp);
