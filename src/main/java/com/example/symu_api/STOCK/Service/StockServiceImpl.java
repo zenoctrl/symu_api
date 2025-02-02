@@ -476,7 +476,7 @@ public class StockServiceImpl implements StockService {
                     // add total approved
                     StockBatchEntity stockBatchEntity = stockBatchRepo.getStockBatchEntitiesByCode(saved.getStockBatchCode());
                     if(stockStatusEntity.getStatusShortDesc().equalsIgnoreCase("DELETED")){
-                        stockBatchEntity.setBatchTotalApproved(stockBatchEntity.getBatchTotalApproved() - 1);
+                        stockBatchEntity.setBatchTotalApproved(stockBatchEntity.getBatchTotalAllocated() - 1);
                     }else {
                         stockBatchEntity.setBatchTotalApproved(stockBatchEntity.getBatchTotalApproved() + 1);
                     }
