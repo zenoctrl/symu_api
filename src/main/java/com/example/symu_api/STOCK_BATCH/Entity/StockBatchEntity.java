@@ -37,4 +37,10 @@ public class StockBatchEntity {
     private Date batchDate;
     @Column(name = "BATCH_BUYING_PRICE")
     private Double batchBuyingPrice;
+    @Column(name = "BATCH_TOTAL_NUMBER")
+    private Integer batchTotalNumber;
+    @Column(name = "BATCH_TOTAL_ALLOCATED")
+    private Integer batchTotalAllocated;
+    @Column(name = "BATCH_TOTAL_APPROVED")
+    private Integer batchTotalApproved;
 }
