@@ -82,10 +82,10 @@ public class StockController {
     @GetMapping(path = "/getAllStockDetails",
             produces = {"application/json; charset=UTF-8"})
     public ResponseEntity<SymuResponse> getAllStockDetails(
-            @RequestParam("companyCode")int companyCode,
+            StockDetailsDto stockDetailsDto,
             Pageable pageable
     ) {
-        final SymuResponse stockEntity =stockService.getAllStockDetails(companyCode,pageable);
+        final SymuResponse stockEntity =stockService.getAllStockDetails(stockDetailsDto,pageable);
         return ResponseEntity.ok(stockEntity);
     }
     @PostMapping("/updateDefaultStatus")

@@ -178,7 +178,11 @@ public class StockServiceImpl implements StockService {
                     stockEntityList.add(stockEntitySaved);
                     success = success + 1;
                     // add batch total allocated
-                    stockBatchEntity.setBatchTotalAllocated(stockBatchEntity.getBatchTotalAllocated()+1);
+                    if (stockBatchEntity.getBatchTotalAllocated() !=null){
+                        stockBatchEntity.setBatchTotalAllocated(stockBatchEntity.getBatchTotalAllocated()+1);
+                    }else {
+                        stockBatchEntity.setBatchTotalAllocated(1);
+                    }
                     stockBatchRepo.save(stockBatchEntity);
                 }
             } catch (Exception e) {
@@ -597,35 +601,43 @@ public class StockServiceImpl implements StockService {
         return symuResponse;
     }
 
-    public SymuResponse getAllStockDetails(int companyCode, Pageable pageable) {
+    public SymuResponse getAllStockDetails(StockDetailsDto stockDetailsDto, Pageable pageable) {
         SymuResponse symuResponse = new SymuResponse();
         Connection conn = null;
         CallableStatement cst = null;
-        String sql = "SELECT stock_code,stock_imei,stock_selling_price,stock_defaulted," +
-                "ctry_currency_code,stock_brn_code,stock_region_code,stock_country_code,\n" +
-                "       model_name,stock_created_on,rct_updated_on,\n" +
-                "       customer_name,customer_phone,customer_national_id,\n" +
-                "       agent_name,\n" +
-                "       brn_name,\n" +
-                "       dealer_name,batch_no,cluster_code,cluster_name\n" +
-                "FROM stock,stock_model,customer,agents,branches,\n" +
-                "dealership,countries,receipts,stock_batch,cluster\n" +
-                "WHERE stock_model_code=model_code\n" +
-                "  and rct_stock_code=stock_code\n" +
-                "  and rct_status ='POSTED'\n" +
-                "  and stock_customer_code=customer_code\n" +
-                "  and stock_agn_code=agent_code\n" +
-                "  and stock_brn_code=BRN_CODE\n" +
-                "  and stock_dealer_code=dealer_code\n" +
-                "  and stock_country_code=ctry_code\n" +
-                "  and stock_batch_code=batch_code\n" +
-                "  and stock_cluster_code=cluster_code\n" +
-                "  and cluster_code=rct_cluster_code\n" +
-                "  and stock_status_code=4\n" +
-                "  AND stock_comp_code=v_stock_comp_code\n" +
-                " order by rct_updated_on desc";
+        String sql = "SELECT stock_code,stock_imei,stock_selling_price,stock_defaulted,\n" +
+                "                ctry_currency_code,stock_brn_code,stock_region_code,stock_country_code,\n" +
+                "                       model_name,stock_created_on,rct_updated_on,\n" +
+                "                       customer_name,customer_phone,customer_national_id,\n" +
+                "                       agent_name,\n" +
+                "                       brn_name,\n" +
+                "                       dealer_name,batch_no,cluster_code,cluster_name\n" +
+                "                FROM stock,stock_model,customer,agents,branches,\n" +
+                "                dealership,countries,receipts,stock_batch,cluster\n" +
+                "                WHERE stock_model_code=model_code\n" +
+                "                  and rct_stock_code=stock_code\n" +
+                "                  and rct_status ='POSTED'\n" +
+                "                  and stock_customer_code=customer_code\n" +
+                "                  and stock_agn_code=agent_code\n" +
+                "                  and stock_brn_code=BRN_CODE\n" +
+                "                  and stock_dealer_code=dealer_code\n" +
+                "                  and stock_country_code=ctry_code\n" +
+                "                  and stock_batch_code=batch_code\n" +
+                "                  and stock_cluster_code=cluster_code\n" +
+                "                  and cluster_code=rct_cluster_code\n" +
+                "                  and stock_status_code=4\n" +
+                "                  AND stock_comp_code=v_stock_comp_code\n" +
+                "                  and stock_country_code=ifnull(v_stock_country_code,stock_country_code)\n" +
+                "                  and stock_region_code=ifnull(v_stock_region_code,stock_region_code)\n" +
+                "                  and stock_brn_code=ifnull(v_stock_brn_code,stock_brn_code)\n" +
+                "                 and cluster_CODE=ifnull(v_cluster_code,cluster_CODE)\n" +
+                "                 order by rct_updated_on desc";
         try {
-            sql = sql.replace("v_stock_comp_code", String.valueOf(companyCode));
+            sql = sql.replace("v_stock_comp_code", String.valueOf(stockDetailsDto.getCompanyCode()));
+            sql = sql.replace("v_stock_country_code", String.valueOf(stockDetailsDto.getStockCountryCode()));
+            sql = sql.replace("v_stock_region_code", String.valueOf(stockDetailsDto.getStockRegionCode()));
+            sql = sql.replace("v_stock_brn_code", String.valueOf(stockDetailsDto.getStockBranchCode()));
+            sql = sql.replace("v_cluster_code", String.valueOf(stockDetailsDto.getStockClusterCode()));
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
