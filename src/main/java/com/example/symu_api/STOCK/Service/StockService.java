@@ -30,7 +30,7 @@ public interface StockService {
 
     SymuResponse stockCloseSale(StockCloseSaleDto stockCloseSaleDto);
 
-    SymuResponse getAllStockDetails(int companyCode,Pageable pageable);
+    SymuResponse getAllStockDetails(StockDetailsDto stockDetailsDto,Pageable pageable);
 
     SymuResponse updateDefaultStatus(int stockCode,String defaultStatus);
 
