@@ -626,10 +626,10 @@ public class StockServiceImpl implements StockService {
                 "                  and stock_cluster_code=cluster_code\n" +
                 "                  and cluster_code=rct_cluster_code\n" +
                 "                  and stock_status_code=4\n" +
-                "                  AND stock_comp_code=v_stock_comp_code\n" +
+                "                  AND stock_comp_code=1\n" +
                 "                  and stock_country_code=ifnull(v_stock_country_code,stock_country_code)\n" +
                 "                  and stock_region_code=ifnull(v_stock_region_code,stock_region_code)\n" +
-                "                  and stock_brn_code=ifnull(v_stock_brn_code,stock_brn_code)\n" +
+                "                  and stock_brn_code=ifnull(v_stock_region_code,stock_brn_code)\n" +
                 "                 and cluster_CODE=ifnull(v_cluster_code,cluster_CODE)\n" +
                 "                 order by rct_updated_on desc";
         try {
