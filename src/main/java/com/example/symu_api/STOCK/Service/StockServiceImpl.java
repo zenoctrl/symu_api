@@ -244,56 +244,64 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public SymuResponse getStockEntitiesByStockCompanyCode(int companyCode, String statusShortDesc,
+    public SymuResponse getStockEntitiesByStockCompanyCode(GetAllStockDto getAllStockDto,
                                                            Pageable pageable) {
         SymuResponse symuResponse = new SymuResponse();
         Connection conn = null;
         CallableStatement cst = null;
         String sql = "SELECT \n" +
-                "      stock_code,\n" +
-                "      stock_comp_code,\n" +
-                "      stock_country_code,\n" +
-                "      stock_region_code,\n" +
-                "      stock_brn_code,\n" +
-                "      stock_batch_code,\n" +
-                "      stock_agn_code,\n" +
-                "      stock_imei,\n" +
-                "      stock_model_code,\n" +
-                "      stock_memory,\n" +
-                "      stock_buying_price,\n" +
-                "      stock_selling_price,\n" +
-                "      stock_profit,\n" +
-                "      stock_status_code,\n" +
-                "      stock_base_currency,\n" +
-                "      stock_defaulted,\n" +
-                "      stock_customer_code,\n" +
-                "      stock_created_on,\n" +
-                "      stock_updated_on,\n" +
-                "      stock_created_by,\n" +
-                "      stock_updated_by,\n" +
-                "      stock_sold_by,\n" +
-                "      stock_trade_name,\n" +
-                "      stock_dealer_code,\n" +
-                "      status_description,\n" +
-                "      status_name,\n" +
-                "      status_short_desc,\n" +
-                "      brn_name,\n" +
-                "      countries.ctry_name,\n" +
-                "      batch_no,\n" +
-                "      cluster_code,\n" +
-                "      cluster_name\n" +
-                "FROM stock,stock_status,branches,countries,stock_batch,cluster\n" +
-                "where stock_status.status_code=stock_status_code\n" +
-                "and BRN_CODE=stock_brn_code\n" +
-                "and ctry_code=stock_country_code\n" +
-                "and batch_code=stock_batch_code\n" +
-                "and stock_cluster_code=cluster_code\n" +
-                "and status_short_desc='v_status_short_desc'\n" +
-                "and stock_comp_code=v_stock_comp_code\n" +
-                "order by stock_updated_on desc";
+                "                      stock_code,\n" +
+                "                      stock_comp_code,\n" +
+                "                      stock_country_code,\n" +
+                "                      stock_region_code,\n" +
+                "                      stock_brn_code,\n" +
+                "                      stock_batch_code,\n" +
+                "                      stock_agn_code,\n" +
+                "                      stock_imei,\n" +
+                "                      stock_model_code,\n" +
+                "                      stock_memory,\n" +
+                "                      stock_buying_price,\n" +
+                "                      stock_selling_price,\n" +
+                "                      stock_profit,\n" +
+                "                      stock_status_code,\n" +
+                "                      stock_base_currency,\n" +
+                "                      stock_defaulted,\n" +
+                "                      stock_customer_code,\n" +
+                "                      stock_created_on,\n" +
+                "                      stock_updated_on,\n" +
+                "                      stock_created_by,\n" +
+                "                      stock_updated_by,\n" +
+                "                      stock_sold_by,\n" +
+                "                      stock_trade_name,\n" +
+                "                      stock_dealer_code,\n" +
+                "                      status_description,\n" +
+                "                      status_name,\n" +
+                "                      status_short_desc,\n" +
+                "                      brn_name,\n" +
+                "                      countries.ctry_name,\n" +
+                "                      batch_no,\n" +
+                "                      cluster_code,\n" +
+                "                      cluster_name\n" +
+                "                FROM stock,stock_status,branches,countries,stock_batch,cluster\n" +
+                "                where stock_status.status_code=stock_status_code\n" +
+                "                and BRN_CODE=stock_brn_code\n" +
+                "                and ctry_code=stock_country_code\n" +
+                "                and batch_code=stock_batch_code\n" +
+                "                and stock_cluster_code=cluster_code\n" +
+                "                and status_short_desc='v_status_short_desc'\n" +
+                "                and stock_comp_code=v_stock_comp_code\n" +
+                "                and stock_country_code=ifnull(v_stock_country_code,stock_country_code)\n" +
+                "                and stock_region_code=ifnull(v_stock_region_code,stock_region_code)\n" +
+                "                and stock_brn_code=ifnull(v_stock_brn_code,stock_brn_code)\n" +
+                "                and stock_cluster_code=ifnull(v_stock_cluster_code,stock_cluster_code)\n" +
+                "                order by stock_updated_on desc";
         try {
-            sql = sql.replace("v_status_short_desc", String.valueOf(statusShortDesc));
-            sql = sql.replace("v_stock_comp_code", String.valueOf(companyCode));
+            sql = sql.replace("v_status_short_desc", getAllStockDto.getStatusShortDesc());
+            sql = sql.replace("v_stock_comp_code", getAllStockDto.getCompanyCode());
+            sql = sql.replace("v_stock_country_code", getAllStockDto.getStockCountryCode());
+            sql = sql.replace("v_stock_region_code", getAllStockDto.getStockRegionCode());
+            sql = sql.replace("v_stock_brn_code", getAllStockDto.getStockBranchCode());
+            sql = sql.replace("v_stock_cluster_code", getAllStockDto.getStockClusterCode());
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
