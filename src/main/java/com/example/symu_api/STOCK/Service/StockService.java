@@ -17,7 +17,7 @@ public interface StockService {
 
     SymuResponse getStockByBranchAndStatus(int brnCode,int stockStatusCode);
 
-    SymuResponse getStockEntitiesByStockCompanyCode(int companyCode,String statusShortDesc,
+    SymuResponse getStockEntitiesByStockCompanyCode(GetAllStockDto getAllStockDto,
                                                     Pageable pageable);
 
     SymuResponse updateStockPrice(StockPriceDto stockPriceDto);
