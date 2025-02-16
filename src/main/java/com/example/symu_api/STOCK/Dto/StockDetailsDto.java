@@ -4,9 +4,9 @@ import lombok.Data;
 
 @Data
 public class StockDetailsDto {
-    private Integer companyCode;
-    private Integer stockCountryCode;
-    private Integer stockRegionCode;
-    private Integer stockBranchCode;
-    private Integer stockClusterCode;
+    private String companyCode;
+    private String stockCountryCode;
+    private String stockRegionCode;
+    private String stockBranchCode;
+    private String stockClusterCode;
 }

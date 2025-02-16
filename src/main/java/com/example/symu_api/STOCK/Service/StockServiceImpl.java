@@ -626,18 +626,18 @@ public class StockServiceImpl implements StockService {
                 "                  and stock_cluster_code=cluster_code\n" +
                 "                  and cluster_code=rct_cluster_code\n" +
                 "                  and stock_status_code=4\n" +
-                "                  AND stock_comp_code=1\n" +
+                "                  AND stock_comp_code=v_stock_comp_code\n" +
                 "                  and stock_country_code=ifnull(v_stock_country_code,stock_country_code)\n" +
                 "                  and stock_region_code=ifnull(v_stock_region_code,stock_region_code)\n" +
                 "                  and stock_brn_code=ifnull(v_stock_region_code,stock_brn_code)\n" +
                 "                 and cluster_CODE=ifnull(v_cluster_code,cluster_CODE)\n" +
                 "                 order by rct_updated_on desc";
         try {
-            sql = sql.replace("v_stock_comp_code", String.valueOf(stockDetailsDto.getCompanyCode()));
-            sql = sql.replace("v_stock_country_code", String.valueOf(stockDetailsDto.getStockCountryCode()));
-            sql = sql.replace("v_stock_region_code", String.valueOf(stockDetailsDto.getStockRegionCode()));
-            sql = sql.replace("v_stock_brn_code", String.valueOf(stockDetailsDto.getStockBranchCode()));
-            sql = sql.replace("v_cluster_code", String.valueOf(stockDetailsDto.getStockClusterCode()));
+            sql = sql.replace("v_stock_comp_code", stockDetailsDto.getCompanyCode());
+            sql = sql.replace("v_stock_country_code", stockDetailsDto.getStockCountryCode());
+            sql = sql.replace("v_stock_region_code", stockDetailsDto.getStockRegionCode());
+            sql = sql.replace("v_stock_brn_code", stockDetailsDto.getStockBranchCode());
+            sql = sql.replace("v_cluster_code", stockDetailsDto.getStockClusterCode());
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
