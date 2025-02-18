@@ -20,8 +20,6 @@ public interface StockService {
     SymuResponse getStockEntitiesByStockCompanyCode(GetAllStockDto getAllStockDto,
                                                     Pageable pageable);
 
-    SymuResponse getStockEntitiesByImei(String imei,String statusShortDesc,String companyCode);
-
     SymuResponse updateStockPrice(StockPriceDto stockPriceDto);
 
     SymuResponse stockPostSale(StockPostSaleDto stockPostSaleDto);
@@ -33,6 +31,8 @@ public interface StockService {
     SymuResponse stockCloseSale(StockCloseSaleDto stockCloseSaleDto);
 
     SymuResponse getAllStockDetails(StockDetailsDto stockDetailsDto,Pageable pageable);
+
+    SymuResponse getAllStockDetailsByImei(String stockImei,int stockStatusCode,Pageable pageable);
 
     SymuResponse updateDefaultStatus(int stockCode,String defaultStatus);
 

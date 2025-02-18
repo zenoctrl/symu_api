@@ -9,4 +9,6 @@ public class StockDetailsDto {
     private String stockRegionCode;
     private String stockBranchCode;
     private String stockClusterCode;
+    private String stockDateFrom;
+    private String stockDateTo;
 }
