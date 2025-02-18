@@ -358,6 +358,113 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public SymuResponse getStockEntitiesByImei(String imei,String statusShortDesc,String companyCode) {
+        SymuResponse symuResponse = new SymuResponse();
+        Connection conn = null;
+        CallableStatement cst = null;
+        String sql = "SELECT \n" +
+                "                      stock_code,\n" +
+                "                      stock_comp_code,\n" +
+                "                      stock_country_code,\n" +
+                "                      stock_region_code,\n" +
+                "                      stock_brn_code,\n" +
+                "                      stock_batch_code,\n" +
+                "                      stock_agn_code,\n" +
+                "                      stock_imei,\n" +
+                "                      stock_model_code,\n" +
+                "                      stock_memory,\n" +
+                "                      stock_buying_price,\n" +
+                "                      stock_selling_price,\n" +
+                "                      stock_profit,\n" +
+                "                      stock_status_code,\n" +
+                "                      stock_base_currency,\n" +
+                "                      stock_defaulted,\n" +
+                "                      stock_customer_code,\n" +
+                "                      stock_created_on,\n" +
+                "                      stock_updated_on,\n" +
+                "                      stock_created_by,\n" +
+                "                      stock_updated_by,\n" +
+                "                      stock_sold_by,\n" +
+                "                      stock_trade_name,\n" +
+                "                      stock_dealer_code,\n" +
+                "                      status_description,\n" +
+                "                      status_name,\n" +
+                "                      status_short_desc,\n" +
+                "                      brn_name,\n" +
+                "                      countries.ctry_name,\n" +
+                "                      batch_no,\n" +
+                "                      cluster_code,\n" +
+                "                      cluster_name\n" +
+                "                FROM stock,stock_status,branches,countries,stock_batch,cluster\n" +
+                "                where stock_status.status_code=stock_status_code\n" +
+                "                and BRN_CODE=stock_brn_code\n" +
+                "                and ctry_code=stock_country_code\n" +
+                "                and batch_code=stock_batch_code\n" +
+                "                and stock_cluster_code=cluster_code\n" +
+                "                and status_short_desc='v_status_short_desc'\n" +
+                "                and stock_imei='v_stock_imei'\n" +
+                "                and stock_comp_code=v_stock_comp_code\n" +
+                "                order by stock_updated_on desc";
+        try {
+            sql = sql.replace("v_status_short_desc", statusShortDesc);
+            sql = sql.replace("v_stock_imei", imei);
+            sql = sql.replace("v_stock_comp_code", companyCode);
+            conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            List<StockRes> stockResList = new ArrayList<>();
+
+            while (rs.next()) {
+                StockRes stockRes = new StockRes();
+                stockRes.setCode(rs.getInt("stock_code"));
+                stockRes.setStockCompanyCode(rs.getInt("stock_comp_code"));
+                stockRes.setStockCountryCode(rs.getInt("stock_country_code"));
+                stockRes.setStockRegionCode(rs.getInt("stock_region_code"));
+                stockRes.setStockBranchCode(rs.getInt("stock_brn_code"));
+                stockRes.setStockBatchCode(rs.getInt("stock_batch_code"));
+                stockRes.setStockAgnCode(rs.getInt("stock_agn_code"));
+                stockRes.setStockImei(rs.getString("stock_imei"));
+                stockRes.setStockModelCode(rs.getInt("stock_model_code"));
+                stockRes.setStockMemory(rs.getString("stock_memory"));
+                stockRes.setStockBuyingPrice(rs.getDouble("stock_buying_price"));
+                stockRes.setStockSellingPrice(rs.getDouble("stock_selling_price"));
+                stockRes.setStockProfit(rs.getDouble("stock_profit"));
+                stockRes.setStockStatusCode(rs.getInt("stock_status_code"));
+                stockRes.setStockBaseCurrency(rs.getString("stock_base_currency"));
+                stockRes.setStockDefaulted(rs.getString("stock_defaulted"));
+                stockRes.setStockCustomerCode(rs.getInt("stock_customer_code"));
+                stockRes.setStockCreatedOn(rs.getString("stock_created_on"));
+                stockRes.setStockUpdatedOn(rs.getString("stock_updated_on"));
+                stockRes.setStockCreatedBy(rs.getString("stock_created_by"));
+                stockRes.setStockUpdatedBy(rs.getString("stock_updated_by"));
+                stockRes.setStockSoldBy(rs.getString("stock_sold_by"));
+                stockRes.setStockTradeName(rs.getString("stock_trade_name"));
+                stockRes.setStockDealerCode(rs.getInt("stock_dealer_code"));
+                stockRes.setStockStatusDescription(rs.getString("status_description"));
+                stockRes.setStockStatusName(rs.getString("status_name"));
+                stockRes.setStatusShortDesc(rs.getString("status_short_desc"));
+                stockRes.setStockBranchName(rs.getString("brn_name"));
+                stockRes.setStockCountryName(rs.getString("ctry_name"));
+                stockRes.setStockBatchNumber(rs.getString("batch_no"));
+                stockRes.setStockClusterCode(rs.getInt("cluster_code"));
+                stockRes.setStockClusterName(rs.getString("cluster_name"));
+                stockResList.add(stockRes);
+            }
+            symuResponse.setStatusCode("0");
+            symuResponse.setMessage("success");
+            Page<StockRes> stockResPage = CommonUtils.pageData(stockResList, null);
+            symuResponse.setData(stockResPage);
+        } catch (Exception e) {
+            symuResponse.setStatusCode("1");
+            symuResponse.setMessage("Error occurred while fetching stock");
+            symuResponse.setData(e.getMessage());
+        } finally {
+            DBUtils.CloseConnections(null, cst, conn);
+        }
+        return symuResponse;
+    }
+
+    @Override
     public SymuResponse updateStockPrice(StockPriceDto stockPriceDto) {
         LocalDateTime timestamp = LocalDateTime.now(ZoneId.of("Africa/Nairobi"));
         SymuResponse symuResponse = new SymuResponse();
@@ -637,7 +744,7 @@ public class StockServiceImpl implements StockService {
                 "                  AND stock_comp_code=v_stock_comp_code\n" +
                 "                  and stock_country_code=ifnull(v_stock_country_code,stock_country_code)\n" +
                 "                  and stock_region_code=ifnull(v_stock_region_code,stock_region_code)\n" +
-                "                  and stock_brn_code=ifnull(v_stock_region_code,stock_brn_code)\n" +
+                "                  and stock_brn_code=ifnull(v_stock_brn_code,stock_brn_code)\n" +
                 "                 and cluster_CODE=ifnull(v_cluster_code,cluster_CODE)\n" +
                 "                 order by rct_updated_on desc";
         try {
