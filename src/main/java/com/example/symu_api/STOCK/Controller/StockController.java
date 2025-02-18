@@ -54,6 +54,17 @@ public class StockController {
         final SymuResponse stockEntity =stockService.getStockEntitiesByStockCompanyCode(getAllStockDto,pageable);
         return ResponseEntity.ok(stockEntity);
     }
+    // pending approval, available stock, posted sale use /getAllStock
+    @GetMapping(path = "/getAllStockByImei",
+            produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<SymuResponse> getAllStockByImei(
+            @RequestParam("stockImei")String stockImei,
+            @RequestParam("statusShortDesc")String statusShortDesc,
+            @RequestParam("companyCode")String companyCode
+    ) {
+        final SymuResponse stockEntity =stockService.getStockEntitiesByImei(stockImei,statusShortDesc,companyCode);
+        return ResponseEntity.ok(stockEntity);
+    }
     @PostMapping("/updateStockPrice")
     public SymuResponse updateStockBuyingPrice(@RequestBody StockPriceDto stockPriceDto) {
         return stockService.updateStockPrice(stockPriceDto);
