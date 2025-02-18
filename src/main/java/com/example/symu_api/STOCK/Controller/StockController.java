@@ -54,17 +54,6 @@ public class StockController {
         final SymuResponse stockEntity =stockService.getStockEntitiesByStockCompanyCode(getAllStockDto,pageable);
         return ResponseEntity.ok(stockEntity);
     }
-    // pending approval, available stock, posted sale use /getAllStock
-    @GetMapping(path = "/getAllStockByImei",
-            produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<SymuResponse> getAllStockByImei(
-            @RequestParam("stockImei")String stockImei,
-            @RequestParam("statusShortDesc")String statusShortDesc,
-            @RequestParam("companyCode")String companyCode
-    ) {
-        final SymuResponse stockEntity =stockService.getStockEntitiesByImei(stockImei,statusShortDesc,companyCode);
-        return ResponseEntity.ok(stockEntity);
-    }
     @PostMapping("/updateStockPrice")
     public SymuResponse updateStockBuyingPrice(@RequestBody StockPriceDto stockPriceDto) {
         return stockService.updateStockPrice(stockPriceDto);
@@ -96,6 +85,17 @@ public class StockController {
             Pageable pageable
     ) {
         final SymuResponse stockEntity =stockService.getAllStockDetails(stockDetailsDto,pageable);
+        return ResponseEntity.ok(stockEntity);
+    }
+    // this is strictly for after sale
+    @GetMapping(path = "/getAllStockDetailsByImei",
+            produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<SymuResponse> getAllStockDetailsByImei(
+            @RequestParam("stockImei")String stockImei,
+            @RequestParam("stockStatusCode")int stockStatusCode,
+            Pageable pageable
+    ) {
+        final SymuResponse stockEntity =stockService.getAllStockDetailsByImei(stockImei,stockStatusCode,pageable);
         return ResponseEntity.ok(stockEntity);
     }
     @PostMapping("/updateDefaultStatus")
