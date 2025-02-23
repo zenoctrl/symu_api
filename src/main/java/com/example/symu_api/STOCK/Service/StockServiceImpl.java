@@ -656,8 +656,8 @@ public class StockServiceImpl implements StockService {
                 "  and cluster_code = rct_cluster_code\n" +
                 "  and stock_status_code = 4\n" +
                 "  AND DATE(rct_updated_on)\n" +
-                "    between ifnull(v_rct_date_from, CURRENT_DATE)\n" +
-                "    AND ifnull(v_rct_date_to, CURRENT_DATE)\n" +
+                "    between ifnull('v_rct_date_from', CURRENT_DATE)\n" +
+                "    AND ifnull('v_rct_date_to', CURRENT_DATE)\n" +
                 "  AND stock_comp_code = v_stock_comp_code\n" +
                 "  and stock_country_code = ifnull(v_stock_country_code, stock_country_code)\n" +
                 "  and stock_region_code = ifnull(v_stock_region_code, stock_region_code)\n" +
@@ -665,8 +665,6 @@ public class StockServiceImpl implements StockService {
                 "  and cluster_CODE = ifnull(v_cluster_code, cluster_CODE)\n" +
                 "order by rct_updated_on desc";
         try {
-            System.out.println("v_rct_date_from "+stockDetailsDto.getStockDateFrom());
-            System.out.println("v_rct_date_to "+stockDetailsDto.getStockDateTo());
             sql = sql.replace("v_stock_comp_code", stockDetailsDto.getCompanyCode());
             sql = sql.replace("v_stock_country_code", stockDetailsDto.getStockCountryCode());
             sql = sql.replace("v_stock_region_code", stockDetailsDto.getStockRegionCode());
@@ -674,6 +672,7 @@ public class StockServiceImpl implements StockService {
             sql = sql.replace("v_cluster_code", stockDetailsDto.getStockClusterCode());
             sql = sql.replace("v_rct_date_from", stockDetailsDto.getStockDateFrom());
             sql = sql.replace("v_rct_date_to", stockDetailsDto.getStockDateTo());
+            sql=sql.replace("'null'","null");
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -702,6 +701,8 @@ public class StockServiceImpl implements StockService {
                 stockDetailsRes.setStockClusterName(rs.getString("cluster_name"));
                 stockDetailsResList.add(stockDetailsRes);
             }
+            System.out.println("stockDetailsResList "+stockDetailsResList.size());
+            System.out.println("sql "+sql);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
             Page<StockDetailsRes> stockDetailsResPage = CommonUtils.pageData(stockDetailsResList, pageable);
