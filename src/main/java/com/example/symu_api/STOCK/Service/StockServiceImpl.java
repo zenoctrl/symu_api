@@ -702,7 +702,6 @@ public class StockServiceImpl implements StockService {
                 stockDetailsResList.add(stockDetailsRes);
             }
             System.out.println("stockDetailsResList "+stockDetailsResList.size());
-            System.out.println("sql "+sql);
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
             Page<StockDetailsRes> stockDetailsResPage = CommonUtils.pageData(stockDetailsResList, pageable);
