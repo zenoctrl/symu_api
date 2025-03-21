@@ -14,4 +14,6 @@ public interface StockBatchService {
     SymuResponse getStockBatchByCode(int code);
 
     SymuResponse getStockBatchEntitiesByBatchStatus(String stockStatus);
+
+    SymuResponse getStockBatchStatistics(int batchCode);
 }

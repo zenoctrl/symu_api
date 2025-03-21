@@ -68,11 +68,7 @@ public class StockServiceImpl implements StockService {
     @Autowired
     private StockBatchRepo stockBatchRepo;
     @Autowired
-    private BranchRepository branchRepository;
-    @Autowired
     private CountryRepository countryRepository;
-    @Autowired
-    private RoleRepository roleRepository;
     @Autowired
     private StockStatusRepository stockStatusRepository;
     @Autowired
@@ -177,13 +173,6 @@ public class StockServiceImpl implements StockService {
                     // saved
                     stockEntityList.add(stockEntitySaved);
                     success = success + 1;
-                    // add batch total allocated
-                    if (stockBatchEntity.getBatchTotalAllocated() !=null){
-                        stockBatchEntity.setBatchTotalAllocated(stockBatchEntity.getBatchTotalAllocated()+1);
-                    }else {
-                        stockBatchEntity.setBatchTotalAllocated(1);
-                    }
-                    stockBatchRepo.save(stockBatchEntity);
                 }
             } catch (Exception e) {
                 String errorMsg = e.getMessage();
@@ -477,22 +466,15 @@ public class StockServiceImpl implements StockService {
                 StockEntity stockEntity = stockEntityRepo.getStockEntitiesByCode(stockCode);
                 StockStatusEntity stockStatusEntity = stockStatusRepository.getStockStatusEntitiesByStatusCode(
                         stockApprovalDto.getNextStatusCode());
-                if(stockStatusEntity.getStatusShortDesc().equalsIgnoreCase("DELETED")){
-                    stockEntity.setStockImei(timestamp+"_"+stockEntity.getStockImei());
+                if (stockStatusEntity.getStatusShortDesc().equalsIgnoreCase("DELETED")) {
+                    stockEntity.setStockImei(timestamp + "_" + stockEntity.getStockImei());
                 }
                 stockEntity.setStockStatusCode(stockApprovalDto.getNextStatusCode());
                 stockEntity.setStockUpdatedBy(stockApprovalDto.getUserCode());
                 stockEntity.setStockUpdatedOn(timestamp);
                 StockEntity saved = stockEntityRepo.save(stockEntity);
                 if (saved != null) {
-                    // add total approved
-                    StockBatchEntity stockBatchEntity = stockBatchRepo.getStockBatchEntitiesByCode(saved.getStockBatchCode());
-                    if(stockStatusEntity.getStatusShortDesc().equalsIgnoreCase("DELETED")){
-                        stockBatchEntity.setBatchTotalApproved(stockBatchEntity.getBatchTotalAllocated() - 1);
-                    }else {
-                        stockBatchEntity.setBatchTotalApproved(stockBatchEntity.getBatchTotalApproved() + 1);
-                    }
-                    stockBatchRepo.save(stockBatchEntity);
+                    //updated
                 }
                 symuResponse.setStatusCode("0");
                 symuResponse.setMessage("success");
@@ -672,7 +654,7 @@ public class StockServiceImpl implements StockService {
             sql = sql.replace("v_cluster_code", stockDetailsDto.getStockClusterCode());
             sql = sql.replace("v_rct_date_from", stockDetailsDto.getStockDateFrom());
             sql = sql.replace("v_rct_date_to", stockDetailsDto.getStockDateTo());
-            sql=sql.replace("'null'","null");
+            sql = sql.replace("'null'", "null");
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -701,7 +683,7 @@ public class StockServiceImpl implements StockService {
                 stockDetailsRes.setStockClusterName(rs.getString("cluster_name"));
                 stockDetailsResList.add(stockDetailsRes);
             }
-            System.out.println("stockDetailsResList "+stockDetailsResList.size());
+            System.out.println("stockDetailsResList " + stockDetailsResList.size());
             symuResponse.setStatusCode("0");
             symuResponse.setMessage("success");
             Page<StockDetailsRes> stockDetailsResPage = CommonUtils.pageData(stockDetailsResList, pageable);
@@ -721,7 +703,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public SymuResponse getAllStockDetailsByImei(String stockImei,int stockStatusCode,Pageable pageable) {
+    public SymuResponse getAllStockDetailsByImei(String stockImei, int stockStatusCode, Pageable pageable) {
         SymuResponse symuResponse = new SymuResponse();
         Connection conn = null;
         CallableStatement cst = null;

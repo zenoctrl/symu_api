@@ -46,4 +46,12 @@ public class StockBatchController {
                 stockBatchStatus);
         return ResponseEntity.ok(stockBatchEntities);
     }
+    @GetMapping(path = "/getStockBatchStatistics",
+            produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<SymuResponse> getStockBatchStatistics(
+            @RequestParam("stockBatchCode")int stockBatchCode
+    ) {
+        final SymuResponse stockBatchEntities =stockBatchService.getStockBatchStatistics(stockBatchCode);
+        return ResponseEntity.ok(stockBatchEntities);
+    }
 }
