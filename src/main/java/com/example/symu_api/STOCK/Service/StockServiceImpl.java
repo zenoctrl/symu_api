@@ -283,6 +283,7 @@ public class StockServiceImpl implements StockService {
                 "                and stock_region_code=ifnull(v_stock_region_code,stock_region_code)\n" +
                 "                and stock_brn_code=ifnull(v_stock_brn_code,stock_brn_code)\n" +
                 "                and stock_cluster_code=ifnull(v_stock_cluster_code,stock_cluster_code)\n" +
+                "                and stock_batch_code=ifnull(v_stock_batch_code,stock_batch_code)\n" +
                 "                order by stock_updated_on desc";
         try {
             sql = sql.replace("v_status_short_desc", getAllStockDto.getStatusShortDesc());
@@ -291,6 +292,7 @@ public class StockServiceImpl implements StockService {
             sql = sql.replace("v_stock_region_code", getAllStockDto.getStockRegionCode());
             sql = sql.replace("v_stock_brn_code", getAllStockDto.getStockBranchCode());
             sql = sql.replace("v_stock_cluster_code", getAllStockDto.getStockClusterCode());
+            sql = sql.replace("v_stock_batch_code", getAllStockDto.getStockBatchCode());
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
