@@ -10,4 +10,5 @@ public class GetAllStockDto {
     private String stockRegionCode;
     private String stockBranchCode;
     private String stockClusterCode;
+    private String stockBatchCode;
 }
