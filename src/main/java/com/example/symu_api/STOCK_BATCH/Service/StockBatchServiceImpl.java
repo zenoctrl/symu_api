@@ -96,7 +96,7 @@ public class StockBatchServiceImpl implements StockBatchService {
         SymuResponse symuResponse=new SymuResponse<>();
         Connection conn = null;
         CallableStatement cst = null;
-        String sql ="SELECT count(stock_code) stockCount,status_name\n" +
+        String sql ="SELECT count(stock_code) stockCount,status_name,status_short_desc\n" +
                 "FROM stock,stock_status\n" +
                 "where stock_status_code=status_code\n" +
                 "and stock_batch_code=v_stock_batch_code\n" +
@@ -111,6 +111,7 @@ public class StockBatchServiceImpl implements StockBatchService {
                 BatchStatisticsModel batchStatisticsModel=new BatchStatisticsModel();
                 batchStatisticsModel.setStockStatusName(rs.getString("status_name"));
                 batchStatisticsModel.setStockStatusCount(rs.getInt("stockCount"));
+                batchStatisticsModel.setStatusShortDesc(rs.getString("status_short_desc"));
                 batchStatisticsModelList.add(batchStatisticsModel);
             }
             symuResponse.setStatusCode("0");
