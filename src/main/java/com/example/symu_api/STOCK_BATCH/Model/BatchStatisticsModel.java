@@ -8,4 +8,5 @@ import java.math.BigDecimal;
 public class BatchStatisticsModel {
     String stockStatusName;
     int stockStatusCount;
+    String statusShortDesc;
 }
