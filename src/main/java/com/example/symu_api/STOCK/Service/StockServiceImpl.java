@@ -471,6 +471,9 @@ public class StockServiceImpl implements StockService {
                 if (stockStatusEntity.getStatusShortDesc().equalsIgnoreCase("DELETED")) {
                     stockEntity.setStockImei(timestamp + "_" + stockEntity.getStockImei());
                 }
+                if (stockStatusEntity.getStatusShortDesc().equalsIgnoreCase("TRANSFERRED")){
+                    stockEntity.setStockCreatedOn(timestamp);
+                }
                 stockEntity.setStockStatusCode(stockApprovalDto.getNextStatusCode());
                 stockEntity.setStockUpdatedBy(stockApprovalDto.getUserCode());
                 stockEntity.setStockUpdatedOn(timestamp);
