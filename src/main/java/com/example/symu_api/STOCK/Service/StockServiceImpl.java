@@ -156,6 +156,14 @@ public class StockServiceImpl implements StockService {
             symuErrorInfo.setStatusMessage("total batch exceeded");
             symuErrorInfoList.add(symuErrorInfo);
 
+            // prepare response
+            symuBulkResponse.setStatusCode("1");
+            symuBulkResponse.setMessage("Failed");
+            symuBulkResponse.setSuccess("0");
+            symuBulkResponse.setFailed("0");
+            symuBulkResponse.setData("total batch exceeded");
+            symuBulkResponse.setSymuErrorInfoList(symuErrorInfoList);
+
             return symuBulkResponse;
         }else {
             List<StockEntity> stockEntityList = new ArrayList<>();
