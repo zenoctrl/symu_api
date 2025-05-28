@@ -145,59 +145,74 @@ public class StockServiceImpl implements StockService {
         StockModelEntity stockModelEntity = stockModelRepo.getStockModelEntitiesByCode(createStockBulkDto.getStockModelCode());
         StockBatchEntity stockBatchEntity = stockBatchRepo.getStockBatchEntitiesByCode(createStockBulkDto.getStockBatchCode());
         CountryEntity countryEntity = countryRepository.getCountryEntitiesByCode(clusterEntity.getClusterCountryCode());
-        List<StockEntity> stockEntityList = new ArrayList<>();
-        for (String stockImei : createStockBulkDto.getStockImei()) {
-            StockEntity stockEntity = new StockEntity();
-            try {
-                stockEntity.setStockCompanyCode(clusterEntity.getCompanyCode());
-                stockEntity.setStockCountryCode(clusterEntity.getClusterCountryCode());
-                stockEntity.setStockRegionCode(clusterEntity.getClusterRegionCode());
-                stockEntity.setStockBranchCode(clusterEntity.getClusterBranchCode());
-                stockEntity.setStockClusterCode(createStockBulkDto.getStockClusterCode());
-                stockEntity.setStockBatchCode(createStockBulkDto.getStockBatchCode());
-                stockEntity.setStockImei(stockImei);
-                stockEntity.setStockModelCode(createStockBulkDto.getStockModelCode());
-                stockEntity.setStockMemory(stockModelEntity.getModelName());
-                stockEntity.setStockBuyingPrice(stockBatchEntity.getBatchBuyingPrice());
-                stockEntity.setStockSellingPrice(stockModelEntity.getModelSellingPrice());
-                stockEntity.setStockProfit(stockModelEntity.getModelSellingPrice() - stockBatchEntity.getBatchBuyingPrice());
-                stockEntity.setStockDefaulted("N");
-                stockEntity.setStockBaseCurrency(countryEntity.getCountryCurrencyCode());
-                stockEntity.setStockCreatedOn(timestamp);
-                stockEntity.setStockCreatedBy(createStockBulkDto.getStockCreatedBy());
-                stockEntity.setStockStatusCode(1);
-                stockEntity.setStockUpdatedOn(timestamp);
-                stockEntity.setStockUpdatedBy(1);
-                StockEntity stockEntitySaved = stockEntityRepo.save(stockEntity);
-                if (stockEntitySaved.getStockImei() != null) {
-                    // saved
-                    stockEntityList.add(stockEntitySaved);
-                    success = success + 1;
-                }
-            } catch (Exception e) {
-                String errorMsg = e.getMessage();
-                if (errorMsg.contains("Duplicate")) {
-                    errorMsg = "Duplicate entry for the imei";
-                } else {
-                    errorMsg = e.getMessage();
-                }
-                failed = failed + 1;
-                SymuErrorInfo symuErrorInfo = new SymuErrorInfo();
-                symuErrorInfo.setStatusCode("1");
-                symuErrorInfo.setStatusDesc(stockImei);
-                symuErrorInfo.setStatusMessage(errorMsg);
-                symuErrorInfoList.add(symuErrorInfo);
-            }
-        }
-        // prepare response
-        symuBulkResponse.setStatusCode("0");
-        symuBulkResponse.setMessage("Success");
-        symuBulkResponse.setSuccess(String.valueOf(success));
-        symuBulkResponse.setFailed(String.valueOf(failed));
-        symuBulkResponse.setData(stockEntityList);
-        symuBulkResponse.setSymuErrorInfoList(symuErrorInfoList);
+        List<StockEntity> stockEntityListPerBatch=stockEntityRepo.getStockEntitiesByStockBatchCode(createStockBulkDto.getStockBatchCode());
+        int totalDeclared=stockBatchEntity.getBatchTotalNumber();
+        int totalStock=stockEntityListPerBatch.size();
+        int newStock=createStockBulkDto.getStockImei().size();
+        if ((totalStock+newStock)>totalDeclared) {
+            SymuErrorInfo symuErrorInfo = new SymuErrorInfo();
+            symuErrorInfo.setStatusCode("1");
+            symuErrorInfo.setStatusDesc("Failed");
+            symuErrorInfo.setStatusMessage("total batch exceeded");
+            symuErrorInfoList.add(symuErrorInfo);
 
-        return symuBulkResponse;
+            return symuBulkResponse;
+        }else {
+            List<StockEntity> stockEntityList = new ArrayList<>();
+            for (String stockImei : createStockBulkDto.getStockImei()) {
+                StockEntity stockEntity = new StockEntity();
+                try {
+                    stockEntity.setStockCompanyCode(clusterEntity.getCompanyCode());
+                    stockEntity.setStockCountryCode(clusterEntity.getClusterCountryCode());
+                    stockEntity.setStockRegionCode(clusterEntity.getClusterRegionCode());
+                    stockEntity.setStockBranchCode(clusterEntity.getClusterBranchCode());
+                    stockEntity.setStockClusterCode(createStockBulkDto.getStockClusterCode());
+                    stockEntity.setStockBatchCode(createStockBulkDto.getStockBatchCode());
+                    stockEntity.setStockImei(stockImei);
+                    stockEntity.setStockModelCode(createStockBulkDto.getStockModelCode());
+                    stockEntity.setStockMemory(stockModelEntity.getModelName());
+                    stockEntity.setStockBuyingPrice(stockBatchEntity.getBatchBuyingPrice());
+                    stockEntity.setStockSellingPrice(stockModelEntity.getModelSellingPrice());
+                    stockEntity.setStockProfit(stockModelEntity.getModelSellingPrice() - stockBatchEntity.getBatchBuyingPrice());
+                    stockEntity.setStockDefaulted("N");
+                    stockEntity.setStockBaseCurrency(countryEntity.getCountryCurrencyCode());
+                    stockEntity.setStockCreatedOn(timestamp);
+                    stockEntity.setStockCreatedBy(createStockBulkDto.getStockCreatedBy());
+                    stockEntity.setStockStatusCode(1);
+                    stockEntity.setStockUpdatedOn(timestamp);
+                    stockEntity.setStockUpdatedBy(1);
+                    StockEntity stockEntitySaved = stockEntityRepo.save(stockEntity);
+                    if (stockEntitySaved.getStockImei() != null) {
+                        // saved
+                        stockEntityList.add(stockEntitySaved);
+                        success = success + 1;
+                    }
+                } catch (Exception e) {
+                    String errorMsg = e.getMessage();
+                    if (errorMsg.contains("Duplicate")) {
+                        errorMsg = "Duplicate entry for the imei";
+                    } else {
+                        errorMsg = e.getMessage();
+                    }
+                    failed = failed + 1;
+                    SymuErrorInfo symuErrorInfo = new SymuErrorInfo();
+                    symuErrorInfo.setStatusCode("1");
+                    symuErrorInfo.setStatusDesc(stockImei);
+                    symuErrorInfo.setStatusMessage(errorMsg);
+                    symuErrorInfoList.add(symuErrorInfo);
+                }
+            }
+            // prepare response
+            symuBulkResponse.setStatusCode("0");
+            symuBulkResponse.setMessage("Success");
+            symuBulkResponse.setSuccess(String.valueOf(success));
+            symuBulkResponse.setFailed(String.valueOf(failed));
+            symuBulkResponse.setData(stockEntityList);
+            symuBulkResponse.setSymuErrorInfoList(symuErrorInfoList);
+
+            return symuBulkResponse;
+        }
+
     }
 
     @Override
