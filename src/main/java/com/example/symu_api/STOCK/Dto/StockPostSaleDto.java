@@ -12,4 +12,5 @@ public class StockPostSaleDto {
     private String customerNationalId;
     private String customerName;
     private String customerPhoneNumber;
+    private int receiptAmount;
 }
