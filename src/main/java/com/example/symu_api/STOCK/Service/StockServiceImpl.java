@@ -432,7 +432,7 @@ public class StockServiceImpl implements StockService {
             stockEntityData.setStockTradeName(stockPostSaleDto.getTradingName());
             stockEntityData.setStockDealerCode(stockPostSaleDto.getStockDealerCode());
             stockEntityData.setStockCustomerCode(customerCode);
-            stockEntityData.setStockSellingPrice(stockModelEntity.getModelSellingPrice());
+            stockEntityData.setStockSellingPrice(stockPostSaleDto.getReceiptAmount());
             stockEntityData.setStockProfit(stockModelEntity.getModelSellingPrice() - stockEntityData.getStockBuyingPrice());
             StockEntity saved = stockEntityRepo.save(stockEntityData);
             if (saved != null) {
@@ -460,7 +460,7 @@ public class StockServiceImpl implements StockService {
             receiptEntity.setReceiptStockCode(stockPostSaleDto.getStockCode());
             receiptEntity.setReceiStockImei(stockEntityData.getStockImei());
             receiptEntity.setReceiStockQuantity(1);
-            receiptEntity.setReceiptAmount(saved.getStockSellingPrice());
+            receiptEntity.setReceiptAmount(stockPostSaleDto.getReceiptAmount());
             receiptEntity.setReceiptModel(stockEntityData.getStockMemory());
             receiptEntity.setReceiptStatus("POSTED");
             receiptEntity.setReceiptDealership(stockPostSaleDto.getTradingName());
